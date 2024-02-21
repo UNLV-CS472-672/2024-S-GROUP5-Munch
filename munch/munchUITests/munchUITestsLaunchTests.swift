@@ -2,13 +2,12 @@
 //  munchUITestsLaunchTests.swift
 //  munchUITests
 //
-//  Created by Jadon Loi on 2/18/24.
+//  Created by Jadon Loi on 2/19/24.
 //
 
 import XCTest
 
 final class munchUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }

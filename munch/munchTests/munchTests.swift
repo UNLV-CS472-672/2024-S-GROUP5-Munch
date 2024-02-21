@@ -2,14 +2,13 @@
 //  munchTests.swift
 //  munchTests
 //
-//  Created by Jadon Loi on 2/18/24.
+//  Created by Jadon Loi on 2/19/24.
 //
 
-import XCTest
 @testable import munch
+import XCTest
 
 final class munchTests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
     }
@@ -28,9 +27,8 @@ final class munchTests: XCTestCase {
 
     func testPerformanceExample() throws {
         // This is an example of a performance test case.
-        self.measure {
+        measure {
             // Put the code you want to measure the time of here.
         }
     }
-
 }

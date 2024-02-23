@@ -63,7 +63,7 @@ munch/packages/react-native/ReactAndroid/src/main/gen
 
 # Android
 .idea
-.gradle
+munch/android/.gradle
 local.properties
 *.iml
 munch/packages/react-native/android/*

@@ -1,3 +1,158 @@
-frontend/munch/GoogleService-Info.plist
-frontend/munch.xcodeproj
-frontend/xcuserdata/
+munch/node_modules
+# Xcode
+!**/*.xcodeproj
+!**/*.pbxproj
+!**/*.xcworkspacedata
+!**/*.xcsettings
+!**/*.xcscheme
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+xcuserdata
+*.xccheckout
+*.moved-aside
+DerivedData
+*.hmap
+*.ipa
+*.xcuserstate
+project.xcworkspace
+**/.xcode.env.local
+
+# Gradle
+munch/build/
+munch/packages/react-native-gradle-plugin/build/
+munch/packages/rn-tester/build
+munch/packages/rn-tester/android/app/.cxx/
+munch/packages/rn-tester/android/app/build/
+munch/packages/rn-tester/android/app/gradle/
+munch/packages/rn-tester/android/app/gradlew
+munch/packages/rn-tester/android/app/gradlew.bat
+munch/packages/react-native/ReactAndroid/build/
+munch/packages/react-native/ReactAndroid/.cxx/
+munch/packages/react-native/ReactAndroid/gradle/
+munch/packages/react-native/ReactAndroid/gradlew
+munch/packages/react-native/ReactAndroid/gradlew.bat
+munch/packages/react-native/ReactAndroid/external-artifacts/build/
+munch/packages/react-native/ReactAndroid/external-artifacts/artifacts/
+munch/packages/react-native/ReactAndroid/hermes-engine/build/
+munch/packages/react-native/ReactAndroid/hermes-engine/.cxx/
+munch/packages/react-native/template/android/app/build/
+munch/packages/react-native/template/android/build/
+
+# Buck
+.buckd
+buck-out
+/.lsp.buckd
+/.lsp-buck-out
+munch/packages/react-native/ReactAndroid/src/main/jni/prebuilt/lib/
+munch/packages/react-native/ReactAndroid/src/main/gen
+/.cpplsp.buckd
+
+# Android Studio
+.project
+.settings
+.classpath
+
+# Watchman
+.watchmanconfig
+
+# Android
+.idea
+.gradle
+local.properties
+*.iml
+munch/packages/react-native/android/*
+!munch/packages/react-native/android/README.md
+
+# Node
+node_modules
+*.log
+.nvm
+package-lock.json
+
+# OS X
+.DS_Store
+
+# Test generated files
+*.js.meta
+
+/coverage
+/third-party
+
+# Test Reports
+/reports
+
+# Stack Dumps generated when programs crash (Ex. bash.exe.stackdump on Win)
+*.stackdump
+
+# Root dir shouldn't have Xcode project
+/*.xcodeproj
+
+# ReactCommon subdir shouldn't have Xcode project
+munch/packages/react-native/ReactCommon/**/*.xcodeproj
+
+# Libs that shouldn't have Xcode project
+munch/packages/react-native/Libraries/FBLazyVector/**/*.xcodeproj
+munch/packages/react-native/Libraries/Required/**/*.xcodeproj
+munch/packages/react-native/React/CoreModules/**/*.xcodeproj
+munch/packages/react-native/React/FBReactNativeSpec/**/*.xcodeproj
+munch/packages/react-native-codegen/**/*.xcodeproj
+munch/packages/rn-tester/**/*.xcodeproj
+
+# Ruby Gems (Bundler)
+munch/packages/react-native/vendor
+munch/packages/react-native/template/vendor
+munch/.ruby-version
+/**/.ruby-version
+vendor/
+
+# iOS / CocoaPods
+munch/packages/react-native/template/ios/build/
+munch/packages/react-native/template/ios/Pods/
+munch/packages/react-native/template/ios/Podfile.lock
+munch/packages/rn-tester/Gemfile.lock
+munch/packages/**/RCTLegacyInteropComponents.mm
+
+# Ignore RNTester specific Pods, but keep the __offline_mirrors__ here.
+munch/packages/rn-tester/Pods/*
+!munch/packages/rn-tester/Pods/__offline_mirrors_hermes__
+!munch/packages/rn-tester/Pods/__offline_mirrors_jsc__
+
+# @react-native/codegen
+munch/packages/react-native/React/FBReactNativeSpec/FBReactNativeSpec
+munch/packages/react-native-codegen/lib
+munch/packages/react-native-codegen/tmp/
+munch/packages/react-native/ReactCommon/react/renderer/components/rncore/
+munch/packages/rn-tester/NativeModuleExample/ScreenshotManagerSpec*
+/**/RCTThirdPartyFabricComponentsProvider.*
+
+# @react-native/codegen-typescript-test
+munch/packages/react-native-codegen-typescript-test/lib
+
+# Additional SDKs
+munch/packages/react-native/sdks/download
+munch/packages/react-native/sdks/hermes
+munch/packages/react-native/sdks/hermesc
+munch/packages/react-native/sdks/hermes-engine/hermes-engine-from-local-source-dir.tar.gz
+
+# Visual studio
+.vscode
+.vs
+
+# Android memory profiler files
+*.hprof
+
+# Temporary files created by Metro to check the health of the file watcher
+.metro-health-check*
+
+# E2E files
+munch/packages/rn-tester-e2e/apps/*.apk
+munch/packages/rn-tester-e2e/apps/*.app
+
+# CircleCI
+.circleci/generated_config.yml

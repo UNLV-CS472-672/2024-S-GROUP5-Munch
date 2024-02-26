@@ -41,3 +41,16 @@ frontend/yarn.lock
 
 frontend/expo-env.d.ts
 # @end expo-cli
+
+frontend/android/**/generated/*
+frontend/android/app/build
+frontend/**/Pods/**
+frontend/**/Podfile.lock
+frontend/**/yarn.lock 
+frontend/**/*.tgz
+
+model/category.csv
+model/parsed-data.zip
+model/restaurant-menus.csv
+model/restaurants.csv
+model/user-data.csv

@@ -1,8 +1,15 @@
+import { View } from "@/components/Themed";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
+import {
+  DarkTheme,
+  DefaultTheme,
+  ThemeProvider,
+} from "@react-navigation/native";
 import { useFonts } from "expo-font";
-import { Stack } from "expo-router";
+import { Stack, Tabs } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
+import { useColorScheme } from "react-native";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -42,9 +49,15 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  const colorScheme = useColorScheme();
   return (
-    <Stack>
-      <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-    </Stack>
+    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Tabs.Screen
+          name="(tabs)"
+          options={{ headerShown: false }}
+        ></Tabs.Screen>
+      </Stack>
+    </ThemeProvider>
   );
 }

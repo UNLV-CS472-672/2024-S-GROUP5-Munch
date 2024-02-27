@@ -1,15 +1,15 @@
-import React, { useEffect } from "react";
 import {
   Tabs,
   useRootNavigationState,
   useRouter,
   useSegments,
 } from "expo-router";
+import React from "react";
 
-import Colors from "@/constants/Colors";
-import { useColorScheme } from "@/components/useColorScheme";
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
-import { AuthStore } from "@/store";
+import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
+import { Entypo, AntDesign, Feather, FontAwesome5 } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -18,21 +18,6 @@ export default function TabLayout() {
   const router = useRouter();
 
   const navigationState = useRootNavigationState();
-  const { initialized, isLoggedIn } = AuthStore.useState();
-
-  useEffect(() => {
-    if (!navigationState?.key || !initialized) {
-      return;
-    }
-    const inAuthGroup = segments[0] === "(auth)";
-
-    console.log(inAuthGroup);
-    if (!isLoggedIn && !inAuthGroup) {
-      router.replace("/(auth)/login");
-    } else if (isLoggedIn) {
-      router.replace("/(tabs)/login");
-    }
-  }, [segments, navigationState?.key, initialized]);
 
   return (
     <Tabs
@@ -44,11 +29,44 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Home",
+          tabBarLabel: "Home",
+          tabBarIcon: ({ color, size }) => (
+            <Entypo name={"home"} color={color} size={size} />
+          ),
         }}
       />
-      <Tabs.Screen name="feed" options={{ title: "Feed" }} />
-      <Tabs.Screen name="profile" options={{ title: "Profile" }} />
+      <Tabs.Screen
+        name="friends"
+        options={{
+          tabBarLabel: "Friends",
+          tabBarIcon: ({ color, size }) => (
+            <FontAwesome5 name="user-friends" color={color} size={size} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="feed"
+        options={{
+          tabBarLabel: "Feed",
+          tabBarIcon: ({ color, size }) => (
+            <Feather
+              name="activity"
+              color={color}
+              size={size}
+              style={{ height: size - 1, width: size - 1, textAlign: "center" }}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="user" color={color} size={size} />
+          ),
+        }}
+      />
     </Tabs>
   );
 }

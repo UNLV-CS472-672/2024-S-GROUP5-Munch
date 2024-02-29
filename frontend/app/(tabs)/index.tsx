@@ -1,11 +1,6 @@
 import { Text, View } from "@/components/Themed";
-import { _signIn } from "@/store";
-import { Button } from "react-native";
+import { Link } from "expo-router";
 
 export default function Index() {
-  return (
-    <View>
-      <Text>Home view</Text>
-    </View>
-  );
+  return <View></View>;
 }

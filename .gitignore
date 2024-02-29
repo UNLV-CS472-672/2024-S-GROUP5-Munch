@@ -49,6 +49,8 @@ frontend/**/Pods/**
 frontend/**/Podfile.lock
 frontend/**/yarn.lock 
 frontend/**/*.tgz
+frontend/ios/
+frontend/android
 
 model/category.csv
 model/parsed-data.zip

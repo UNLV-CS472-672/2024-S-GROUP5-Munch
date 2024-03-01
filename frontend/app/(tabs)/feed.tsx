@@ -1,6 +1,5 @@
 import { Text, View } from "@/components/Themed";
-import { Link } from "expo-router";
 
-export default function Index() {
+export default function TabTwoScreen() {
   return <View></View>;
 }

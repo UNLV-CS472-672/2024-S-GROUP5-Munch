@@ -7,6 +7,7 @@ frontend/node_modules/
 frontend/.expo/
 frontend/dist/
 frontend/web-build/
+frontend/.env
 
 # Native
 *.orig.*
@@ -41,3 +42,16 @@ frontend/yarn.lock
 
 frontend/expo-env.d.ts
 # @end expo-cli
+
+frontend/**/Pods/**
+frontend/**/Podfile.lock
+frontend/**/yarn.lock 
+frontend/**/*.tgz
+frontend/ios/
+frontend/android/
+
+model/category.csv
+model/parsed-data.zip
+model/restaurant-menus.csv
+model/restaurants.csv
+model/user-data.csv

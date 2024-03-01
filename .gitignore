@@ -43,14 +43,12 @@ frontend/yarn.lock
 frontend/expo-env.d.ts
 # @end expo-cli
 
-frontend/android/**/generated/*
-frontend/android/app/build
 frontend/**/Pods/**
 frontend/**/Podfile.lock
 frontend/**/yarn.lock 
 frontend/**/*.tgz
 frontend/ios/
-frontend/android
+frontend/android/
 
 model/category.csv
 model/parsed-data.zip

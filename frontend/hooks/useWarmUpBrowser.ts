@@ -1,5 +1,5 @@
-import * as Browser from "expo-web-browser";
-import { useEffect } from "react";
+import * as Browser from 'expo-web-browser';
+import { useEffect } from 'react';
 
 export const useWarmUpBrowser = () => {
   useEffect(() => {

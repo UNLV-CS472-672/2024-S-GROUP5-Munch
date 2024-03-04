@@ -1,12 +1,12 @@
-import { Store, registerInDevtools } from "pullstate";
+import { Store, registerInDevtools } from 'pullstate';
 
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut,
-} from "firebase/auth";
+} from 'firebase/auth';
 
-import { FIREBASE_APP, FIREBASE_AUTH } from "./firebaseConfig";
+import { FIREBASE_APP, FIREBASE_AUTH } from './firebaseConfig';
 
 export const AuthStore = new Store({
   isLoggedIn: false,
@@ -23,7 +23,7 @@ export const AuthStore = new Store({
 // });
 
 const unsub = onAuthStateChanged(FIREBASE_AUTH, (user) => {
-  console.log("change", FIREBASE_AUTH);
+  console.log('change', FIREBASE_AUTH);
   AuthStore.update((store) => {
     store.user = user;
     (store.isLoggedIn = user ? true : false), (store.initialized = true);

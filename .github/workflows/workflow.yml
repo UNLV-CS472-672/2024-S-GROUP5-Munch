@@ -19,9 +19,10 @@ jobs:
           fetch-depth: 0
      
       - name: Automated tests
-        run: cd ${{ frontend }}
-        run: npm ci                       # install packages
-        run: npm test                     # run tests (configured to use jest-junit reporter)
+        run: |
+          cd ${{ frontend }}
+          npm ci
+          npm test
         uses: actions/upload-artifact@v3  # upload test results
           if: success() || failure()        # run this step even if previous step failed
           with:

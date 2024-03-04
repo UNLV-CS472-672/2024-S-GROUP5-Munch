@@ -23,12 +23,13 @@ jobs:
           npm i
           npm test
 
-      - name: Uploading
-        uses: actions/upload-artifact@v3  # upload test results
-        if: success() || failure()        # run this step even if previous step failed
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
         with:
-          name: test-results
-          path: jest-junit.xml
+          name: JEST Tests            # Name of the check run which will be created
+          path: reports/jest-*.xml    # Path to test results
+          reporter: jest-junit        # Format of test results
 
       - name: Prettify frontend code
         uses: creyD/prettier_action@v4.3

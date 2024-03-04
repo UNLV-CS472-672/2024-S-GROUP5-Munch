@@ -24,13 +24,7 @@ jobs:
           # This part is also where you can pass other options, for example:
           prettier_options: --write "**/*.{js,md,ts,tsx}" --tab-width 2 --print-width 80 --single-quote true --jsx-single-quote true --end-of-line lf
           only_changed: True
-     
-      - name: Configure Black
-        run: |
-            echo "[tool.black]" >> pyproject.toml
-            echo "line-length = 80" >> pyproject.toml
-            echo "string-double-quotes = true" >> pyproject.toml
-
+    
       - name: Prettify backend code
         uses: psf/black@stable
         with:

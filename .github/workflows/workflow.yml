@@ -22,7 +22,7 @@ jobs:
         uses: creyD/prettier_action@v4.3
         with:
           # This part is also where you can pass other options, for example:
-          prettier_options: --write "**/*.{js,md,ts,tsx}" --tab-width 2 --print-width 80 --single-quote true ---jsx-single-quote true --end-of-line lf
+          prettier_options: --write "**/*.{js,md,ts,tsx}" --tab-width 2 --print-width 80 --single-quote true --jsx-single-quote true --end-of-line lf
           only_changed: True
      
       - name: Configure Black
@@ -36,3 +36,9 @@ jobs:
         with:
           options: "--verbose"
           src: "./backend"
+
+      - name: Commit changes
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Apply formatting changes
+          branch: ${{ github.head_ref }}

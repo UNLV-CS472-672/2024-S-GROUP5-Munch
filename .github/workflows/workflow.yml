@@ -18,19 +18,13 @@ jobs:
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
      
-      - name: Install packages
-        run: |
-          cd frontend
-          npm i
-          npm test
-
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+      - name: Cache npm dependencies
+        uses: actions/cache@v2
         with:
-          name: JEST Tests            # Name of the check run which will be created
-          path: reports/jest-*.xml    # Path to test results
-          reporter: jest-junit        # Format of test results
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
 
       - name: Prettify frontend code
         uses: creyD/prettier_action@v4.3

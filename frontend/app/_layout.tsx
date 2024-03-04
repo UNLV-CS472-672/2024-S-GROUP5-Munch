@@ -1,28 +1,28 @@
-import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
-import { Ionicons } from "@expo/vector-icons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import { Ionicons } from '@expo/vector-icons';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
-} from "@react-navigation/native";
-import { useFonts } from "expo-font";
-import { Stack, useRouter } from "expo-router";
-import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import { TouchableOpacity, useColorScheme } from "react-native";
-import { tokenCache } from "./utils/tokenCache";
-import { TamaguiProvider } from "tamagui";
-import tamaguiConfig from "@/tamagui.config";
+} from '@react-navigation/native';
+import { useFonts } from 'expo-font';
+import { Stack, useRouter } from 'expo-router';
+import * as SplashScreen from 'expo-splash-screen';
+import { useEffect } from 'react';
+import { TouchableOpacity, useColorScheme } from 'react-native';
+import { tokenCache } from './utils/tokenCache';
+import { TamaguiProvider } from 'tamagui';
+import tamaguiConfig from '@/tamagui.config';
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
-} from "expo-router";
+} from 'expo-router';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: "(tabs)",
+  initialRouteName: '(tabs)',
 };
 
 const CLERK_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -32,8 +32,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
-    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
+    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
+    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -67,24 +67,24 @@ function RootLayoutNav() {
 
   useEffect(() => {
     if (!isLoaded && !isSignedIn) {
-      router.push("/(auths)/login");
+      router.push('/(auths)/login');
     }
   }, [isLoaded]);
   useEffect(() => {
     console.log(isSignedIn);
   }, [isSignedIn]);
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
         <Stack.Screen
-          name="(auths)/login"
+          name='(auths)/login'
           options={{
-            presentation: "modal",
-            title: "Log in or Sign up to Munch",
+            presentation: 'modal',
+            title: 'Log in or Sign up to Munch',
             headerLeft: () => (
               <TouchableOpacity onPress={() => router.back()}>
-                <Ionicons name="close-outline" size={28} />
+                <Ionicons name='close-outline' size={28} />
               </TouchableOpacity>
             ),
           }}

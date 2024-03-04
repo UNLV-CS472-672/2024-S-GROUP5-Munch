@@ -27,12 +27,12 @@ jobs:
      
       - name: Configure Black
         run: |
-            echo "[tool.black]" > pyproject.toml
+            echo "[tool.black]" >> pyproject.toml
             echo "line-length = 80" >> pyproject.toml
             echo "string-double-quotes = true" >> pyproject.toml
 
       - name: Prettify backend code
         uses: psf/black@stable
         with:
-          options: "--verbose"
+          options: "--diff --verbose"
           src: "./backend"

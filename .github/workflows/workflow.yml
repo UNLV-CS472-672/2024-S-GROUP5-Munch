@@ -18,7 +18,8 @@ jobs:
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
      
-      - run: |
+      - name: Install packages
+        run: |
           cd frontend
           npm i
           npm test

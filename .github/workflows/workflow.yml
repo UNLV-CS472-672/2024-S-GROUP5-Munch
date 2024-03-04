@@ -18,11 +18,11 @@ jobs:
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
      
-      run: |
-        cd ${{ frontend }}
-        npm ci
-        npm test
-        
+      - run: |
+          cd ${{ frontend }}
+          npm ci
+          npm test
+
       - name: Uploading
         uses: actions/upload-artifact@v3  # upload test results
         if: success() || failure()        # run this step even if previous step failed

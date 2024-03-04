@@ -19,7 +19,7 @@ jobs:
           fetch-depth: 0
      
       - run: |
-          cd ${{ frontend }}
+          cd frontend
           npm ci
           npm test
 

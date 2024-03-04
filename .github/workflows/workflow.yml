@@ -34,5 +34,5 @@ jobs:
       - name: Prettify backend code
         uses: psf/black@stable
         with:
-          options: "--code --verbose"
+          options: "--verbose"
           src: "./backend"

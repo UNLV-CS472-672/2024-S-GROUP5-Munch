@@ -37,7 +37,7 @@ jobs:
           commit_message: Apply formatting changes
           branch: ${{ github.head_ref }}
 
-      -name: Testing
+      - name: Testing
         working-directory: ./frontend
         - run: npm ci                       # install packages
         - run: npm test                     # run tests (configured to use jest-junit reporter)

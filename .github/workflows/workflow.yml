@@ -18,6 +18,16 @@ jobs:
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
      
+      - name: Testing
+        run: cd ${{ frontend }}
+        run: npm ci                       # install packages
+        run: npm test                     # run tests (configured to use jest-junit reporter)
+        uses: actions/upload-artifact@v3  # upload test results
+          if: success() || failure()        # run this step even if previous step failed
+          with:
+            name: test-results
+            path: jest-junit.xml
+
       - name: Prettify frontend code
         uses: creyD/prettier_action@v4.3
         with:
@@ -36,13 +46,3 @@ jobs:
         with:
           commit_message: Apply formatting changes
           branch: ${{ github.head_ref }}
-
-      - name: Testing
-        run: cd ${{ frontend }}
-        run: npm ci                       # install packages
-        run: npm test                     # run tests (configured to use jest-junit reporter)
-        uses: actions/upload-artifact@v3  # upload test results
-          if: success() || failure()        # run this step even if previous step failed
-          with:
-            name: test-results
-            path: jest-junit.xml

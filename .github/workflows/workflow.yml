@@ -20,7 +20,7 @@ jobs:
      
       - run: |
           cd frontend
-          npm ci
+          npm i
           npm test
 
       - name: Uploading

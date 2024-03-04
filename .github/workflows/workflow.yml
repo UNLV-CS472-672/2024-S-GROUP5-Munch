@@ -38,10 +38,10 @@ jobs:
           branch: ${{ github.head_ref }}
 
       - name: Testing
-      working-directory: ./frontend
-        - run: npm ci                       # install packages
-        - run: npm test                     # run tests (configured to use jest-junit reporter)
-        - uses: actions/upload-artifact@v3  # upload test results
+        working-directory: ./frontend
+        run: npm ci                       # install packages
+        run: npm test                     # run tests (configured to use jest-junit reporter)
+        uses: actions/upload-artifact@v3  # upload test results
           if: success() || failure()        # run this step even if previous step failed
           with:
             name: test-results

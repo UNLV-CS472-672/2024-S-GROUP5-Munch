@@ -1,6 +1,5 @@
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
-import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
   DefaultTheme,
@@ -26,8 +25,6 @@ export const unstable_settings = {
 };
 
 const CLERK_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
-
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -53,9 +50,7 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
-      <TamaguiProvider config={tamaguiConfig}>
-        <RootLayoutNav />
-      </TamaguiProvider>
+      <RootLayoutNav />
     </ClerkProvider>
   );
 }
@@ -64,32 +59,34 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { isLoaded, isSignedIn } = useAuth();
   const router = useRouter();
-
   useEffect(() => {
-    if (!isLoaded && !isSignedIn) {
+    if (!isSignedIn) {
       router.push("/(auths)/login");
     }
-  }, [isLoaded]);
-  useEffect(() => {
-    console.log(isSignedIn);
-  }, [isSignedIn]);
+  }, [isLoaded, isSignedIn]);
+
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen
-          name="(auths)/login"
-          options={{
-            presentation: "modal",
-            title: "Log in or Sign up to Munch",
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => router.back()}>
-                <Ionicons name="close-outline" size={28} />
-              </TouchableOpacity>
-            ),
-          }}
-        />
-      </Stack>
-    </ThemeProvider>
+    <TamaguiProvider
+      config={tamaguiConfig}
+      defaultTheme={colorScheme as string}
+    >
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen
+            name="(auths)/login"
+            options={{
+              presentation: "card",
+              title: "Log in or Sign up to Munch",
+              headerLeft: () => (
+                <TouchableOpacity onPress={() => router.back()}>
+                  <Ionicons name="close-outline" size={28} />
+                </TouchableOpacity>
+              ),
+            }}
+          />
+        </Stack>
+      </ThemeProvider>
+    </TamaguiProvider>
   );
 }

@@ -10,15 +10,16 @@ import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
 import { Entypo, AntDesign, Feather, FontAwesome5 } from "@expo/vector-icons";
+import { useTheme } from "tamagui";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
 
   const segments = useSegments();
   const router = useRouter();
+  const { dark } = useTheme();
 
   const navigationState = useRootNavigationState();
-
   return (
     <Tabs
       screenOptions={{
@@ -29,6 +30,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          headerShown: false,
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <Entypo name={"home"} color={color} size={size} />
@@ -38,6 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="friends"
         options={{
+          headerShown: false,
           tabBarLabel: "Friends",
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name="user-friends" color={color} size={size} />
@@ -47,13 +50,18 @@ export default function TabLayout() {
       <Tabs.Screen
         name="feed"
         options={{
+          headerShown: false,
           tabBarLabel: "Feed",
           tabBarIcon: ({ color, size }) => (
             <Feather
               name="activity"
               color={color}
               size={size}
-              style={{ height: size - 1, width: size - 1, textAlign: "center" }}
+              style={{
+                height: size - 1,
+                width: size - 1,
+                textAlign: "center",
+              }}
             />
           ),
         }}
@@ -61,6 +69,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
+          headerShown: false,
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="user" color={color} size={size} />

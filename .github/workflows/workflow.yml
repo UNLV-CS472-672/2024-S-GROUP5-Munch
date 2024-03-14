@@ -26,14 +26,11 @@ jobs:
       - name: Run test
         run: |
           cd /home/runner/work/munch/munch/frontend
-          npm run test:ci
+          npm run test:ci -- -u
 
-      - name: JUnit Report Action
-        uses: mikepenz/action-junit-report@v4.1.0
-        if: success() || failure()
-        with:
-          report_paths: "**/frontend/tests-results/test/TEST-*.xml"
-
+      - name: Test Reporter
+        uses: dorny/test-reporter@v1.8.0
+            
       - name: Prettify frontend code
         uses: creyD/prettier_action@v4.3
         with:

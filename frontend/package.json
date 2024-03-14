@@ -8,10 +8,16 @@
     "ios": "expo run:ios",
     "web": "expo start --web",
     "test": "jest --watchAll",
-		"test:ci": "jest --ci"
+    "test:ci": "jest --ci --reports=default --reporters=jest-junit"
   },
   "jest": {
     "preset": "jest-expo"
+  },
+  "jest-junit": {
+    "outputDirectory": "test-results",
+    "outputName": "test-results.xml",
+    "ancestorSeparator": " › ",
+    "uniqueoutputName": "false"
   },
   "dependencies": {
     "@clerk/clerk-expo": "^0.20.5",
@@ -48,6 +54,7 @@
     "@types/react": "~18.2.45",
     "jest": "^29.2.1",
     "jest-expo": "~50.0.2",
+    "jest-junit": "^16.0.0",
     "react-test-renderer": "18.2.0",
     "typescript": "^5.1.3"
   },

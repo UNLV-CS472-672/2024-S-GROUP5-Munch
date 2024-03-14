@@ -30,7 +30,6 @@ def get_post(post_id):
         return jsonify({"error": "Post not found"}), status.HTTP_404_NOT_FOUND
 
 
-
 # Create a new post
 @app.route("/api/posts", methods=["POST"])
 def create_post():

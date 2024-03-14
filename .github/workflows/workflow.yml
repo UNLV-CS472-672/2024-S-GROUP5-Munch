@@ -34,7 +34,7 @@ jobs:
         if: success() || failure()
         with:
           name: test-results
-          path: 'frontend/test-results'
+          path: 'home/runner/work/munch/munch/frontend/test-results'
           reporter: jest-junit
             
       - name: Prettify frontend code

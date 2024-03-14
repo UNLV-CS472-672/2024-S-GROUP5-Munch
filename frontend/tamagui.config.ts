@@ -47,7 +47,7 @@ export const tokens = createTokens({
 const tamaguiConfig = createTamagui(config);
 type Conf = typeof tamaguiConfig;
 
-declare module "tamagui" {
+declare module 'tamagui' {
   interface TamaguiCustomConfig extends Conf {}
 }
 

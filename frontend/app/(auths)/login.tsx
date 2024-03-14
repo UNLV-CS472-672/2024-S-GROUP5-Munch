@@ -9,8 +9,8 @@ import { Button, Input, Separator, Text, XStack, YStack } from "tamagui";
 import { app } from "../firebaseConfig";
 
 enum Strategies {
-  Google = "oauth-google",
-  Apple = "oauth-apple",
+  Google = 'oauth-google',
+  Apple = 'oauth-apple',
 }
 const Login = () => {
   useWarmUpBrowser();
@@ -45,17 +45,17 @@ const Login = () => {
         router.back();
       }
     } catch (err) {
-      console.error("OAuth err", err);
+      console.error('OAuth err', err);
     }
   }, []);
   return (
     <View>
       <YStack gap={"$1"} paddingVertical={"$2"} marginHorizontal={15}>
         <Input
-          size="$4"
+          size='$4'
           borderWidth={2}
-          placeholder="Username"
-          autoCapitalize={"none"}
+          placeholder='Username'
+          autoCapitalize={'none'}
         />
         <Input
           size="$4"

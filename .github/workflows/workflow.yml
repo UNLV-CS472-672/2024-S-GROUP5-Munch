@@ -8,7 +8,7 @@ on:
 jobs:
   build:
     runs-on: [ubuntu-latest]
-    
+
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -17,20 +17,22 @@ jobs:
           ref: ${{ github.head_ref }}
           # This is important to fetch the changes to the previous commit
           fetch-depth: 0
-     
+
       - name: Install packages
         run: |
           cd frontend
           npm i
-          npm test
 
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()    # run this step even if previous step failed
+      - name: Run test
+        run: |
+          cd /home/runner/work/munch/munch/frontend
+          npm run test:ci
+
+      - name: JUnit Report Action
+        uses: mikepenz/action-junit-report@v4.1.0
+        if: success() || failure()
         with:
-          name: JEST Tests            # Name of the check run which will be created
-          path: reports/jest-*.xml    # Path to test results
-          reporter: jest-junit        # Format of test results
+          report_paths: "**/frontend/tests-results/test/TEST-*.xml"
 
       - name: Prettify frontend code
         uses: creyD/prettier_action@v4.3
@@ -38,7 +40,7 @@ jobs:
           # This part is also where you can pass other options, for example:
           prettier_options: --write "**/*.{js,md,ts,tsx}" --tab-width 2 --print-width 80 --single-quote true --jsx-single-quote true --end-of-line lf
           only_changed: True
-    
+
       - name: Prettify backend code
         uses: psf/black@stable
         with:

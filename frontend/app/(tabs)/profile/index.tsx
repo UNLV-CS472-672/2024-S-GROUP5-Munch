@@ -9,7 +9,6 @@ import {
   Button,
   Card,
   H3,
-  Input,
   Paragraph,
   XStack,
   YStack,
@@ -68,6 +67,7 @@ export default function Profile() {
       }
     }
   };
+
   return (
     <SafeAreaView>
       <ToastProvider></ToastProvider>
@@ -79,7 +79,7 @@ export default function Profile() {
             height: "100%",
           }}
         >
-          <Card elevate size={"$4"} bordered>
+          <Card elevate size={"$4"} bordered unstyled>
             <XStack justifyContent="space-between">
               <Card.Header
                 display="flex"

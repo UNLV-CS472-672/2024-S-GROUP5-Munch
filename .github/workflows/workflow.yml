@@ -16,8 +16,6 @@ jobs:
         with:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
-          # This is important to fetch the changes to the previous commit
-          fetch-depth: 0
 
       - name: Install packages
         run: |
@@ -26,7 +24,7 @@ jobs:
 
       - name: Run test
         run: |
-          cd /home/runner/work/2024-S-GROUP5-Munch/frontend
+          cd /home/runner/work/2024-S-GROUP5-Munch/2024-S-GROUP5-Munch/frontend
           npm run test:ci -- -u
 
       - name: Test Reporter

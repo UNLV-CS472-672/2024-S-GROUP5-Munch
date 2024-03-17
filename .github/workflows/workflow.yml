@@ -16,6 +16,7 @@ jobs:
         with:
           # Make sure the actual branch is checked out when running on pull requests
           ref: ${{ github.head_ref }}
+          fetch-depth: 0 
 
       - name: Install packages
         run: |
@@ -24,6 +25,7 @@ jobs:
 
       - name: Run test
         run: |
+          cd frontend
           npm run test:ci -- -u
 
       - name: Test Reporter

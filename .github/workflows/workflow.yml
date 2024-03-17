@@ -26,7 +26,7 @@ jobs:
 
       - name: Run test
         run: |
-          cd /home/runner/work/munch/munch/frontend
+          cd /home/runner/work/2024-S-GROUP5-Munch/2024-S-GROUP5-Munch/frontend
           npm run test:ci -- -u
 
       - name: Test Reporter

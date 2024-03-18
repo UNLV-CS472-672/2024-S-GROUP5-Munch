@@ -20,12 +20,12 @@ jobs:
 
       - name: Install packages
         run: |
-          cd /home/runner/work/2024-S-GROUP5-Munch/2024-S-GROUP5-Munch/frontend
+          cd /frontend
           npm i
         
       - name: Run test
         run: |
-          cd /home/runner/work/2024-S-GROUP5-Munch/2024-S-GROUP5-Munch/frontend
+          cd /frontend
           npm run test:ci -- -u
 
       - name: Test Reporter

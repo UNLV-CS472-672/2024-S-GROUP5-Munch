@@ -20,12 +20,12 @@ jobs:
 
       - name: Install packages
         run: |
-          cd /frontend
+          cd frontend
           npm i
         
       - name: Run test
         run: |
-          cd /frontend
+          cd frontend
           npm run test:ci -- -u
 
       - name: Test Reporter

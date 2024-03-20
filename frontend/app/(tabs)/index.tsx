@@ -22,10 +22,8 @@ export default function Index() {
     getUsers();
   }, []);
   return (
-    <SafeAreaView>
-      <View>
-        <Text>{`hello ${user?.username ? user.username : user?.firstName}`}</Text>
-      </View>
-    </SafeAreaView>
+    <View>
+      <Text>{`hello ${user?.username ? user.username : user?.firstName}`}</Text>
+    </View>
   );
 }

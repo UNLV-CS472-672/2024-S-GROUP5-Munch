@@ -94,7 +94,7 @@ export default function Profile() {
                   </Avatar>
                 </TouchableOpacity>
                 <YStack gap={"$2"}>
-                  <H3>{user?.userName}</H3>
+                  <H3>{user?.username}</H3>
                   <Paragraph>{`${user?.firstName} ${
                     user?.lastName ?? ""
                   }`}</Paragraph>

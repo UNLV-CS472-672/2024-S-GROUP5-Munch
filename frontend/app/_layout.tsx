@@ -1,27 +1,26 @@
+import tamaguiConfig from "@/tamagui.config";
 import { ClerkProvider, useAuth } from "@clerk/clerk-expo";
-import { Ionicons } from "@expo/vector-icons";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
-} from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import { TouchableOpacity, useColorScheme } from 'react-native';
-import { tokenCache } from './utils/tokenCache';
-import { TamaguiProvider } from 'tamagui';
-import tamaguiConfig from '@/tamagui.config';
+} from "@react-navigation/native";
+import { useFonts } from "expo-font";
+import { Slot, Stack, useRouter, useSegments } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { useEffect } from "react";
+import { useColorScheme } from "react-native";
+import { TamaguiProvider } from "tamagui";
+import { tokenCache } from "./utils/tokenCache";
 
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
-} from 'expo-router';
+} from "expo-router";
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)',
+  initialRouteName: "(tabs)",
 };
 
 const CLERK_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -29,8 +28,8 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
+    Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
+    InterBold: require("@tamagui/font-inter/otf/Inter-Bold.otf"),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -58,12 +57,31 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
+
   const router = useRouter();
   useEffect(() => {
-    if (!isSignedIn) {
-      router.push("/(auths)/login");
+    if (!isLoaded) return;
+    const inTabGroup = segments[0] === "(auth)";
+
+    if (isSignedIn && !inTabGroup) {
+      router.replace("/");
     }
-  }, [isLoaded, isSignedIn]);
+    if (!isSignedIn) {
+      router.replace("/login");
+    }
+  }, [isSignedIn]);
+
+  if (!isLoaded) {
+    return (
+      <TamaguiProvider
+        config={tamaguiConfig}
+        defaultTheme={colorScheme as string}
+      >
+        <Slot />
+      </TamaguiProvider>
+    );
+  }
 
   return (
     <TamaguiProvider
@@ -74,15 +92,27 @@ function RootLayoutNav() {
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen
-            name="(auths)/login"
+            name="(auth)/login"
             options={{
               presentation: "card",
-              title: "Log in or Sign up to Munch",
-              headerLeft: () => (
-                <TouchableOpacity onPress={() => router.back()}>
-                  <Ionicons name="close-outline" size={28} />
-                </TouchableOpacity>
-              ),
+              title: "Log in",
+              // headerLeft: () => (
+              //   <TouchableOpacity onPress={() => router.back()}>
+              //     <Ionicons name="close-outline" size={28} />
+              //   </TouchableOpacity>
+              // ),
+            }}
+          />
+          <Stack.Screen
+            name="(auth)/register"
+            options={{
+              presentation: "card",
+              title: "Register ",
+              // headerLeft: () => (
+              //   <TouchableOpacity onPress={() => router.back()}>
+              //     <Ionicons name="close-outline" size={28} />
+              //   </TouchableOpacity>
+              // ),
             }}
           />
         </Stack>

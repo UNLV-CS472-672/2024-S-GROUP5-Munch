@@ -59,7 +59,7 @@ def connect_to_db():
 # Get all posts of specific user
 @app.route("/api/posts/<userid>", methods=["GET"])
 def get_user_posts(userid):
-    '''
+    """
     Get all posts of a specific user.
 
     Args:
@@ -77,19 +77,27 @@ def get_user_posts(userid):
         It limits the result to the first 50 posts and converts non-serializable data to string representations.
         If no posts are found for the specified user, it raises a ValueError.
         If an error occurs while connecting to the database, it raises a ValueError with an appropriate message.
-    '''
+    """
     # Connect to the database
     try:
         connect_to_db()
     except Exception as e:
         print("Error connecting to the database:", str(e))
-        return jsonify({"error": "Database connection error"}), status.HTTP_404_NOT_FOUND
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_404_NOT_FOUND,
+        )
 
     # Get the database
     db = firestore.client()
 
     # Get first 50 posts
-    all_posts = db.collection("posts").where("author", "==", db.collection("users").document(userid)).limit(50).get()
+    all_posts = (
+        db.collection("posts")
+        .where("author", "==", db.collection("users").document(userid))
+        .limit(50)
+        .get()
+    )
     all_posts = [post.to_dict() for post in all_posts]
 
     if not all_posts:

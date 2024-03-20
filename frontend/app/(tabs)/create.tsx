@@ -1,8 +1,8 @@
-import { Text, View } from '@/components/Themed';
+import { View } from '@/components/Themed';
 import React from 'react';
 import { TextInput } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, H1, H2, H4, YStack } from 'tamagui';
+import { Button, H1, H2, H4, YStack, Text } from 'tamagui';
 
 // should open up gallery so people can upload vid/images
 // have option to just do text so new recipe

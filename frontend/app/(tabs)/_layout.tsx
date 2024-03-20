@@ -1,9 +1,4 @@
-import {
-  Tabs,
-  useRootNavigationState,
-  useRouter,
-  useSegments,
-} from "expo-router";
+import { Tabs } from "expo-router";
 import React from "react";
 
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
@@ -13,12 +8,6 @@ import { Entypo, AntDesign, Feather, FontAwesome5 } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
-  const segments = useSegments();
-  const router = useRouter();
-
-  const navigationState = useRootNavigationState();
-
   return (
     <Tabs
       screenOptions={{

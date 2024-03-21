@@ -11,15 +11,16 @@ app = Flask(__name__)
 # Load environment variables from .env file
 load_dotenv()
 
+
 # Middleware function
 @app.before_request
 def middleware():
     print("Incoming request:", request.method, request.path)
 
     # Current idea is to take a token created from a prior interaction (aka login)
-    # and verify on each request that the token currently assigned matches the 
+    # and verify on each request that the token currently assigned matches the
     # token used on post creation.
-    
+
     # User 1 signed in and has token 1234, and created post 4321 with the token 1234
     # User 1 tries to PUT (update) post 4321
     #  Current token 1234 is verified against post token 1234, and changes are ACCEPTED
@@ -110,31 +111,87 @@ def post_validation(data):
         tuple: A tuple containing a dictionary of errors (if any) and a status code.
     """
     if not data:
-        return jsonify({"error": "No data provided"}), status.HTTP_400_BAD_REQUEST
+        return (
+            jsonify({"error": "No data provided"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
 
     # Check for missing required fields
-    required_fields = ["author", "comments", "creation_date", "description", "likes", "pictures"]
+    required_fields = [
+        "author",
+        "comments",
+        "creation_date",
+        "description",
+        "likes",
+        "pictures",
+    ]
     missing_fields = [field for field in required_fields if field not in data]
     if missing_fields:
-        return jsonify({"error": f"Missing required field(s): {', '.join(missing_fields)}"}), status.HTTP_400_BAD_REQUEST
+        return (
+            jsonify(
+                {
+                    "error": f"Missing required field(s): {', '.join(missing_fields)}"
+                }
+            ),
+            status.HTTP_400_BAD_REQUEST,
+        )
 
     # Validate 'author' field
     author_data = data.get("author", {})
-    if not isinstance(author_data, dict) or "bio" not in author_data or "username" not in author_data:
-        return jsonify({"error": "Author field must contain 'bio' and 'username'"}), status.HTTP_400_BAD_REQUEST
+    if (
+        not isinstance(author_data, dict)
+        or "bio" not in author_data
+        or "username" not in author_data
+    ):
+        return (
+            jsonify(
+                {"error": "Author field must contain 'bio' and 'username'"}
+            ),
+            status.HTTP_400_BAD_REQUEST,
+        )
 
     # Validate 'comments' field
     comments_data = data.get("comments", [])
     for comment in comments_data:
-        if not isinstance(comment, dict) or "author" not in comment or "comment" not in comment:
-            return jsonify({"error": "Each comment must contain 'author' and 'comment'"}), status.HTTP_400_BAD_REQUEST
-        if not isinstance(comment["author"], dict) or "bio" not in comment["author"] or "username" not in comment["author"]:
-            return jsonify({"error": "Author of each comment must contain 'bio' and 'username'"}), status.HTTP_400_BAD_REQUEST
+        if (
+            not isinstance(comment, dict)
+            or "author" not in comment
+            or "comment" not in comment
+        ):
+            return (
+                jsonify(
+                    {
+                        "error": "Each comment must contain 'author' and 'comment'"
+                    }
+                ),
+                status.HTTP_400_BAD_REQUEST,
+            )
+        if (
+            not isinstance(comment["author"], dict)
+            or "bio" not in comment["author"]
+            or "username" not in comment["author"]
+        ):
+            return (
+                jsonify(
+                    {
+                        "error": "Author of each comment must contain 'bio' and 'username'"
+                    }
+                ),
+                status.HTTP_400_BAD_REQUEST,
+            )
 
     # Validate other fields
-    if not isinstance(data["creation_date"], str) or not isinstance(data["description"], str) or not isinstance(data["likes"], int) or not isinstance(data["pictures"], list):
-        return jsonify({"error": "Invalid data type for one or more fields"}), status.HTTP_400_BAD_REQUEST
-    
+    if (
+        not isinstance(data["creation_date"], str)
+        or not isinstance(data["description"], str)
+        or not isinstance(data["likes"], int)
+        or not isinstance(data["pictures"], list)
+    ):
+        return (
+            jsonify({"error": "Invalid data type for one or more fields"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
+
     return None, status.HTTP_200_OK
 
 
@@ -228,7 +285,6 @@ def get_post(post_id):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-
     # Get the database
     db = firestore.client()
 
@@ -265,15 +321,15 @@ def create_post():
 
     Returns:
         dict: A dictionary representing the newly created post.
-    """ 
+    """
     # Get data, check if it is empty
     data = request.json
-    
+
     # Check that data is valid
     validation_error, status_code = post_validation(data)
     if validation_error:
         return validation_error, status_code
-    
+
     # The request has been validated, connect to the database
     try:
         connect_to_db()
@@ -297,7 +353,10 @@ def create_post():
 
     except Exception as e:
         print("Error adding new post:", str(e))
-        return jsonify({"error": "Error adding new post"}), status.HTTP_500_INTERNAL_SERVER_ERROR
+        return (
+            jsonify({"error": "Error adding new post"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 # Update an existing post
@@ -343,7 +402,10 @@ def update_post(post_id):
 
     except Exception as e:
         print("Error updating post:", str(e))
-        return jsonify({"error": "Error updating post"}), status.HTTP_500_INTERNAL_SERVER_ERROR
+        return (
+            jsonify({"error": "Error updating post"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 # Delete a post
@@ -380,7 +442,10 @@ def delete_post(post_id):
 
     except Exception as e:
         print("Error deleting post:", str(e))
-        return jsonify({"error": "Error deleting post"}), status.HTTP_500_INTERNAL_SERVER_ERROR
+        return (
+            jsonify({"error": "Error deleting post"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
 
 
 if __name__ == "__main__":

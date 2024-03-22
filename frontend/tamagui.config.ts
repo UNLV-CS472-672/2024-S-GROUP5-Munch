@@ -5,7 +5,7 @@ import { createMedia } from '@tamagui/react-native-media-driver';
 import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
 import { createTamagui, styled, SizableText, H1, YStack } from 'tamagui';
-import { createSoftenMask, createThemeBuilder } from '@tamagui/theme-builder'
+import { createSoftenMask, createThemeBuilder } from '@tamagui/theme-builder';
 
 //animation for gestures
 const animations = createAnimations({
@@ -37,7 +37,6 @@ const bodyFont = createInterFont();
 export const Container = styled(YStack, {
   flex: 1,
   padding: 24,
-
 });
 
 //spacing things
@@ -51,7 +50,6 @@ export const Main = styled(YStack, {
 export const Title = styled(H1, {
   color: '#000',
   size: '$12',
-
 });
 
 //typography hierarchy

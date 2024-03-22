@@ -45,6 +45,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name='create'
+        options={{
+          tabBarLabel: 'Create',
+          tabBarIcon: ({ color, size }) => (
+            <Feather
+              name='plus-square'
+              color={color}
+              size={size}
+              style={{ height: size - 1, width: size - 1, textAlign: 'center' }}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name='feed'
         options={{
           tabBarLabel: 'Feed',

@@ -195,70 +195,6 @@ def post_validation(data):
     return None, status.HTTP_200_OK
 
 
-# Get all posts of specific user
-@app.route("/api/50posts/<userid>", methods=["GET"])
-def get_user_posts(userid):
-    """
-    Get all posts of a specific user.
-
-    Args:
-        userid (str): The ID of the user whose posts are to be retrieved.
-
-    Returns:
-        list: A list containing dictionaries representing the user's posts.
-
-    Raises:
-        ValueError: If no posts are found for the specified user.
-        ValueError: If an error occurs while connecting to the database.
-
-    Note:
-        This function connects to a Firestore database to retrieve posts authored by the specified user.
-        It limits the result to the first 50 posts and converts non-serializable data to string representations.
-        If no posts are found for the specified user, it raises a ValueError.
-        If an error occurs while connecting to the database, it raises a ValueError with an appropriate message.
-    """
-    # Connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
-
-    # Get the database
-    db = firestore.client()
-
-    # Get first 50 posts
-    all_posts = (
-        db.collection("posts")
-        .where("author", "==", db.collection("users").document(userid))
-        .limit(50)
-        .get()
-    )
-    all_posts = [post.to_dict() for post in all_posts]
-
-    if not all_posts:
-        return jsonify({"error": "No posts found"}), status.HTTP_404_NOT_FOUND
-
-    # Convert non-serializable data to string
-    for post in all_posts:
-        # Convert the date to string
-        post["creation_date"] = str(post["creation_date"])
-        # Convert the author to a dictionary
-        post["author"] = post["author"].get().to_dict()
-        # Convert the comments to a list of dictionaries
-        for comment in post["comments"]:
-            # Convert the date to string
-            comment["creation_date"] = str(comment["creation_date"])
-            # Convert the author to a dictionary
-            comment["author"] = comment["author"].get().to_dict()
-
-    # Return the posts
-    return all_posts
-
-
 # Get a specific post by id
 @app.route("/api/posts/<post_id>", methods=["GET"])
 def get_post(post_id):
@@ -446,6 +382,70 @@ def delete_post(post_id):
             jsonify({"error": "Error deleting post"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
+
+# Get all posts of specific user
+@app.route("/api/posts/user/<user_id>", methods=["GET"])
+def get_user_posts(user_id):
+    """
+    Get all posts of a specific user.
+
+    Args:
+        user_id (str): The ID of the user whose posts are to be retrieved.
+
+    Returns:
+        list: A list containing dictionaries representing the user's posts.
+
+    Raises:
+        ValueError: If no posts are found for the specified user.
+        ValueError: If an error occurs while connecting to the database.
+
+    Note:
+        This function connects to a Firestore database to retrieve posts authored by the specified user.
+        It limits the result to the first 50 posts and converts non-serializable data to string representations.
+        If no posts are found for the specified user, it raises a ValueError.
+        If an error occurs while connecting to the database, it raises a ValueError with an appropriate message.
+    """
+    # Connect to the database
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    # Get the database
+    db = firestore.client()
+
+    # Get first 50 posts
+    all_posts = (
+        db.collection("posts")
+        .where("author", "==", db.collection("users").document(user_id))
+        .limit(50)
+        .get()
+    )
+    all_posts = [post.to_dict() for post in all_posts]
+
+    if not all_posts:
+        return jsonify({"error": "No posts found"}), status.HTTP_404_NOT_FOUND
+
+    # Convert non-serializable data to string
+    for post in all_posts:
+        # Convert the date to string
+        post["creation_date"] = str(post["creation_date"])
+        # Convert the author to a dictionary
+        post["author"] = post["author"].get().to_dict()
+        # Convert the comments to a list of dictionaries
+        for comment in post["comments"]:
+            # Convert the date to string
+            comment["creation_date"] = str(comment["creation_date"])
+            # Convert the author to a dictionary
+            comment["author"] = comment["author"].get().to_dict()
+
+    # Return the posts
+    return all_posts
 
 
 if __name__ == "__main__":

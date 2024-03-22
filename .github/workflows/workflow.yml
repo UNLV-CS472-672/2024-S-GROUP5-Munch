@@ -4,7 +4,8 @@ on:
     branches: 
       - "*"
   pull_request:
-    branches: [main]
+    branches:
+      - "*"
 
 jobs:
   build:
@@ -13,10 +14,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-        with:
-          # Make sure the actual branch is checked out when running on pull requests
-          ref: ${{ github.head_ref }}
-          fetch-depth: 0 
 
       - name: Prettify frontend code
         uses: creyD/prettier_action@v4.3

@@ -61,6 +61,7 @@ model/user-data.csv
 backend/firebase_priv_key/munch-37564-firebase-adminsdk-ilv8p-e44bbd788a.json
 backend/.env
 backend/__pycache__
+backend/yelpAPI/__pycache__/
 
 # Model
 model/model.pkl.npz

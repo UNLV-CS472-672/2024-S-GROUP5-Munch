@@ -1,8 +1,8 @@
-import { Text, View } from "@/components/Themed";
+import {View } from "@/components/Themed";
 import React from "react";
 import { TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, H1, H2, H4, YStack, Image, Separator, SizableText, Tabs, XStack, H5 } from "tamagui";
+import { Button, H1, H2, H4, YStack, Image, Separator, SizableText, Tabs, XStack, H5, Text } from "tamagui";
 import type { TabsContentProps } from 'tamagui';
 
 

@@ -55,3 +55,12 @@ model/parsed-data.zip
 model/restaurant-menus.csv
 model/restaurants.csv
 model/user-data.csv
+
+
+# Backend
+backend/firebase_priv_key/munch-37564-firebase-adminsdk-ilv8p-e44bbd788a.json
+backend/.env
+backend/__pycache__
+
+# Model
+model/model.pkl.npz

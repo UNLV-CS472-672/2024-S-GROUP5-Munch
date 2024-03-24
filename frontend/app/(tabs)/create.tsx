@@ -26,10 +26,10 @@ export default function Create() {
         >
           <Tabs.List           
             disablePassBorderRadius="bottom"
-            aria-label="Manage your account"
+            aria-label="Creating a New Post"
           >
             <Tabs.Tab flex={1} value="tab1">
-              <SizableText fontFamily="$body">Bite</SizableText>
+              <SizableText fontFamily="$body">Byte</SizableText>
             </Tabs.Tab>
             <Tabs.Tab flex={1} value="tab2">
               <SizableText fontFamily="$body">Recipe</SizableText>

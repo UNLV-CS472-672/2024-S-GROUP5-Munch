@@ -1,8 +1,6 @@
-import {View } from "@/components/Themed";
+import { View } from "@/components/Themed";
 import React from "react";
-import { TextInput } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { Button, H1, H2, H4, YStack, Image, Separator, SizableText, Tabs, XStack, H5, Text } from "tamagui";
+import { Button, H1, H2, H4, YStack, Image, Separator, SizableText, Tabs, XStack, H5, Text, TextArea} from "tamagui";
 import type { TabsContentProps } from 'tamagui';
 
 
@@ -15,11 +13,6 @@ export default function Create() {
     <View>
       <YStack>
         <H4 style={{ alignSelf: "center" }}>NEW POST</H4>
-        {/* <Image
-          source={{ width: 10, height: 10, uri: 'https://png.pngtree.com/png-vector/20210604/ourmid/pngtree-gray-network-placeholder-png-image_3416659.jpg' }}
-          width="100%"
-          height="30%"
-        /> */}
         <Tabs
           defaultValue="tab1"
           orientation="horizontal"
@@ -31,8 +24,7 @@ export default function Create() {
           overflow="hidden"
           borderColor="$borderColor"
         >
-          <Tabs.List
-            separator={<Separator vertical />}
+          <Tabs.List           
             disablePassBorderRadius="bottom"
             aria-label="Manage your account"
           >
@@ -42,21 +34,10 @@ export default function Create() {
             <Tabs.Tab flex={1} value="tab2">
               <SizableText fontFamily="$body">Recipe</SizableText>
             </Tabs.Tab>
-          </Tabs.List>
-          <Separator />
-          <TextInput
-              placeholder={"Write a caption..."}
-              multiline={true}
-              style={{
-                height: 130,
-                borderRadius: 5,
-                paddingHorizontal: 10,
-                textAlignVertical: 'top'
-              }
-              }
-            />
-            <TextInput
-              placeholder={"Enter Image URL"}
+          </Tabs.List>                
+          <Tabs.Content value="tab1">         
+          <TextArea
+              placeholder={"Write a Caption..."}
               multiline={true}
               style={{
                 height: 130,
@@ -64,12 +45,20 @@ export default function Create() {
                 paddingHorizontal: 10,
                 textAlignVertical: 'top',
               }}
-            />
-          <Tabs.Content value="tab1">            
-          </Tabs.Content>         
-          <Tabs.Content value="tab2"> 
-          <H4>BLAH</H4>           
-          </Tabs.Content>
+            />                       
+          </Tabs.Content>  
+          <Tabs.Content value="tab2">         
+          <TextArea
+              placeholder={"List Steps for Recipe..."}
+              multiline={true}
+              style={{
+                height: 130,
+                borderRadius: 5,
+                paddingHorizontal: 10,
+                textAlignVertical: 'top',
+              }}
+            />                       
+          </Tabs.Content>                          
         </Tabs>
         <Button backgroundColor={'cyan'} mx={'$4'}>
           <Text color={'$black2'}>Post</Text>

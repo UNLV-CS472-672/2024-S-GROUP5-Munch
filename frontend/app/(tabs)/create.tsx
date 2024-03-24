@@ -37,12 +37,12 @@ export default function Create() {
           overflow='hidden'
           borderColor='$borderColor'
         >
-          <Tabs.List           
-            disablePassBorderRadius="bottom"
-            aria-label="Creating a New Post"
+          <Tabs.List
+            disablePassBorderRadius='bottom'
+            aria-label='Creating a New Post'
           >
-            <Tabs.Tab flex={1} value="tab1">
-              <SizableText fontFamily="$body">Byte</SizableText>
+            <Tabs.Tab flex={1} value='tab1'>
+              <SizableText fontFamily='$body'>Byte</SizableText>
             </Tabs.Tab>
             <Tabs.Tab flex={1} value='tab2'>
               <SizableText fontFamily='$body'>Recipe</SizableText>

@@ -17,10 +17,6 @@ import {
 } from 'tamagui';
 import type { TabsContentProps } from 'tamagui';
 
-// should open up gallery so people can upload vid/images
-// have option to just do text so new recipe
-const PLACEHOLDER_IMG = 'frontendassetsimagesplaceholder.jpg';
-
 export default function Create() {
   return (
     <View>

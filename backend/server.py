@@ -209,8 +209,6 @@ def post_validation(data):
         if extra_comment_fields:
             return field_error_message("Comment input has extra field(s): ", extra_comment_fields)
         
-        print(not isinstance(comment['comment'], type(comment["comment"])))
-
         # make sure commenter is an actual user
         if invalid_author_check(comment['author'], user_ids):
             return (

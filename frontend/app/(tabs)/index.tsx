@@ -6,7 +6,16 @@
 
 import { Link } from 'expo-router';
 import { TouchableHighlight, Dimensions } from 'react-native';
-import { Button, YStack, Image, styled, Avatar, Text, View, ScrollView } from 'tamagui';
+import {
+  Button,
+  YStack,
+  Image,
+  styled,
+  Avatar,
+  Text,
+  View,
+  ScrollView,
+} from 'tamagui';
 
 export default function Index() {
   const backgroundImage = { uri: 'https://picsum.photos/1080/1920' };

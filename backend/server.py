@@ -72,6 +72,21 @@ def connect_to_db():
             raise
 
 
+# function for error message for field issues
+def field_error_message(message, fields):
+    return (
+        jsonify({"error": f"{message + (', ').join(fields)}"}),
+        status.HTTP_400_BAD_REQUEST,
+    )
+
+
+# function to check author validitiy
+def invalid_author_check(author, users):
+    if author[len("/users/") :] not in users:
+        return True
+    return False
+
+
 # Validate the post verifying it has the correct fields
 def post_validation(data):
     """
@@ -79,16 +94,10 @@ def post_validation(data):
 
     Expects JSON data with the following format:
     {
-        "author": {
-            "bio": "Author's bio",
-            "username": "Author's username"
-        },
+        "author": /users/<user_id>,
         "comments": [
             {
-                "author": {
-                    "bio": "Comment author's bio",
-                    "username": "Comment author's username"
-                },
+                "author": /users/<user_id>,
                 "comment": "Comment text",
                 "creation_date": "Comment creation date (optional)"
             },
@@ -116,65 +125,111 @@ def post_validation(data):
             status.HTTP_400_BAD_REQUEST,
         )
 
-    # Check for missing required fields
-    required_fields = [
-        "author",
-        "comments",
-        "creation_date",
-        "description",
-        "likes",
-        "pictures",
-    ]
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    # Get posts collection
+    db = firestore.client()
+    posts_collection = db.collection("posts")
+
+    # get required fields
+    required_fields = set(
+        key
+        for post in posts_collection.stream()
+        for key in post.to_dict().keys()
+    )
+
+    # get any missing or extra fields
     missing_fields = [field for field in required_fields if field not in data]
+    extra_fields = [field for field in data if field not in required_fields]
+
+    # post error message if any
     if missing_fields:
+        return field_error_message(
+            "Missing required field(s): ", missing_fields
+        )
+
+    if extra_fields:
+        return field_error_message("Input has extra field(s): ", extra_fields)
+
+    # get users collection
+    users_collection = db.collection("users")
+
+    # get user ids
+    user_ids = [user.id for user in users_collection.stream()]
+
+    # Validate 'author' field
+    author_data = data.get("author", str)
+
+    if not isinstance(author_data, str):
+        return (
+            jsonify({"error": f"Invalid format for author"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    # make sure author id is a reference to actual user
+    if invalid_author_check(author_data, user_ids):
         return (
             jsonify(
-                {
-                    "error": f"Missing required field(s): {', '.join(missing_fields)}"
-                }
+                {"error": f"Author field in post is not a reference to a user"}
             ),
             status.HTTP_400_BAD_REQUEST,
         )
 
-    # Validate 'author' field
-    author_data = data.get("author", {})
-    if (
-        not isinstance(author_data, dict)
-        or "bio" not in author_data
-        or "username" not in author_data
-    ):
-        return (
-            jsonify(
-                {"error": "Author field must contain 'bio' and 'username'"}
-            ),
-            status.HTTP_400_BAD_REQUEST,
-        )
+    # get required fields for comments
+    required_comment_fields = set(
+        key
+        for post in posts_collection.stream()
+        for comment in post.to_dict().get("comments", {})
+        for key in comment.keys()
+    )
 
     # Validate 'comments' field
     comments_data = data.get("comments", [])
     for comment in comments_data:
+
+        # get missing or extra comment fields if any
+        missing_comment_fields = [
+            field for field in required_comment_fields if field not in comment
+        ]
+        extra_comment_fields = [
+            field for field in comment if field not in required_comment_fields
+        ]
+
+        # make sure comment is proper type of dictionary
         if (
             not isinstance(comment, dict)
-            or "author" not in comment
-            or "comment" not in comment
+            or not isinstance(comment["comment"], str)
+            or not isinstance(comment["creation_date"], str)
         ):
             return (
-                jsonify(
-                    {
-                        "error": "Each comment must contain 'author' and 'comment'"
-                    }
-                ),
+                jsonify({"error": "Invalid format for comment"}),
                 status.HTTP_400_BAD_REQUEST,
             )
-        if (
-            not isinstance(comment["author"], dict)
-            or "bio" not in comment["author"]
-            or "username" not in comment["author"]
-        ):
+
+        # post error if any missing or extra fields
+        if missing_comment_fields:
+            return field_error_message(
+                "Missing required comment field(s): ", missing_comment_fields
+            )
+
+        if extra_comment_fields:
+            return field_error_message(
+                "Comment input has extra field(s): ", extra_comment_fields
+            )
+
+        # make sure commenter is an actual user
+        if invalid_author_check(comment["author"], user_ids):
             return (
                 jsonify(
                     {
-                        "error": "Author of each comment must contain 'bio' and 'username'"
+                        "error": f"Author field in comment is not a reference to a user"
                     }
                 ),
                 status.HTTP_400_BAD_REQUEST,
@@ -282,7 +337,20 @@ def create_post():
 
         # Add the new post to the 'posts' collection
         new_post_ref = db.collection("posts").document()
+
+        data["author"] = db.document(
+            "users/" + data["author"][len("/users/") :]
+        )
+        for comment in data["comments"]:
+            comment["author"] = db.document(
+                "users/" + comment["author"][len("/users/") :]
+            )
+
         new_post_ref.set(data)
+
+        data["author"] = data["author"].path
+        for comment in data["comments"]:
+            comment["author"] = comment["author"].path
 
         # Return the newly created post
         return jsonify(data), status.HTTP_201_CREATED

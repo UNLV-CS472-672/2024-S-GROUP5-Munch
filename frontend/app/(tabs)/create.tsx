@@ -1,12 +1,9 @@
 import { View } from '@/components/Themed';
 import React, { useState } from 'react';
-
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from "expo-image-picker";
 import { Button, H1, H2, H4, YStack, Text, TextArea, Switch, XStack, AlertDialog, AlertDialogTrigger, AlertDialogTitle, AlertDialogDescription, Image, ScrollView } from 'tamagui';
 
-// should open up gallery so people can upload vid/images
-// have option to just do text so new recipe
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);

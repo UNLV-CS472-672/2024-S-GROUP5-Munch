@@ -23,7 +23,7 @@ export default function Create() {
       var uri = '';
       result.assets.map((asset) => uri = asset.uri);
       if (!result.canceled) {
-        setFile(uri);       
+        setFile(uri);
         setError(null);
       }
     }
@@ -33,45 +33,43 @@ export default function Create() {
     <SafeAreaView>
       <ScrollView>
         <YStack>
-          <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
+          <H4 style={{ alignSelf: 'center', color: 'black' }}>NEW POST</H4>
           <XStack>
-            <Text fontSize="$5" paddingStart="$5">is this a recipe?</Text>
+            <Text color='black' fontSize="$5" paddingStart="$5">is this a recipe?</Text>
             <Switch marginLeft="$2" size="$3" onCheckedChange={() => setEnabledElements(!isEnabled)}>
               <Switch.Thumb animation="bouncy" />
             </Switch>
           </XStack>
-          <XStack flex={1}>
-            <Button onPress={pickImg} backgroundColor={'cyan'} mx={'$4'}><Text color={'$black2'}>Upload Image</Text></Button>
+          <Button onPress={pickImg} backgroundColor={'green'} mx={'$4'}><Text color={'$black2'}>Upload Image</Text></Button>
+          <XStack>
             {
-            file ? (             
+              file ? (
                 <Image
                   source={{
                     uri: file
                   }}
-                  width="100%" height="100%"                
+                  width={150} aspectRatio={1} height={150}
                 />
-            ) : null
-          }
+              ) : null
+            }
+            <TextArea
+              placeholder={'Description...'}
+              multiline={true}
+              style={{
+                height: 150,
+                width: 260,               
+                textAlignVertical: 'top',
+              }}
+            />
           </XStack>
           {
-            !isEnabled ? (
+            isEnabled ? (
               <YStack>
-                <TextArea
-                  placeholder={'Description...'}
-                  multiline={true}
-                  style={{
-                    height: 130,
-                    borderRadius: 5,
-                    paddingHorizontal: 10,
-                    textAlignVertical: 'top',
-                  }}
-                />
                 <TextArea
                   placeholder={'List Steps...'}
                   multiline={true}
                   style={{
-                    height: 130,
-                    borderRadius: 5,
+                    height: 130,                   
                     paddingHorizontal: 10,
                     textAlignVertical: 'top',
                   }}
@@ -80,8 +78,7 @@ export default function Create() {
                   placeholder={'List Ingredients...'}
                   multiline={true}
                   style={{
-                    height: 130,
-                    borderRadius: 5,
+                    height: 130,                    
                     paddingHorizontal: 10,
                     textAlignVertical: 'top',
                   }}
@@ -89,8 +86,8 @@ export default function Create() {
               </YStack>
             ) : null
           }
-          {
-            isEnabled ? (
+          {/* {
+            !isEnabled ? (
               <YStack>
                 <TextArea
                   placeholder={'Caption...'}
@@ -103,8 +100,8 @@ export default function Create() {
                   }}
                 />
               </YStack>) : null
-          }
-          <Button backgroundColor={'cyan'} mx={'$4'}>
+          } */}
+          <Button backgroundColor={'green'} mx={'$4'}>
             <Text color={'$black2'}>Post</Text>
           </Button>
         </YStack>

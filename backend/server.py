@@ -488,10 +488,10 @@ def user_validation(data):
         "likes",
         "posts",
         "followers",
-        "following"
+        "following",
     ]
     missing_fields = [field for field in required_fields if field not in data]
-    
+
     # Validate fields
     if (
         not isinstance(data, dict)
@@ -510,7 +510,7 @@ def user_validation(data):
             ),
             status.HTTP_400_BAD_REQUEST,
         )
-    
+
     return None, status.HTTP_200_OK
 
 
@@ -555,7 +555,7 @@ def create_user():
         # Add the new user to the 'users' collection
         new_user_ref = db.collection("users").document()
         new_user_ref.set(data)
-        
+
         # Return the newly created user
         return jsonify(data), status.HTTP_201_CREATED
 

@@ -5,7 +5,7 @@
  */
 
 import { Link } from 'expo-router';
-import { TouchableHighlight, ImageBackground, Dimensions } from 'react-native';
+import { TouchableHighlight, Dimensions } from 'react-native';
 import { Button, YStack, Image, styled, Avatar, Text, View, ScrollView } from 'tamagui';
 
 export default function Index() {

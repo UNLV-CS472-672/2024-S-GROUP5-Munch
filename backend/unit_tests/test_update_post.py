@@ -14,7 +14,6 @@ from dotenv import load_dotenv
 class TestAPI(unittest.TestCase):
     base_url = "http://127.0.0.1:5000/api/posts"  # Adjust URL as needed
 
-
     def test_update_post(self):
         # Test updating an existing post
         new_post_data = {
@@ -23,7 +22,7 @@ class TestAPI(unittest.TestCase):
                 "followers": 10,
                 "following": 10,
                 "user_id": "h7xOBio5qy9sGIJExFru",
-                "username": "test_create_post USER"
+                "username": "test_create_post USER",
             },
             "comments": [
                 {
@@ -32,29 +31,26 @@ class TestAPI(unittest.TestCase):
                         "followers": 10,
                         "following": 10,
                         "user_id": "h7xOBio5qy9sGIJExFru",
-                        "username": "userTest"
+                        "username": "userTest",
                     },
                     "comment": "FIRST TEST INSERT",
-                    "creation_date": "2024-03-20 22:53:36.118000+00:00"
+                    "creation_date": "2024-03-20 22:53:36.118000+00:00",
                 }
             ],
             "creation_date": "2024-03-20 21:41:30.786000+00:00",
             "description": "THIS IS MY FIRST TEST POST",
             "likes": 0,
-            "pictures": [
-                "ROUTE/TO/SOME/PIC",
-                "ROUTE/TO/ANOTHER/PIC"
-            ],
+            "pictures": ["ROUTE/TO/SOME/PIC", "ROUTE/TO/ANOTHER/PIC"],
             "testcase": True,
         }
-        
+
         updated_post_data = {
             "author": {
                 "bio": "bioTest",
                 "followers": 10,
                 "following": 10,
                 "user_id": "h7xOBio5qy9sGIJExFru",
-                "username": "test_create_post USER UPDATED"
+                "username": "test_create_post USER UPDATED",
             },
             "comments": [
                 {
@@ -63,51 +59,52 @@ class TestAPI(unittest.TestCase):
                         "followers": 10,
                         "following": 10,
                         "user_id": "h7xOBio5qy9sGIJExFru",
-                        "username": "userTest"
+                        "username": "userTest",
                     },
                     "comment": "FIRST TEST INSERT",
-                    "creation_date": "2024-03-20 22:53:36.118000+00:00"
+                    "creation_date": "2024-03-20 22:53:36.118000+00:00",
                 }
             ],
             "creation_date": "2024-03-20 21:41:30.786000+00:00",
             "description": "THIS IS MY FIRST TEST POST",
             "likes": 0,
-            "pictures": [
-                "ROUTE/TO/SOME/PIC",
-                "ROUTE/TO/ANOTHER/PIC"
-            ],
+            "pictures": ["ROUTE/TO/SOME/PIC", "ROUTE/TO/ANOTHER/PIC"],
             "testcase": True,
         }
-        
+
         requests.post(self.base_url, json=new_post_data)
-        
+
         # Connect to db and firestore db
-        server.try_connect_to_db()        
+        server.try_connect_to_db()
         db = firestore.client()
 
         # Get all the posts in the database
         posts_collection = db.collection("posts")
         docs = posts_collection.get()
-        
+
         # Check the database for the testcase post we've created
         for doc in docs:
             doc_data = doc.to_dict()
-            if doc_data.get('testcase', False) == True:
+            if doc_data.get("testcase", False) == True:
                 # print(f"Document ID: {doc.id}")
                 testing_id = doc.id
-        
+
         # Put the new test id
-        response = requests.put(f"{self.base_url}/{testing_id}", json=updated_post_data)
-        
-        
-       # Delete it
+        response = requests.put(
+            f"{self.base_url}/{testing_id}", json=updated_post_data
+        )
+
+        # Delete it
         requests.delete(f"{self.base_url}/{testing_id}")
         # print("Deleted: ", testing_id)
-        
-        # Check if correct 
-        self.assertEqual(response.status_code, 200)  # Check if status code is OK
+
+        # Check if correct
+        self.assertEqual(
+            response.status_code, 200
+        )  # Check if status code is OK
 
     #     # You can add more assertions to verify the response content, database state, etc.
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

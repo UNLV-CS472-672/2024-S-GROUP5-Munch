@@ -16,7 +16,7 @@ import {
   TextArea,
   Switch
 } from 'tamagui';
-import type { TabsContentProps } from 'tamagui';
+
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -24,9 +24,9 @@ export default function Create() {
   return (
     <View>
       <YStack>
-        <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
+        <H4 style={{ alignSelf: 'center', color: 'black' }}>NEW POST</H4>
         <XStack>
-          <Text fontSize="$5" paddingStart="$5">is this a recipe?</Text>
+          <Text color={'black'} fontSize="$5" paddingStart="$5">is this a recipe?</Text>
           <Switch marginLeft="$2" size="$3" onCheckedChange={() => setEnabledElements(!isEnabled)}>
             <Switch.Thumb animation="bouncy" />
           </Switch>

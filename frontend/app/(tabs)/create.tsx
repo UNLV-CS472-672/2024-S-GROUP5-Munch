@@ -1,11 +1,22 @@
 import { View } from '@/components/Themed';
-import React, { useState } from 'react';
-import { TextInput } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Button, H1, H2, H4, YStack, Text, Switch, XStack } from 'tamagui';
-
-// should open up gallery so people can upload vid/images
-// have option to just do text so new recipe
+import React from 'react';
+import {
+  Button,
+  H1,
+  H2,
+  H4,
+  YStack,
+  Image,
+  Separator,
+  SizableText,
+  Tabs,
+  XStack,
+  H5,
+  Text,
+  TextArea,
+  Switch
+} from 'tamagui';
+import type { TabsContentProps } from 'tamagui';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -23,7 +34,7 @@ export default function Create() {
         {
           !isEnabled ? (
             <YStack>          
-              <TextInput
+              <TextArea
                 placeholder={'Description...'}
                 multiline={true}
                 style={{
@@ -33,7 +44,7 @@ export default function Create() {
                   textAlignVertical: 'top',
                 }}
               />
-              <TextInput
+              <TextArea
                 placeholder={'List Steps...'}
                 multiline={true}
                 style={{
@@ -43,7 +54,7 @@ export default function Create() {
                   textAlignVertical: 'top',
                 }}
               />
-              <TextInput
+              <TextArea
                 placeholder={'List Ingredients...'}
                 multiline={true}
                 style={{
@@ -59,7 +70,7 @@ export default function Create() {
         {
           isEnabled ? (
             <YStack>
-              <TextInput
+              <TextArea
                 placeholder={'Upload IMG...'}
                 multiline={true}
                 style={{
@@ -68,7 +79,7 @@ export default function Create() {
                   paddingHorizontal: 10,
                   textAlignVertical: 'top',
                 }} />
-              <TextInput
+              <TextArea
                 placeholder={'Caption...'}
                 multiline={true}
                 style={{

@@ -448,5 +448,124 @@ def get_user_posts(user_id):
     return all_posts
 
 
+# Validate the post verifying it has the correct fields
+def user_validation(data):
+    """
+    Validate the JSON data for creating or updating a user.
+
+    Expects JSON data with the following format:
+
+    {
+        "bio": "<Users bio>",
+        "username": "<Users Username>",
+        "userID": "<Users unique ID>",
+        "bookmarks": "<Users number of bookmarks>",
+        "likes": "<Users number of likes>",
+        "posts": "<Users number of posts>",
+        "followers": "<Users number of followers>",
+        "following": "<Users number of following other users>"
+    }
+
+    Args:
+        data (dict): JSON data representing the user.
+
+    Returns:
+        tuple: A tuple containing a dictionary of errors (if any) and a status code.
+    """
+
+    if not data:
+        return (
+            jsonify({"error": "No data provided"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Check for missing required fields
+    required_fields = [
+        "bio",
+        "username",
+        "userID",
+        "bookmarks",
+        "likes",
+        "posts",
+        "followers",
+        "following"
+    ]
+    missing_fields = [field for field in required_fields if field not in data]
+    
+    # Validate fields
+    if (
+        not isinstance(data, dict)
+        or "bio" not in data
+        or "username" not in data
+        or "userID" not in data
+        or "bookmarks" not in data
+        or "likes" not in data
+        or "posts" not in data
+        or "followers" not in data
+        or "following" not in data
+    ):
+        return (
+            jsonify(
+                {"error": f"Missing field(s):  {', '.join(missing_fields)}"}
+            ),
+            status.HTTP_400_BAD_REQUEST,
+        )
+    
+    return None, status.HTTP_200_OK
+
+
+# Create a new user
+@app.route("/api/users", methods=["POST"])
+def create_user():
+    """
+    Create a new user.
+
+    Args:
+        N/A
+
+    Returns:
+        dict: A dictionary representing the newly created user.
+
+    Raises:
+        ValueError: If an error occurs while connecting to the database.
+        ValueError: If the specific user already exists.
+    """
+    # Get data from the request
+    data = request.json
+
+    # Check that data is valid
+    validation_error, status_code = user_validation(data)
+    if validation_error:
+        return validation_error, status_code
+
+    # The request has been validated, connect to the database
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    try:
+        # Connect to the database
+        db = firestore.client()
+
+        # Add the new user to the 'users' collection
+        new_user_ref = db.collection("users").document()
+        new_user_ref.set(data)
+        
+        # Return the newly created user
+        return jsonify(data), status.HTTP_201_CREATED
+
+    except Exception as e:
+        print("Error adding new user:", str(e))
+        return (
+            jsonify({"error": "Error adding new user"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
 if __name__ == "__main__":
     app.run(debug=True)

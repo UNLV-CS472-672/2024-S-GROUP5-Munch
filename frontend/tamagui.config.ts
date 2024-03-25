@@ -1,4 +1,3 @@
-import { config } from '@tamagui/config/v3';
 import { createAnimations } from '@tamagui/animations-react-native';
 import { createInterFont } from '@tamagui/font-inter';
 import { createMedia } from '@tamagui/react-native-media-driver';

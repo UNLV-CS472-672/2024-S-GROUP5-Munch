@@ -71,6 +71,7 @@ def connect_to_db():
             print(f"Unexpected Error: {e}")
             raise
 
+
 # function for error message for field issues
 def field_error_message(message, fields):
     return (
@@ -78,11 +79,13 @@ def field_error_message(message, fields):
         status.HTTP_400_BAD_REQUEST,
     )
 
+
 # function to check author validitiy
 def invalid_author_check(author, users):
-    if author[len("/users/"):] not in users:
+    if author[len("/users/") :] not in users:
         return True
     return False
+
 
 # Validate the post verifying it has the correct fields
 def post_validation(data):
@@ -136,7 +139,11 @@ def post_validation(data):
     posts_collection = db.collection("posts")
 
     # get required fields
-    required_fields = set(key for post in posts_collection.stream() for key in post.to_dict().keys())
+    required_fields = set(
+        key
+        for post in posts_collection.stream()
+        for key in post.to_dict().keys()
+    )
 
     # get any missing or extra fields
     missing_fields = [field for field in required_fields if field not in data]
@@ -144,7 +151,9 @@ def post_validation(data):
 
     # post error message if any
     if missing_fields:
-        return field_error_message("Missing required field(s): ", missing_fields)
+        return field_error_message(
+            "Missing required field(s): ", missing_fields
+        )
 
     if extra_fields:
         return field_error_message("Input has extra field(s): ", extra_fields)
@@ -160,9 +169,7 @@ def post_validation(data):
 
     if not isinstance(author_data, str):
         return (
-            jsonify(
-                {"error": f"Invalid format for author"}
-            ),
+            jsonify({"error": f"Invalid format for author"}),
             status.HTTP_400_BAD_REQUEST,
         )
 
@@ -176,46 +183,56 @@ def post_validation(data):
         )
 
     # get required fields for comments
-    required_comment_fields = set(key for post in posts_collection.stream() 
-                                for comment in post.to_dict().get('comments', {}) for key in comment.keys())
+    required_comment_fields = set(
+        key
+        for post in posts_collection.stream()
+        for comment in post.to_dict().get("comments", {})
+        for key in comment.keys()
+    )
 
     # Validate 'comments' field
     comments_data = data.get("comments", [])
     for comment in comments_data:
-        
+
         # get missing or extra comment fields if any
-        missing_comment_fields = [field for field in required_comment_fields if field not in comment]
-        extra_comment_fields = [field for field in comment if field not in required_comment_fields]
+        missing_comment_fields = [
+            field for field in required_comment_fields if field not in comment
+        ]
+        extra_comment_fields = [
+            field for field in comment if field not in required_comment_fields
+        ]
 
         # make sure comment is proper type of dictionary
         if (
             not isinstance(comment, dict)
-            or not isinstance(comment['comment'], str)
-            or not isinstance(comment['creation_date'], str)
+            or not isinstance(comment["comment"], str)
+            or not isinstance(comment["creation_date"], str)
         ):
+            return (
+                jsonify({"error": "Invalid format for comment"}),
+                status.HTTP_400_BAD_REQUEST,
+            )
+
+        # post error if any missing or extra fields
+        if missing_comment_fields:
+            return field_error_message(
+                "Missing required comment field(s): ", missing_comment_fields
+            )
+
+        if extra_comment_fields:
+            return field_error_message(
+                "Comment input has extra field(s): ", extra_comment_fields
+            )
+
+        print(not isinstance(comment["comment"], type(comment["comment"])))
+
+        # make sure commenter is an actual user
+        if invalid_author_check(comment["author"], user_ids):
             return (
                 jsonify(
                     {
-                        "error": "Invalid format for comment"
+                        "error": f"Author field in comment is not a reference to a user"
                     }
-                ),
-                status.HTTP_400_BAD_REQUEST,
-            )
-        
-        # post error if any missing or extra fields
-        if missing_comment_fields:
-            return field_error_message("Missing required comment field(s): ", missing_comment_fields)
-
-        if extra_comment_fields:
-            return field_error_message("Comment input has extra field(s): ", extra_comment_fields)
-        
-        print(not isinstance(comment['comment'], type(comment["comment"])))
-
-        # make sure commenter is an actual user
-        if invalid_author_check(comment['author'], user_ids):
-            return (
-                jsonify(
-                    {"error": f"Author field in comment is not a reference to a user"}
                 ),
                 status.HTTP_400_BAD_REQUEST,
             )
@@ -323,15 +340,19 @@ def create_post():
         # Add the new post to the 'posts' collection
         new_post_ref = db.collection("posts").document()
 
-        data['author'] = db.document("users/" + data['author'][len("/users/"):])
-        for comment in data['comments']:
-            comment['author'] = db.document("users/" + comment['author'][len("/users/"):])
+        data["author"] = db.document(
+            "users/" + data["author"][len("/users/") :]
+        )
+        for comment in data["comments"]:
+            comment["author"] = db.document(
+                "users/" + comment["author"][len("/users/") :]
+            )
 
         new_post_ref.set(data)
 
-        data['author'] = data['author'].path
-        for comment in data['comments']:
-            comment['author'] = comment['author'].path
+        data["author"] = data["author"].path
+        for comment in data["comments"]:
+            comment["author"] = comment["author"].path
 
         # Return the newly created post
         return jsonify(data), status.HTTP_201_CREATED

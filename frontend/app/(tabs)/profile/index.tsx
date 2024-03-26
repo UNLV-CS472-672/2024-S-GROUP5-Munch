@@ -1,8 +1,7 @@
-import { View } from "@/components/Themed";
 import { isClerkAPIResponseError, useAuth, useUser } from "@clerk/clerk-expo";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import {
   Avatar,
@@ -13,6 +12,7 @@ import {
   XStack,
   YStack,
   Text,
+  View,
 } from "tamagui";
 import { ToastProvider } from "@tamagui/toast";
 import {
@@ -24,7 +24,7 @@ import { TouchableOpacity } from "react-native";
 import { Label } from "tamagui";
 import { Link } from "expo-router";
 export default function Profile() {
-  const { isSignedIn, signOut, userId } = useAuth();
+  const { isSignedIn, signOut } = useAuth();
 
   const { user } = useUser();
   const router = useRouter();
@@ -90,7 +90,7 @@ export default function Profile() {
               >
                 <TouchableOpacity onPress={handleUserProfileChange}>
                   <Avatar circular size={"$5"}>
-                    <Avatar.Image src={user?.hasImage ? user.imageUrl : ""} />
+                    <Avatar.Image src={user?.hasImage ? user.imageUrl : " "} />
                   </Avatar>
                 </TouchableOpacity>
                 <YStack gap={"$2"}>
@@ -129,7 +129,7 @@ export default function Profile() {
       )}
       {!isSignedIn && (
         <Button
-          onPress={() => router.push("/(auths)/login")}
+          onPress={() => router.push("/(auth)/login")}
           marginHorizontal={"$4"}
           backgroundColor={"$background"}
         >

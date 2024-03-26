@@ -14,16 +14,20 @@ export default function Index() {
     try {
       const userSnapshot = await getDocs(users);
 
-      userSnapshot.forEach((item) => console.log(item.data(), item.id));
-    } catch (err) {}
+      // userSnapshot.forEach((item) => console.log(item.data()));
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   useEffect(() => {
     getUsers();
   }, []);
   return (
-    <View>
-      <Text>{`hello ${user?.username ? user.username : user?.firstName}`}</Text>
-    </View>
+    <SafeAreaView>
+      <View>
+        <Text>{`hello ${user?.username ? user.username : user?.firstName}`}</Text>
+      </View>
+    </SafeAreaView>
   );
 }

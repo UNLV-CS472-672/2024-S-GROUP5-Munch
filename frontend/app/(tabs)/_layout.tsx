@@ -1,10 +1,9 @@
-import { Tabs } from "expo-router";
-import React from "react";
-
 import { useClientOnlyValue } from "@/components/useClientOnlyValue";
 import { useColorScheme } from "@/components/useColorScheme";
 import Colors from "@/constants/Colors";
-import { Entypo, AntDesign, Feather, FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign, Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import React from "react";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -44,7 +43,11 @@ export default function TabLayout() {
               name="activity"
               color={color}
               size={size}
-              style={{ height: size - 1, width: size - 1, textAlign: "center" }}
+              style={{
+                height: size - 1,
+                width: size - 1,
+                textAlign: "center",
+              }}
             />
           ),
           headerShown: false,

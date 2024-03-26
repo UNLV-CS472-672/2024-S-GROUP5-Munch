@@ -1,10 +1,10 @@
-import { createAnimations } from "@tamagui/animations-react-native";
-import { createInterFont } from "@tamagui/font-inter";
-import { createMedia } from "@tamagui/react-native-media-driver";
-import { shorthands } from "@tamagui/shorthands";
-import { themes, tokens } from "@tamagui/themes";
-import { createTamagui, styled, SizableText, H1, YStack } from "tamagui";
-import { config as DefaultConfig } from "@tamagui/config/v3";
+import { createAnimations } from '@tamagui/animations-react-native';
+import { createInterFont } from '@tamagui/font-inter';
+import { createMedia } from '@tamagui/react-native-media-driver';
+import { shorthands } from '@tamagui/shorthands';
+import { themes, tokens } from '@tamagui/themes';
+import { createTamagui, styled, SizableText, H1, YStack } from 'tamagui';
+import { config as DefaultConfig } from '@tamagui/config/v3';
 
 //animation for gestures
 const animations = createAnimations({
@@ -12,18 +12,18 @@ const animations = createAnimations({
     damping: 10,
     mass: 0.9,
     stiffness: 100,
-    type: "spring",
+    type: 'spring',
   },
   lazy: {
     damping: 20,
-    type: "spring",
+    type: 'spring',
     stiffness: 60,
   },
   quick: {
     damping: 20,
     mass: 1.2,
     stiffness: 250,
-    type: "spring",
+    type: 'spring',
   },
 });
 
@@ -41,34 +41,34 @@ export const Container = styled(YStack, {
 //spacing things
 export const Main = styled(YStack, {
   flex: 1,
-  justifyContent: "space-between",
+  justifyContent: 'space-between',
   maxWidth: 960,
 });
 
 //typography hierarchy
 export const Title = styled(H1, {
-  color: "#000",
-  size: "$12",
+  color: '#000',
+  size: '$12',
 });
 
 //typography hierarchy
 export const Subtitle = styled(SizableText, {
-  color: "#38434D",
-  size: "$9",
+  color: '#38434D',
+  size: '$9',
 });
 
 //typography hierarchy
 export const Button = styled(YStack, {
-  alignItems: "center",
-  backgroundColor: "white",
+  alignItems: 'center',
+  backgroundColor: 'white',
   borderRadius: 28,
   hoverStyle: {
-    backgroundColor: "#5a5fcf",
+    backgroundColor: '#5a5fcf',
   },
-  justifyContent: "center",
+  justifyContent: 'center',
   maxWidth: 500,
   padding: 16,
-  shadowColor: "#000",
+  shadowColor: '#000',
   shadowOffset: {
     height: 2,
     width: 0,
@@ -79,21 +79,21 @@ export const Button = styled(YStack, {
 
 //typography hierarchy
 export const ButtonText = styled(SizableText, {
-  color: "black",
+  color: 'black',
   fontSize: 16,
-  fontWeight: "600",
-  textAlign: "center",
+  fontWeight: '600',
+  textAlign: 'center',
 });
 
 //typography hierarchy
 const config = createTamagui({
   light: {
     color: {
-      background: "#000",
-      text: "white",
+      background: '#000',
+      text: 'white',
     },
   },
-  defaultFont: "body",
+  defaultFont: 'body',
   animations,
   shouldAddPrefersColorThemes: true,
   themeClassNameOnRoot: true,
@@ -117,15 +117,15 @@ const config = createTamagui({
     gtLg: { minWidth: 1280 + 1 },
     short: { maxHeight: 820 },
     tall: { minHeight: 820 },
-    hoverNone: { hover: "none" },
-    pointerCoarse: { pointer: "coarse" },
+    hoverNone: { hover: 'none' },
+    pointerCoarse: { pointer: 'coarse' },
   }),
   ...DefaultConfig,
 });
 
 type AppConfig = typeof config;
 
-declare module "tamagui" {
+declare module 'tamagui' {
   interface TamaguiCustomConfig extends AppConfig {}
 }
 

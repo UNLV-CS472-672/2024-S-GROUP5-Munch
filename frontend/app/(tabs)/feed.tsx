@@ -1,6 +1,6 @@
-import { useAuth } from "@clerk/clerk-expo";
-import { SafeAreaView } from "react-native";
-import { Text, View } from "tamagui";
+import { useAuth } from '@clerk/clerk-expo';
+import { SafeAreaView } from 'react-native';
+import { Text, View } from 'tamagui';
 
 export default function TabTwoScreen() {
   const { isSignedIn } = useAuth();

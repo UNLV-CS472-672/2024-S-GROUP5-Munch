@@ -1,84 +1,99 @@
-import {
-  Tabs,
-  useRootNavigationState,
-  useRouter,
-  useSegments,
-} from 'expo-router';
-import React from 'react';
-
-import { useClientOnlyValue } from '@/components/useClientOnlyValue';
-import { useColorScheme } from '@/components/useColorScheme';
-import Colors from '@/constants/Colors';
-import { Entypo, AntDesign, Feather, FontAwesome5 } from '@expo/vector-icons';
+import { useClientOnlyValue } from "@/components/useClientOnlyValue";
+import { useColorScheme } from "@/components/useColorScheme";
+import Colors from "@/constants/Colors";
+import { AntDesign, Entypo, Feather, FontAwesome5 } from "@expo/vector-icons";
+import { Tabs } from "expo-router";
+import React from "react";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
-
-  const segments = useSegments();
-  const router = useRouter();
-
-  const navigationState = useRootNavigationState();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
+        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
         headerShown: useClientOnlyValue(false, true),
       }}
     >
       <Tabs.Screen
-        name='index'
+        name="index"
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
-            <Entypo name={'home'} color={color} size={size} />
+            <Entypo name={"home"} color={color} size={size} />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
-        name='friends'
+        name="friends"
         options={{
-          tabBarLabel: 'Friends',
+          tabBarLabel: "Friends",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome5 name='user-friends' color={color} size={size} />
+            <FontAwesome5 name="user-friends" color={color} size={size} />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
-        name='create'
+        name="create"
         options={{
-          tabBarLabel: 'Create',
+          tabBarLabel: "Create",
           tabBarIcon: ({ color, size }) => (
             <Feather
-              name='plus-square'
+              name="plus-square"
               color={color}
               size={size}
-              style={{ height: size - 1, width: size - 1, textAlign: 'center' }}
+              style={{ height: size - 1, width: size - 1, textAlign: "center" }}
             />
           ),
         }}
       />
       <Tabs.Screen
-        name='feed'
+        name="create"
         options={{
-          tabBarLabel: 'Feed',
+          tabBarLabel: "Create",
           tabBarIcon: ({ color, size }) => (
             <Feather
-              name='activity'
+              name="plus-square"
               color={color}
               size={size}
-              style={{ height: size - 1, width: size - 1, textAlign: 'center' }}
+              style={{
+                height: size - 1,
+                width: size - 1,
+                textAlign: "center",
+              }}
             />
           ),
+          headerShown: false,
         }}
       />
       <Tabs.Screen
-        name='profile'
+        name="feed"
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: "Feed",
           tabBarIcon: ({ color, size }) => (
-            <AntDesign name='user' color={color} size={size} />
+            <Feather
+              name="activity"
+              color={color}
+              size={size}
+              style={{
+                height: size - 1,
+                width: size - 1,
+                textAlign: "center",
+              }}
+            />
           ),
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          tabBarLabel: "Profile",
+          tabBarIcon: ({ color, size }) => (
+            <AntDesign name="user" color={color} size={size} />
+          ),
+          headerShown: false,
         }}
       />
     </Tabs>

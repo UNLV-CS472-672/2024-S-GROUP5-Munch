@@ -31,9 +31,7 @@ export default function Create() {
     if (status !== 'granted') {
       <AlertDialog>
         <AlertDialogTitle>No Permission Granted</AlertDialogTitle>
-        <AlertDialogDescription>
-          {error}
-        </AlertDialogDescription>
+        <AlertDialogDescription>{error}</AlertDialogDescription>
       </AlertDialog>;
     } else {
       const result = await ImagePicker.launchImageLibraryAsync();
@@ -68,7 +66,7 @@ export default function Create() {
           </Button>
           <XStack>
             {file ? (
-              <Image                          
+              <Image
                 source={{
                   uri: file,
                 }}

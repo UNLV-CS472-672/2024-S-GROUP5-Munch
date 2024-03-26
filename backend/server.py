@@ -403,8 +403,6 @@ def update_post(post_id):
         # Update the post in the 'posts' collection
         post_ref = db.collection("posts").document(post_id)
 
-        print(data["author"])
-
         data["author"] = db.document(data["author"])
 
         for comment in data["comments"]:

@@ -5,6 +5,8 @@ from flask import Flask, jsonify, request
 from firebase_admin import credentials
 from firebase_admin import firestore
 from dotenv import load_dotenv
+import jwt
+import time
 
 app = Flask(__name__)
 
@@ -15,17 +17,62 @@ load_dotenv()
 # Middleware function
 @app.before_request
 def middleware():
+    """
+    Middleware function to handle JWT authentication for incoming requests.
+
+    This function intercepts all incoming requests and checks for the presence of
+    an Authorization header containing a JWT token. If the header is present and
+    in the correct format, it verifies the token's validity and expiration.
+
+    Expected format of Authorization header:
+    {
+        "method": "GET",
+        "path": "/api/posts/Kr40Rksk4XI4qauBkpYb",
+        "headers": {
+            "Host": "localhost:5000",
+            "User-Agent": "Chrome/96.0.4664.110 (Windows NT 10.0; Win64; x64)",
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMjM0NTY3ODkwIiwiZXhwIjoxNjg5NzQ2NjQzLCJpYXQiOjE2ODk3NDYwNDN9.FiPKU2I9Dq-iN0OW8m_pMzyPESyt4C3Y_CXn99vWq08"
+        }
+    }
+
+    Where:
+        - <CLERK_PUBLIC_KEY> is a Public Key representing the Clerk Secret file.
+
+    If the token is valid and not expired, access to the requested resource is granted.
+    If the token is missing, invalid, or expired, an appropriate error response is returned.
+
+    Raises:
+        jwt.ExpiredSignatureError: If the JWT token has expired.
+        jwt.InvalidSignatureError: If the JWT signature verification has failed.
+        jwt.InvalidTokenError: If the JWT token is invalid or malformed.
+    """
     print("Incoming request:", request.method, request.path)
-
-    # Current idea is to take a token created from a prior interaction (aka login)
-    # and verify on each request that the token currently assigned matches the
-    # token used on post creation.
-
-    # User 1 signed in and has token 1234, and created post 4321 with the token 1234
-    # User 1 tries to PUT (update) post 4321
-    #  Current token 1234 is verified against post token 1234, and changes are ACCEPTED
-    # User 2 with token 1111 tries to PUT (update) post 4321
-    #  Current token 1111 is verified against post token 1234, and changes are DENIED
+    
+    # Check for Authorization header
+    auth_header = request.headers.get("Authorization")
+    if auth_header:
+        token = auth_header  # JWT token without "Bearer" prefix
+        try:
+            # Verify and decode JWT token
+            decoded_token = jwt.decode(token, os.getenv("CLERK_PEM_PUBLIC_KEY"), options={"verify_signature": False})
+            
+            # Validate expiration time
+            print(time.time())
+            if decoded_token["exp"] < time.time():
+                return jsonify({"error": "Token expired"}), status.HTTP_401_UNAUTHORIZED
+            
+            # Access granted, you can access decoded_token["uid"] to get user ID
+            # For example:
+            # user_id = decoded_token["uid"]
+        except jwt.ExpiredSignatureError:
+            print("Token Expired")
+            return jsonify({"error": "Token expired"}), status.HTTP_401_UNAUTHORIZED
+        except jwt.InvalidSignatureError:
+            print("Signature Verification Failed")
+            return jsonify({"error": "Signature Verification Failed"}), status.HTTP_401_UNAUTHORIZED
+        except jwt.InvalidTokenError:
+            print("Invalid Token")
+            return jsonify({"error": "Invalid token"}), status.HTTP_401_UNAUTHORIZED
 
 
 # Check if the app is already initialized

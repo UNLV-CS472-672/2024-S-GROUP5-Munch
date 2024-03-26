@@ -681,6 +681,7 @@ def create_user():
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
+
 # Update an existing user
 @app.route("/api/users/<user_id>", methods=["PUT"])
 def update_user(user_id):
@@ -689,7 +690,7 @@ def update_user(user_id):
 
     Args:
         user_id (str): The ID of the user to be updated.
-    
+
     Returns:
         dict: A dictionary representing the updated user.
 
@@ -704,7 +705,7 @@ def update_user(user_id):
     validation_error, status_code = user_validation(data)
     if validation_error:
         return validation_error, status_code
-    
+
     # The request has been validated, connect to the database
     try:
         connect_to_db()
@@ -714,7 +715,7 @@ def update_user(user_id):
             jsonify({"error": "Database connection error"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-    
+
     try:
         # Connect to the database
         db = firestore.client()
@@ -722,7 +723,7 @@ def update_user(user_id):
         # Add the new user to the 'users' collection
         new_user_ref = db.collection("users").document(user_id)
         new_user_ref.update(data)
-        
+
         # Return the newly created user
         return jsonify(data), status.HTTP_200_OK
 
@@ -732,6 +733,7 @@ def update_user(user_id):
             jsonify({"error": "Error updating user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
 
 # Delete a user
 @app.route("/api/users/<user_id>", methods=["DELETE"])

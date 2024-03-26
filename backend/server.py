@@ -635,5 +635,43 @@ def create_user():
         )
 
 
+# Delete a user
+@app.route("/api/users/<user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    """
+    Args:
+        post_id (str): The ID of the post to be deleted.
+
+    Returns:
+        tuple: A tuple containing a JSON response and a status code.
+    """
+    # Check connection to the database
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    
+    try:
+        # Connect to the database
+        db = firestore.client()
+
+        # Delete the post from the 'posts' collection
+        db.collection("users").document(user_id).delete()
+
+        # Return a success message
+        return jsonify({"message": "User deleted"}), status.HTTP_200_OK
+
+    except Exception as e:
+        print("Error deleting user:", str(e))
+        return (
+            jsonify({"error": "Error deleting user"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
 if __name__ == "__main__":
     app.run(debug=True)

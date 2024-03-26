@@ -96,11 +96,6 @@ function RootLayoutNav() {
             options={{
               presentation: "card",
               title: "Log in",
-              // headerLeft: () => (
-              //   <TouchableOpacity onPress={() => router.back()}>
-              //     <Ionicons name="close-outline" size={28} />
-              //   </TouchableOpacity>
-              // ),
             }}
           />
           <Stack.Screen
@@ -108,11 +103,6 @@ function RootLayoutNav() {
             options={{
               presentation: "card",
               title: "Register ",
-              // headerLeft: () => (
-              //   <TouchableOpacity onPress={() => router.back()}>
-              //     <Ionicons name="close-outline" size={28} />
-              //   </TouchableOpacity>
-              // ),
             }}
           />
         </Stack>

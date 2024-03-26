@@ -32,7 +32,7 @@ export default function Create() {
       <AlertDialog>
         <AlertDialogTitle>No Permission Granted</AlertDialogTitle>
         <AlertDialogDescription>
-          Please allow access to upload image.
+          {error}
         </AlertDialogDescription>
       </AlertDialog>;
     } else {
@@ -63,12 +63,12 @@ export default function Create() {
               <Switch.Thumb animation='bouncy' />
             </Switch>
           </XStack>
-          <Button onPress={pickImg} backgroundColor={'green'} mx={'$4'}>
+          <Button onPress={pickImg} backgroundColor={'orange'} mx={'$4'}>
             <Text color={'$black2'}>Upload Image</Text>
           </Button>
           <XStack>
             {file ? (
-              <Image
+              <Image                          
                 source={{
                   uri: file,
                 }}
@@ -124,7 +124,7 @@ export default function Create() {
                 />
               </YStack>) : null
           } */}
-          <Button backgroundColor={'green'} mx={'$4'}>
+          <Button backgroundColor={'orange'} mx={'$4'}>
             <Text color={'$black2'}>Post</Text>
           </Button>
         </YStack>

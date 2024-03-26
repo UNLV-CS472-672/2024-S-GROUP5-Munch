@@ -103,7 +103,7 @@ def middleware():
                 )
                 return None
             elif api_name == "posts" and request.method == "POST":
-                # Allow access to create new post 
+                # Allow access to create new post
                 print(
                     "User",
                     user_id,
@@ -122,7 +122,7 @@ def middleware():
                 for post in posts:
                     # Allow access if the API address is found in the posts
                     if request.path.split("/api/")[1] == post:
-                        return None 
+                        return None
 
             # Deny access if none of the above conditions are met
             print("Access denied.")

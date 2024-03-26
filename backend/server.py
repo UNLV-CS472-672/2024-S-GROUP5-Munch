@@ -541,12 +541,14 @@ def get_user(user_id):
             jsonify({"error": "Database connection error"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-    
+
     # Get the database
     db = firestore.client()
 
     # Get the User by ID
-    user_ref = db.collection("users").document(user_id)      # Check if collection is called "users"
+    user_ref = db.collection("users").document(
+        user_id
+    )  # Check if collection is called "users"
     user_doc = user_ref.get()
 
     # Check if the user exists
@@ -574,6 +576,7 @@ def get_user(user_id):
 
     # Return the user ID as Dictionary
     return user_data
+
 
 # Validate the post verifying it has the correct fields
 def user_validation(data):

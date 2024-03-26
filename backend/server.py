@@ -444,7 +444,7 @@ def delete_post(post_id):
         # Connect to the database
         db = firestore.client()
 
-        # Delete the post from the 'posts' collection
+        # Get the post reference
         post_ref = db.collection("posts").document(post_id)
 
         # Get the post data

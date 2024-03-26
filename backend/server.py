@@ -109,14 +109,18 @@ def middleware():
                     "has been given access to create a new post.",
                 )
                 return None
-            elif api_name == "posts" and request.method == "DELETE" or request.method == "PUT":
+            elif (
+                api_name == "posts"
+                and request.method == "DELETE"
+                or request.method == "PUT"
+            ):
                 # TODO: Logic to check if the user owns the post being deleted
                 # Once the users collection gets updated I can track that post down from 'result["posts"]'
                 # and verify if the user created that post and has access
                 posts_array = result["posts"]
                 # if api_address is somewhere in posts_array, allow access, else deny
-                    # return None
-                
+                # return None
+
             # Deny access if none of the above conditions are met
             print("Access denied.")
             return (

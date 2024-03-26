@@ -1,11 +1,20 @@
+import UserInput from "@/components/UserInput";
 import { useWarmUpBrowser } from "@/hooks/useWarmUpBrowser";
-import { useOAuth, useSignIn, useUser } from "@clerk/clerk-expo";
+import { LoginSchema, LoginSchemaInputs } from "@/types/user";
+import {
+  isClerkAPIResponseError,
+  useOAuth,
+  useSignIn,
+  useUser,
+} from "@clerk/clerk-expo";
 import { Ionicons } from "@expo/vector-icons";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
 import { collection, getFirestore } from "firebase/firestore";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 import { View } from "react-native";
-import { Button, Input, Separator, Text, XStack, YStack } from "tamagui";
+import { Button, Form, Separator, Text, XStack, YStack } from "tamagui";
 import { app } from "../firebaseConfig";
 
 enum Strategies {
@@ -16,8 +25,12 @@ enum Strategies {
 const Login = () => {
   useWarmUpBrowser();
 
-  const { isSignedIn, user } = useUser();
-  const { signIn, isLoaded, setActive } = useSignIn();
+  const { isSignedIn } = useUser();
+  const {
+    signIn: { create },
+    setActive,
+  } = useSignIn();
+  const [userToken, setUserToken] = useState("");
 
   const db = getFirestore(app);
   const router = useRouter();
@@ -25,13 +38,29 @@ const Login = () => {
   const { startOAuthFlow: gOAuth } = useOAuth({ strategy: "oauth_google" });
   const { startOAuthFlow: aOAuth } = useOAuth({ strategy: "oauth_apple" });
 
+  //on mount sign in
   useEffect(() => {
     if (isSignedIn) {
       router.push("/");
     }
   }, [isSignedIn]);
 
-  const manualSignIn = async () => {};
+  const manualSignIn: SubmitHandler<LoginSchemaInputs> = async (data) => {
+    try {
+      const { createdSessionId } = await create({
+        identifier: data.username,
+        password: data.password,
+      });
+
+      if (createdSessionId) {
+        await setActive({ session: createdSessionId });
+      }
+    } catch (err) {
+      if (isClerkAPIResponseError(err)) {
+      }
+      console.error("Manual sign in err", err);
+    }
+  };
   const authProviderSignIn = useCallback(async (strategy: Strategies) => {
     try {
       const curAuth = {
@@ -39,10 +68,10 @@ const Login = () => {
         [Strategies.Google]: gOAuth,
       }[strategy];
 
-      const { createdSessionId, signIn, signUp, setActive } = await curAuth();
+      const { createdSessionId, setActive } = await curAuth();
 
       if (createdSessionId) {
-        setActive!({ session: createdSessionId });
+        setActive({ session: createdSessionId });
 
         collection(db, "users");
         //ISSUE here
@@ -53,29 +82,60 @@ const Login = () => {
     }
   }, []);
 
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<LoginSchemaInputs>({
+    resolver: zodResolver(LoginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
   return (
     <View>
       <YStack gap={"$2"} paddingTop={"$5"} marginHorizontal={15}>
-        <Input
-          size="$4"
-          borderWidth={1}
-          placeholder="Username"
-          autoCapitalize={"none"}
-          borderColor={"$accentColor"}
-          unstyled
-        />
-        <Input
-          size="$4"
-          borderWidth={1}
-          placeholder="Password"
-          autoCapitalize="none"
-          secureTextEntry={true}
-          borderColor={"$accentColor"}
-          unstyled
-        />
-        <Button backgroundColor={"$red9"} onPress={manualSignIn}>
-          <Text>Continue</Text>
-        </Button>
+        <Form onSubmit={handleSubmit(manualSignIn)} gap={"$3"}>
+          <Controller
+            name="username"
+            control={control}
+            render={({ field }) => (
+              <UserInput
+                field={field}
+                labelID="username"
+                placeholder="Username"
+                key={"username"}
+                sx={{ borderWidth: 1, size: "$4" }}
+              />
+            )}
+          />
+          {errors.username?.message && (
+            <Text color={"$red10"}>{errors.username.message}</Text>
+          )}
+          <Controller
+            name="password"
+            control={control}
+            render={({ field }) => (
+              <UserInput
+                field={field}
+                labelID="password"
+                placeholder="Password"
+                key={"password"}
+                sx={{ borderWidth: 1, size: "$4", secureTextEntry: true }}
+              />
+            )}
+          />
+          {errors.password?.message && (
+            <Text color={"$red10"}>{errors.password.message}</Text>
+          )}
+          <Form.Trigger asChild>
+            <Button backgroundColor={"$red9"}>
+              <Text>Continue</Text>
+            </Button>
+          </Form.Trigger>
+        </Form>
 
         <Button
           justifyContent="center"

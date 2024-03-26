@@ -1,31 +1,27 @@
-import { useState, useEffect } from "react";
-import { YStack, Separator, View, Avatar } from "tamagui";
-import { isClerkAPIResponseError, useAuth, useUser } from "@clerk/clerk-expo";
-import { useColorScheme, TouchableOpacity } from "react-native";
-import { Stack } from "expo-router";
-import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
-import { ProfileInput } from "@/components/ProfileInput";
+import UserInput from "@/components/UserInput";
 import { UserState } from "@/types/user";
+import { isClerkAPIResponseError, useAuth, useUser } from "@clerk/clerk-expo";
+import { MediaTypeOptions, launchImageLibraryAsync } from "expo-image-picker";
+import { Stack } from "expo-router";
+import { Controller, useForm } from "react-hook-form";
+import { TouchableOpacity } from "react-native";
+import { Avatar, Separator, View, YStack, Form, XStack, Button } from "tamagui";
 
 const ProfileEditModal = () => {
-  const {} = useAuth();
   const { user } = useUser();
-  const [_, setUserInfo] = useState<UserState>({
-    username: user?.username,
-    firstName: user?.firstName,
-    lastName: user?.lastName,
-  });
 
-  useEffect(() => {
-    if (!user) {
-      return;
-    }
-    setUserInfo({
-      firstName: user.firstName,
-      lastName: user.lastName,
-      username: user.username,
-    });
-  }, [user]);
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+  } = useForm<UserState>({
+    defaultValues: {
+      username: user?.username,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      password: user?.passwordEnabled ? "password" : "",
+    },
+  });
 
   const handleUserProfileChange = async () => {
     let pfp = await launchImageLibraryAsync({
@@ -53,34 +49,78 @@ const ProfileEditModal = () => {
       <YStack gap={"$1"} px={"$2"}>
         <TouchableOpacity onPress={handleUserProfileChange}>
           <Avatar circular margin={"auto"} size={"$5"} my={"$4"}>
-            <Avatar.Image src={user.hasImage ? user.imageUrl! : ""} />
+            <Avatar.Image src={user.hasImage ? user.imageUrl! : " "} />
           </Avatar>
         </TouchableOpacity>
         <Separator />
-        <ProfileInput
-          id="username"
-          placeholder="Username"
-          setUserInfo={setUserInfo}
-          value={user.username}
-        />
-        <ProfileInput
-          id="firstName"
-          placeholder="First name"
-          setUserInfo={setUserInfo}
-          value={user.firstName}
-        />
-        <ProfileInput
-          id="lastName"
-          placeholder="Last name"
-          setUserInfo={setUserInfo}
-          value={user.lastName}
-        />
-        <ProfileInput
-          id="bio"
-          placeholder="Bio"
-          setUserInfo={setUserInfo}
-          value={user.bio}
-        />
+        <Form
+          onSubmit={handleSubmit((data) => {
+            console.log(data);
+          })}
+        >
+          <Controller
+            name={"username"}
+            control={control}
+            render={({ field }) => (
+              <XStack>
+                <UserInput
+                  field={field}
+                  useLabel
+                  labelID="Username"
+                  placeholder={user?.username ?? "username"}
+                />
+              </XStack>
+            )}
+          />
+          <Separator />
+          <Controller
+            name={"firstName"}
+            control={control}
+            render={({ field }) => (
+              <XStack>
+                <UserInput
+                  field={field}
+                  useLabel
+                  labelID="First Name"
+                  placeholder={user.firstName}
+                />
+              </XStack>
+            )}
+          />
+          <Separator />
+          <Controller
+            name={"lastName"}
+            control={control}
+            render={({ field }) => (
+              <XStack>
+                <UserInput
+                  field={field}
+                  useLabel
+                  labelID="Last Name"
+                  placeholder={user.lastName}
+                />
+              </XStack>
+            )}
+          />
+          <Separator />
+          <Controller
+            name={"bio"}
+            control={control}
+            render={({ field }) => (
+              <XStack>
+                <UserInput
+                  field={field}
+                  useLabel
+                  labelID="Bio"
+                  placeholder={user?.bio ?? "Bio"}
+                />
+              </XStack>
+            )}
+          />
+          <Form.Trigger asChild>
+            <Button backgroundColor={"$red10"}>Update</Button>
+          </Form.Trigger>
+        </Form>
       </YStack>
     </View>
   );

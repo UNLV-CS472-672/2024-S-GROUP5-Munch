@@ -91,6 +91,19 @@ def middleware():
             )
 
 
+# Error checking for connecting to database, refactored for error repetition
+def try_connect_to_db():
+    # Connect to database, gives error if cannot
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
 # Check if the app is already initialized
 def connect_to_db():
     """
@@ -330,14 +343,7 @@ def get_post(post_id):
         ValueError: If an error occurs while connecting to the database.
     """
     # Connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     # Get the database
     db = firestore.client()
@@ -385,14 +391,7 @@ def create_post():
         return validation_error, status_code
 
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -447,14 +446,7 @@ def update_post(post_id):
         return jsonify(validation_error), status_code
 
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -488,14 +480,7 @@ def delete_post(post_id):
         tuple: A tuple containing a JSON response and a status code.
     """
     # Check connection to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database

@@ -2,7 +2,7 @@ import { Feather } from '@expo/vector-icons';
 import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import React from 'react';
 import { Button, Text, TextArea, YStack, Image } from 'tamagui';
-import { Container, Main, Subtitle, Title } from '../../tamagui.config.ts';
+import { Container, Main, Subtitle, Title } from '../tamagui.config.ts';
 //Recipe Page
 
 export default function Recipe() {

@@ -66,7 +66,7 @@ def middleware():
             # Extract user_id and API details from the request
             user_id = decoded_token["uid"]
             #! Dummy user_id for testing purposes, replace it with actual user_id retrieval
-            user_id = "h4CJzSv3N1sx1AZp1AFD"
+            # user_id = "h4CJzSv3N1sx1AZp1AFD"
 
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]
             api_address = request.path.split("/", 3)[-1]
@@ -103,6 +103,7 @@ def middleware():
                 )
                 return None
             elif api_name == "posts" and request.method == "POST":
+                # Allow access to create new post 
                 print(
                     "User",
                     user_id,
@@ -114,12 +115,14 @@ def middleware():
                 and request.method == "DELETE"
                 or request.method == "PUT"
             ):
-                # TODO: Logic to check if the user owns the post being deleted
-                # Once the users collection gets updated I can track that post down from 'result["posts"]'
-                # and verify if the user created that post and has access
-                posts_array = result["posts"]
-                # if api_address is somewhere in posts_array, allow access, else deny
-                # return None
+                # Get a dict of posts
+                posts = result.get("posts", [])
+
+                # Iterate over the posts
+                for post in posts:
+                    # Allow access if the API address is found in the posts
+                    if request.path.split("/api/")[1] == post:
+                        return None 
 
             # Deny access if none of the above conditions are met
             print("Access denied.")

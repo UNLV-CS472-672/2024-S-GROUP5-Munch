@@ -12,19 +12,20 @@ app = Flask(__name__)
 # Load environment variables from .env file
 load_dotenv()
 
+
 # Check if User exists in database
 def check_user_existance(user_id):
     try:
         # Attempt to connect to the database
         try_connect_to_db()
-        
+
         # Get reference to the users collection
         db = firestore.client()
         users_collection = db.collection("users")
 
-        # Get the document reference for the specified user_id        
+        # Get the document reference for the specified user_id
         user_doc_ref = users_collection.document(user_id)
-        
+
         if user_doc_ref.get().exists:
             return True
         else:
@@ -61,7 +62,7 @@ def middleware():
                 os.getenv("CLERK_PEM_PUBLIC_KEY"),
                 options={"verify_signature": False},
             )
-            
+
             # Extract user_id and API details from the request
             user_id = decoded_token["uid"]
             #! Dummy user_id for testing purposes, replace it with actual user_id retrieval
@@ -69,7 +70,7 @@ def middleware():
 
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]
             api_address = request.path.split("/", 3)[-1]
-            
+
             # If the user exists, get their data
             if check_user_existance(user_id):
                 result = get_user(user_id)
@@ -78,34 +79,64 @@ def middleware():
                 print("THE USER DOES NOT EXIST")
                 #! THE BELOW FUNCTION MUST BE MODIFIED BEFORE THIS WORKS
                 # result =  create_user(decoded_token["uid"])
-            
+
             # Authorization based on request method and resource type
-            if request.method == 'GET':
+            if request.method == "GET":
                 # Allow any GET request by default
-                print("User", user_id, "has been given access to perform a GET request.")
+                print(
+                    "User",
+                    user_id,
+                    "has been given access to perform a GET request.",
+                )
                 return None
-            elif api_name == 'users' and user_id != api_address and request.method == 'GET':
+            elif (
+                api_name == "users"
+                and user_id != api_address
+                and request.method == "GET"
+            ):
                 # Allow retrieving information about other users
-                print("User", user_id, "has been given access to get", api_address, "accounts data.")
+                print(
+                    "User",
+                    user_id,
+                    "has been given access to get",
+                    api_address,
+                    "accounts data.",
+                )
                 return None
-            elif api_name == 'posts' and request.method == 'GET':
+            elif api_name == "posts" and request.method == "GET":
                 # Allow retrieving information about posts
-                print("User", user_id, "has been given access to get the post:", api_address)
+                print(
+                    "User",
+                    user_id,
+                    "has been given access to get the post:",
+                    api_address,
+                )
                 return None
-            elif api_name == 'users' and user_id == api_address and request.method != 'POST':
+            elif (
+                api_name == "users"
+                and user_id == api_address
+                and request.method != "POST"
+            ):
                 # Allow accessing and modifying the user's own information (excluding PUT requests)
-                print("User", user_id, "has been given access to get, update, or delete, their own account.")
+                print(
+                    "User",
+                    user_id,
+                    "has been given access to get, update, or delete, their own account.",
+                )
                 return None
-            elif api_name == 'posts' and request.method == 'PUT':
+            elif api_name == "posts" and request.method == "PUT":
                 # Logic to check if the user owns the post being updated
                 return None
-            elif api_name == 'posts' and request.method == 'DELETE':
+            elif api_name == "posts" and request.method == "DELETE":
                 # Logic to check if the user owns the post being deleted
                 return None
             else:
                 # Deny access if none of the above conditions are met
                 print("Access denied.")
-                return jsonify({"error": "Unauthorized access"}), status.HTTP_403_FORBIDDEN
+                return (
+                    jsonify({"error": "Unauthorized access"}),
+                    status.HTTP_403_FORBIDDEN,
+                )
 
         except jwt.ExpiredSignatureError:
             print("Token Expired")

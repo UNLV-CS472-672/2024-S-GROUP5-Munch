@@ -28,6 +28,19 @@ def middleware():
     #  Current token 1111 is verified against post token 1234, and changes are DENIED
 
 
+# Error checking for connecting to database, refactored for error repetition
+def try_connect_to_db():
+    # Connect to database, gives error if cannot
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
 # Check if the app is already initialized
 def connect_to_db():
     """
@@ -267,14 +280,7 @@ def get_post(post_id):
         ValueError: If an error occurs while connecting to the database.
     """
     # Connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     # Get the database
     db = firestore.client()
@@ -322,14 +328,7 @@ def create_post():
         return validation_error, status_code
 
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -384,14 +383,7 @@ def update_post(post_id):
         return jsonify(validation_error), status_code
 
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -425,14 +417,7 @@ def delete_post(post_id):
         tuple: A tuple containing a JSON response and a status code.
     """
     # Check connection to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -514,6 +499,68 @@ def get_user_posts(user_id):
 
     # Return the posts
     return all_posts
+
+
+# Get a specific user by id
+@app.route("/api/users/<user_id>", methods=["GET"])
+def get_user(user_id):
+    """
+    Get a specific user by ID.
+
+    Args:
+        user_id (str): The ID of the user to retrieve.
+
+    Returns:
+        dict: A dictionary representing the user.
+
+    Raises:
+        ValueError: If an error occurs while connecting to the database.
+        ValueError: If the specific user is not found.
+    """
+    # Connect to the database
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    # Get the database
+    db = firestore.client()
+
+    # Get the User by ID
+    user_ref = db.collection("users").document(
+        user_id
+    )  # Check if collection is called "users"
+    user_doc = user_ref.get()
+
+    # Check if the user exists
+    if not user_doc.exists:
+        return jsonify({"error": "User not found"}), status.HTTP_404_NOT_FOUND
+
+    if not user_doc.exists:
+        return (
+            jsonify({"error": "No user found"}),
+            status.HTTP_404_NOT_FOUND,
+        )
+
+    # Convert the user document to a dictionary
+    user_data = user_doc.to_dict()
+
+    # Convert the date to string
+    user_data["bio"] = str(user_data["bio"])
+    user_data["username"] = str(user_data["username"])
+    user_data["userID"] = str(user_data["userID"])
+    user_data["bookmarks"] = str(user_data["bookmarks"])
+    user_data["likes"] = str(user_data["likes"])
+    user_data["posts"] = str(user_data["posts"])
+    user_data["followers"] = str(user_data["followers"])
+    user_data["following"] = str(user_data["following"])
+
+    # Return the user ID as Dictionary
+    return user_data
 
 
 # Validate the post verifying it has the correct fields
@@ -631,6 +678,44 @@ def create_user():
         print("Error adding new user:", str(e))
         return (
             jsonify({"error": "Error adding new user"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+
+# Delete a user
+@app.route("/api/users/<user_id>", methods=["DELETE"])
+def delete_user(user_id):
+    """
+    Args:
+        post_id (str): The ID of the post to be deleted.
+
+    Returns:
+        tuple: A tuple containing a JSON response and a status code.
+    """
+    # Check connection to the database
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    try:
+        # Connect to the database
+        db = firestore.client()
+
+        # Delete the post from the 'posts' collection
+        db.collection("users").document(user_id).delete()
+
+        # Return a success message
+        return jsonify({"message": "User deleted"}), status.HTTP_200_OK
+
+    except Exception as e:
+        print("Error deleting user:", str(e))
+        return (
+            jsonify({"error": "Error deleting user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 

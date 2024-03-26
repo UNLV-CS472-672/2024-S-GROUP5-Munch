@@ -654,7 +654,7 @@ def delete_user(user_id):
             jsonify({"error": "Database connection error"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-    
+
     try:
         # Connect to the database
         db = firestore.client()

@@ -47,32 +47,48 @@ def middleware():
         jwt.InvalidTokenError: If the JWT token is invalid or malformed.
     """
     print("Incoming request:", request.method, request.path)
-    
+
     # Check for Authorization header
     auth_header = request.headers.get("Authorization")
     if auth_header:
         token = auth_header  # JWT token without "Bearer" prefix
         try:
             # Verify and decode JWT token
-            decoded_token = jwt.decode(token, os.getenv("CLERK_PEM_PUBLIC_KEY"), options={"verify_signature": False})
-            
+            decoded_token = jwt.decode(
+                token,
+                os.getenv("CLERK_PEM_PUBLIC_KEY"),
+                options={"verify_signature": False},
+            )
+
             # Validate expiration time
             print(time.time())
             if decoded_token["exp"] < time.time():
-                return jsonify({"error": "Token expired"}), status.HTTP_401_UNAUTHORIZED
-            
+                return (
+                    jsonify({"error": "Token expired"}),
+                    status.HTTP_401_UNAUTHORIZED,
+                )
+
             # Access granted, you can access decoded_token["uid"] to get user ID
             # For example:
             # user_id = decoded_token["uid"]
         except jwt.ExpiredSignatureError:
             print("Token Expired")
-            return jsonify({"error": "Token expired"}), status.HTTP_401_UNAUTHORIZED
+            return (
+                jsonify({"error": "Token expired"}),
+                status.HTTP_401_UNAUTHORIZED,
+            )
         except jwt.InvalidSignatureError:
             print("Signature Verification Failed")
-            return jsonify({"error": "Signature Verification Failed"}), status.HTTP_401_UNAUTHORIZED
+            return (
+                jsonify({"error": "Signature Verification Failed"}),
+                status.HTTP_401_UNAUTHORIZED,
+            )
         except jwt.InvalidTokenError:
             print("Invalid Token")
-            return jsonify({"error": "Invalid token"}), status.HTTP_401_UNAUTHORIZED
+            return (
+                jsonify({"error": "Invalid token"}),
+                status.HTTP_401_UNAUTHORIZED,
+            )
 
 
 # Check if the app is already initialized

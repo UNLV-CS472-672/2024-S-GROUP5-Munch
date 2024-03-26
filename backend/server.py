@@ -96,7 +96,7 @@ def field_error_message(message, fields):
 
 # function to check author validitiy
 def invalid_author_check(author, users):
-    if str(author[len("users/"):]) not in users:
+    if str(author[len("users/") :]) not in users:
         return True
     return False
 
@@ -337,13 +337,11 @@ def create_post():
         # Add the new post to the 'posts' collection
         new_post_ref = db.collection("posts").document()
 
-        data["author"] = db.document(
-            "users/" + data["author"][len("users/"):]
-        )
+        data["author"] = db.document("users/" + data["author"][len("users/") :])
 
         for comment in data["comments"]:
             comment["author"] = db.document(
-                "users/" + comment["author"][len("users/"):]
+                "users/" + comment["author"][len("users/") :]
             )
 
         new_post_ref.set(data)
@@ -407,10 +405,14 @@ def update_post(post_id):
         # Update the post in the 'posts' collection
         post_ref = db.collection("posts").document(post_id)
 
-        data["author"] = db.document("users/" + data["author"][len("/users/") :])
+        data["author"] = db.document(
+            "users/" + data["author"][len("/users/") :]
+        )
 
         for comment in data["comments"]:
-            comment["author"] = db.document("users/" + comment["author"][len("/users/") :])
+            comment["author"] = db.document(
+                "users/" + comment["author"][len("/users/") :]
+            )
 
         post_ref.update(data)
 
@@ -454,7 +456,9 @@ def delete_post(post_id):
         post_ref.delete()
 
         # Get the user reference
-        user_ref = db.collection("users").document(str(post_data["author"].path[len("users/"):]))
+        user_ref = db.collection("users").document(
+            str(post_data["author"].path[len("users/") :])
+        )
 
         # Get the user data
         user_data = user_ref.get().to_dict()
@@ -506,7 +510,7 @@ def get_user_posts(user_id):
         db = firestore.client()
 
         # Query for the first 50 posts of the specified user
-        user_ref = db.collection('users').document(user_id)
+        user_ref = db.collection("users").document(user_id)
         user_data = user_ref.get().to_dict()
         post_data = user_data["posts"]
 
@@ -516,7 +520,9 @@ def get_user_posts(user_id):
         # Iterate over the query results
         for post_doc in post_data:
             # Get the post reference
-            post_ref = db.collection("posts").document(post_doc.path[len("posts/"):])
+            post_ref = db.collection("posts").document(
+                post_doc.path[len("posts/") :]
+            )
             # Get the post data
             post_data = post_ref.get().to_dict()
 

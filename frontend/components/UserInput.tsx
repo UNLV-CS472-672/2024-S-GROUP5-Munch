@@ -1,6 +1,6 @@
 import { ControllerRenderProps } from "react-hook-form";
 import { useColorScheme } from "react-native";
-import { Input, Label } from "tamagui";
+import { Input, Label, Text } from "tamagui";
 
 interface UserInputProps<T> {
   labelID: string;

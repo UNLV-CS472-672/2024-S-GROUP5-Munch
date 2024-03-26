@@ -13,6 +13,7 @@ import {
   YStack,
   Text,
   View,
+  H4,
 } from "tamagui";
 import { ToastProvider } from "@tamagui/toast";
 import {
@@ -94,7 +95,7 @@ export default function Profile() {
                   </Avatar>
                 </TouchableOpacity>
                 <YStack gap={"$2"}>
-                  <H3>{user?.username}</H3>
+                  <H4>{user?.username}</H4>
                   <Paragraph>{`${user?.firstName} ${
                     user?.lastName ?? ""
                   }`}</Paragraph>

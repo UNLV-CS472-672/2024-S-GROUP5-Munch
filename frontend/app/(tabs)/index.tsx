@@ -1,66 +1,67 @@
-import { useUser } from "@clerk/clerk-expo";
-import { collection, getDocs } from "firebase/firestore";
-import { useEffect } from "react";
+/*  Homepage layout
+ *   Includes a background image of a recipe image
+ *   Includes a side bar with an Avatar, like button, comment
+ *   button, and a share button.
+ */
+
+import { Link } from "expo-router";
+import { TouchableHighlight, Dimensions } from "react-native";
 import {
-  ImageBackground,
-  SafeAreaView,
-  TouchableHighlight,
-} from "react-native";
-import { Avatar, Text, View, YStack, styled, Button, Image } from "tamagui";
-import { db } from "../firebaseConfig";
+  Button,
+  YStack,
+  Image,
+  styled,
+  Avatar,
+  Text,
+  View,
+  ScrollView,
+} from "tamagui";
 
 export default function Index() {
   const backgroundImage = { uri: "https://picsum.photos/1080/1920" };
-  const StyledBG = styled(ImageBackground, { flex: 1 });
-  const { user } = useUser();
-
-  const users = collection(db, "users");
-
-  const getUsers = async () => {
-    try {
-      const userSnapshot = await getDocs(users);
-
-      // userSnapshot.forEach((item) => console.log(item.data()));
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  useEffect(() => {
-    getUsers();
-  }, []);
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
   return (
-    <SafeAreaView>
-      <View flex={1}>
-        <StyledBG resizeMode="contain" source={backgroundImage}>
-          <YStack
-            backgroundColor={"grey"}
-            width={70}
-            height={240}
-            x={338}
-            y={300}
-            justifyContent={"space-around"}
-            alignItems={"center"}
+    <ScrollView>
+      <View
+        flexDirection={"row-reverse"}
+        width={windowWidth}
+        height={windowHeight}
+        verticalPadding={60}
+      >
+        <Image
+          source={backgroundImage}
+          width={windowWidth}
+          height={windowHeight - 100}
+          resizeImage={"contain"}
+          position={"absolute"}
+        />
+        <YStack
+          backgroundColor={"grey"}
+          width={70}
+          height={240}
+          y={300}
+          justifyContent={"space-around"}
+          alignItems={"center"}
+        >
+          <Avatar circular size="$6">
+            <Avatar.Image src="https://picsum.photos/300/300" />
+          </Avatar>
+          <TouchableHighlight
+            onPress={() => console.log("Button pressed")}
+            underlayColor="crimson"
+            activeOpacity={1}
           >
-            <Avatar circular size="$6">
-              <Avatar.Image src="https://picsum.photos/300/300" />
-            </Avatar>
-            <TouchableHighlight
-              onPress={() => console.log("Button pressed")}
-              underlayColor="crimson"
-              activeOpacity={1}
-            >
-              <Image source={require("../../assets/images/heart.png")} />
-            </TouchableHighlight>
-            <Button size="$5" circular>
-              comm
-            </Button>
-            <Button size="$5" circular>
-              share
-            </Button>
-          </YStack>
-        </StyledBG>
+            <Image source={require("../../assets/images/heart.png")} />
+          </TouchableHighlight>
+          <Button size="$5" circular>
+            comm
+          </Button>
+          <Button size="$5" circular>
+            share
+          </Button>
+        </YStack>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 }

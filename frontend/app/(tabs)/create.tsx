@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Button,
   H1,
@@ -15,8 +15,11 @@ import {
   TextArea,
   View,
 } from "tamagui";
+import type { TabsContentProps } from "tamagui";
 
 export default function Create() {
+  const [isEnabled, setEnabledElements] = useState(false);
+
   return (
     <View>
       <YStack>

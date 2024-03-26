@@ -46,7 +46,6 @@ def middleware():
 
     Raises:
         jwt.ExpiredSignatureError: If the JWT token has expired.
-        jwt.InvalidSignatureError: If the JWT signature verification has failed.
         jwt.InvalidTokenError: If the JWT token is invalid or malformed.
     """
     print("Incoming request:", request.method, request.path)
@@ -135,12 +134,6 @@ def middleware():
             print("Token Expired")
             return (
                 jsonify({"error": "Token expired"}),
-                status.HTTP_401_UNAUTHORIZED,
-            )
-        except jwt.InvalidSignatureError:
-            print("Signature Verification Failed")
-            return (
-                jsonify({"error": "Signature Verification Failed"}),
                 status.HTTP_401_UNAUTHORIZED,
             )
         except jwt.InvalidTokenError:

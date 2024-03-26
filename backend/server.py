@@ -516,6 +516,65 @@ def get_user_posts(user_id):
     return all_posts
 
 
+# Get a specific user by id
+@app.route("/api/users/<user_id>", methods=["GET"])
+def get_user(user_id):
+    """
+    Get a specific user by ID.
+
+    Args:
+        user_id (str): The ID of the user to retrieve.
+
+    Returns:
+        dict: A dictionary representing the user.
+
+    Raises:
+        ValueError: If an error occurs while connecting to the database.
+        ValueError: If the specific user is not found.
+    """
+    # Connect to the database
+    try:
+        connect_to_db()
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+    
+    # Get the database
+    db = firestore.client()
+
+    # Get the User by ID
+    user_ref = db.collection("users").document(user_id)      # Check if collection is called "users"
+    user_doc = user_ref.get()
+
+    # Check if the user exists
+    if not user_doc.exists:
+        return jsonify({"error": "User not found"}), status.HTTP_404_NOT_FOUND
+
+    if not user_doc.exists:
+        return (
+            jsonify({"error": "No user found"}),
+            status.HTTP_404_NOT_FOUND,
+        )
+
+    # Convert the user document to a dictionary
+    user_data = user_doc.to_dict()
+
+    # Convert the date to string
+    user_data["bio"] = str(user_data["bio"])
+    user_data["username"] = str(user_data["username"])
+    user_data["userID"] = str(user_data["userID"])
+    user_data["bookmarks"] = str(user_data["bookmarks"])
+    user_data["likes"] = str(user_data["likes"])
+    user_data["posts"] = str(user_data["posts"])
+    user_data["followers"] = str(user_data["followers"])
+    user_data["following"] = str(user_data["following"])
+
+    # Return the user ID as Dictionary
+    return user_data
+
 # Validate the post verifying it has the correct fields
 def user_validation(data):
     """

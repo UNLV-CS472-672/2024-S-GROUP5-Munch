@@ -304,7 +304,7 @@ def get_post(post_id):
     for comment in post_data["comments"]:
         comment["author"] = comment["author"].path
 
-    return post_data
+    return jsonify(post_data), status.HTTP_200_OK
 
 
 # Create a new post

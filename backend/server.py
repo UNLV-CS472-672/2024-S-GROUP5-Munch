@@ -27,6 +27,7 @@ def middleware():
     # User 2 with token 1111 tries to PUT (update) post 4321
     #  Current token 1111 is verified against post token 1234, and changes are DENIED
 
+
 # Error checking for connecting to database, refactored for error repetition
 def try_connect_to_db():
     # Connect to database, gives error if cannot
@@ -38,6 +39,7 @@ def try_connect_to_db():
             jsonify({"error": "Database connection error"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
 
 # Check if the app is already initialized
 def connect_to_db():

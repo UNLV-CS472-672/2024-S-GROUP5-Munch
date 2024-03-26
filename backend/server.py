@@ -6,40 +6,42 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from dotenv import load_dotenv
 import jwt
-import time
 
 app = Flask(__name__)
 
 # Load environment variables from .env file
 load_dotenv()
 
+# Check if User exists in database
+def check_user_existance(user_id):
+    try:
+        # Attempt to connect to the database
+        try_connect_to_db()
+        
+        # Get reference to the users collection
+        db = firestore.client()
+        users_collection = db.collection("users")
 
-# Middleware function
+        # Get the document reference for the specified user_id        
+        user_doc_ref = users_collection.document(user_id)
+        
+        if user_doc_ref.get().exists:
+            return True
+        else:
+            return False
+    except Exception as e:
+        print("An error occurred:", e)
+        return False
+
+
+# Middleware function to handle JWT authentication for incoming requests
 @app.before_request
 def middleware():
     """
-    Middleware function to handle JWT authentication for incoming requests.
-
     This function intercepts all incoming requests and checks for the presence of
     an Authorization header containing a JWT token. If the header is present and
-    in the correct format, it verifies the token's validity and expiration.
-
-    Expected format of Authorization header:
-    {
-        "method": "GET",
-        "path": "/api/posts/Kr40Rksk4XI4qauBkpYb",
-        "headers": {
-            "Host": "localhost:5000",
-            "User-Agent": "Chrome/96.0.4664.110 (Windows NT 10.0; Win64; x64)",
-            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMjM0NTY3ODkwIiwiZXhwIjoxNjg5NzQ2NjQzLCJpYXQiOjE2ODk3NDYwNDN9.FiPKU2I9Dq-iN0OW8m_pMzyPESyt4C3Y_CXn99vWq08"
-        }
-    }
-
-    Where:
-        - <CLERK_PUBLIC_KEY> is a Public Key representing the Clerk Secret file.
-
-    If the token is valid and not expired, access to the requested resource is granted.
-    If the token is missing, invalid, or expired, an appropriate error response is returned.
+    in the correct format, it verifies the token's validity and expiration and uses
+    the 'uid' field to check if the user has access to that data.
 
     Raises:
         jwt.ExpiredSignatureError: If the JWT token has expired.
@@ -59,18 +61,52 @@ def middleware():
                 os.getenv("CLERK_PEM_PUBLIC_KEY"),
                 options={"verify_signature": False},
             )
+            
+            # Extract user_id and API details from the request
+            user_id = decoded_token["uid"]
+            #! Dummy user_id for testing purposes, replace it with actual user_id retrieval
+            user_id = "h4CJzSv3N1sx1AZp1AFD"
 
-            # Validate expiration time
-            print(time.time())
-            if decoded_token["exp"] < time.time():
-                return (
-                    jsonify({"error": "Token expired"}),
-                    status.HTTP_401_UNAUTHORIZED,
-                )
+            api_name = request.path.split("/", 2)[-1].split("/", 1)[0]
+            api_address = request.path.split("/", 3)[-1]
+            
+            # If the user exists, get their data
+            if check_user_existance(user_id):
+                result = get_user(user_id)
+            # If the user doesn't exist, create them
+            else:
+                print("THE USER DOES NOT EXIST")
+                #! THE BELOW FUNCTION MUST BE MODIFIED BEFORE THIS WORKS
+                # result =  create_user(decoded_token["uid"])
+            
+            # Authorization based on request method and resource type
+            if request.method == 'GET':
+                # Allow any GET request by default
+                print("User", user_id, "has been given access to perform a GET request.")
+                return None
+            elif api_name == 'users' and user_id != api_address and request.method == 'GET':
+                # Allow retrieving information about other users
+                print("User", user_id, "has been given access to get", api_address, "accounts data.")
+                return None
+            elif api_name == 'posts' and request.method == 'GET':
+                # Allow retrieving information about posts
+                print("User", user_id, "has been given access to get the post:", api_address)
+                return None
+            elif api_name == 'users' and user_id == api_address and request.method != 'POST':
+                # Allow accessing and modifying the user's own information (excluding PUT requests)
+                print("User", user_id, "has been given access to get, update, or delete, their own account.")
+                return None
+            elif api_name == 'posts' and request.method == 'PUT':
+                # Logic to check if the user owns the post being updated
+                return None
+            elif api_name == 'posts' and request.method == 'DELETE':
+                # Logic to check if the user owns the post being deleted
+                return None
+            else:
+                # Deny access if none of the above conditions are met
+                print("Access denied.")
+                return jsonify({"error": "Unauthorized access"}), status.HTTP_403_FORBIDDEN
 
-            # Access granted, you can access decoded_token["uid"] to get user ID
-            # For example:
-            # user_id = decoded_token["uid"]
         except jwt.ExpiredSignatureError:
             print("Token Expired")
             return (

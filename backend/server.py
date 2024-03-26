@@ -91,52 +91,38 @@ def middleware():
                 return None
             elif (
                 api_name == "users"
-                and user_id != api_address
-                and request.method == "GET"
-            ):
-                # Allow retrieving information about other users
-                print(
-                    "User",
-                    user_id,
-                    "has been given access to get",
-                    api_address,
-                    "accounts data.",
-                )
-                return None
-            elif api_name == "posts" and request.method == "GET":
-                # Allow retrieving information about posts
-                print(
-                    "User",
-                    user_id,
-                    "has been given access to get the post:",
-                    api_address,
-                )
-                return None
-            elif (
-                api_name == "users"
                 and user_id == api_address
                 and request.method != "POST"
             ):
-                # Allow accessing and modifying the user's own information (excluding PUT requests)
+                # Allow accessing and modifying the user's own information
+                # excluding POST requests as user creation happens above
                 print(
                     "User",
                     user_id,
                     "has been given access to get, update, or delete, their own account.",
                 )
                 return None
-            elif api_name == "posts" and request.method == "PUT":
-                # Logic to check if the user owns the post being updated
-                return None
-            elif api_name == "posts" and request.method == "DELETE":
-                # Logic to check if the user owns the post being deleted
-                return None
-            else:
-                # Deny access if none of the above conditions are met
-                print("Access denied.")
-                return (
-                    jsonify({"error": "Unauthorized access"}),
-                    status.HTTP_403_FORBIDDEN,
+            elif api_name == "posts" and request.method == "POST":
+                print(
+                    "User",
+                    user_id,
+                    "has been given access to create a new post.",
                 )
+                return None
+            elif api_name == "posts" and request.method == "DELETE" or request.method == "PUT":
+                # TODO: Logic to check if the user owns the post being deleted
+                # Once the users collection gets updated I can track that post down from 'result["posts"]'
+                # and verify if the user created that post and has access
+                posts_array = result["posts"]
+                # if api_address is somewhere in posts_array, allow access, else deny
+                    # return None
+                
+            # Deny access if none of the above conditions are met
+            print("Access denied.")
+            return (
+                jsonify({"error": "Unauthorized access"}),
+                status.HTTP_403_FORBIDDEN,
+            )
 
         except jwt.ExpiredSignatureError:
             print("Token Expired")

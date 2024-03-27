@@ -18,8 +18,7 @@ def run_tests():
     # Stop code coverage measurement
     cov.stop()
 
-    # Report code coverage
-    cov.report()
+    cov.report(show_missing=True)
 
     # Return the overall test result
     return result

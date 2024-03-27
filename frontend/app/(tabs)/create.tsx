@@ -36,7 +36,7 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
-        {!isEnabled ? (
+        {isEnabled ? (
           <YStack>
             <TextArea
               placeholder={'Description...'}
@@ -70,7 +70,7 @@ export default function Create() {
             />
           </YStack>
         ) : null}
-        {isEnabled ? (
+        {!isEnabled ? (
           <YStack>
             <TextArea
               placeholder={'Upload IMG...'}

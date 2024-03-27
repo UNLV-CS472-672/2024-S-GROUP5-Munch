@@ -515,7 +515,7 @@ def get_user_posts(user_id):
         for post_doc in post_data:
             # Get the post reference
             post_ref = db.collection("posts").document(
-                post_doc.path[len("posts/") :]
+                post_doc.path[len("posts/"):]
             )
             # Get the post data
             post_data = post_ref.get().to_dict()
@@ -531,7 +531,7 @@ def get_user_posts(user_id):
             user_posts.append(post_data)
 
         # Return the list of post data as JSON response
-        return jsonify(user_posts)
+        return jsonify(user_posts), status.HTTP_200_OK
 
     except Exception as e:
         print("Error fetching user's posts:", str(e))
@@ -578,9 +578,6 @@ def get_user(user_id):
 
     # Check if the user exists
     if not user_doc.exists:
-        return jsonify({"error": "User not found"}), status.HTTP_404_NOT_FOUND
-
-    if not user_doc.exists:
         return (
             jsonify({"error": "No user found"}),
             status.HTTP_404_NOT_FOUND,
@@ -592,16 +589,14 @@ def get_user(user_id):
     # Convert the date to string
     user_data["bio"] = str(user_data["bio"])
     user_data["username"] = str(user_data["username"])
-    user_data["userID"] = str(user_data["userID"])
-    user_data["bookmarks"] = str(user_data["bookmarks"])
-    user_data["likes"] = str(user_data["likes"])
-    user_data["posts"] = str(user_data["posts"])
-    user_data["followers"] = str(user_data["followers"])
-    user_data["following"] = str(user_data["following"])
+    user_data["bookmarks"] = [ref.path for ref in user_data.get("bookmarks", [])]
+    user_data["followers"] = [ref.path for ref in user_data.get("followers", [])]
+    user_data["following"] = [ref.path for ref in user_data.get("following", [])]
+    user_data["likes"] = [ref.path for ref in user_data.get("likes", [])]
+    user_data["posts"] = [ref.path for ref in user_data.get("posts", [])]
 
     # Return the user ID as Dictionary
     return user_data
-
 
 # Validate the post verifying it has the correct fields
 def user_validation(data):
@@ -613,7 +608,6 @@ def user_validation(data):
     {
         "bio": "<Users bio>",
         "username": "<Users Username>",
-        "userID": "<Users unique ID>",
         "bookmarks": "<Users number of bookmarks>",
         "likes": "<Users number of likes>",
         "posts": "<Users number of posts>",
@@ -638,7 +632,6 @@ def user_validation(data):
     required_fields = [
         "bio",
         "username",
-        "userID",
         "bookmarks",
         "likes",
         "posts",
@@ -652,7 +645,6 @@ def user_validation(data):
         not isinstance(data, dict)
         or "bio" not in data
         or "username" not in data
-        or "userID" not in data
         or "bookmarks" not in data
         or "likes" not in data
         or "posts" not in data
@@ -694,14 +686,7 @@ def create_user():
         return validation_error, status_code
 
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -709,6 +694,8 @@ def create_user():
 
         # Add the new user to the 'users' collection
         new_user_ref = db.collection("users").document()
+
+        # Set the user data
         new_user_ref.set(data)
 
         # Return the newly created user
@@ -747,14 +734,7 @@ def update_user(user_id):
         return validation_error, status_code
 
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -762,7 +742,27 @@ def update_user(user_id):
 
         # Add the new user to the 'users' collection
         new_user_ref = db.collection("users").document(user_id)
-        new_user_ref.update(data)
+        new_user_data = new_user_ref.get().to_dict()
+
+        # Convert the bookmarks list to a list of document references
+        new_user_data["bookmarks"] = [db.collection("posts").document(bookmark) for bookmark in data["bookmarks"]]
+
+        # Convert the followers list to a list of document references
+        new_user_data["followers"] = [db.collection("users").document(follower) for follower in data["followers"]]
+
+        # Convert the following list to a list of document references
+        new_user_data["following"] = [db.collection("users").document(following) for following in data["following"]]
+
+        # Convert the likes list to a list of document references
+        new_user_data["likes"] = [db.collection("posts").document(like) for like in data["likes"]]
+
+        # Update the users bio
+        new_user_data["bio"] = data["bio"]
+
+        # Update the users username
+        new_user_data["username"] = data["username"]
+
+        new_user_ref.update(new_user_data)
 
         # Return the newly created user
         return jsonify(data), status.HTTP_200_OK
@@ -786,21 +786,25 @@ def delete_user(user_id):
         tuple: A tuple containing a JSON response and a status code.
     """
     # Check connection to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
         db = firestore.client()
 
-        # Delete the post from the 'posts' collection
-        db.collection("users").document(user_id).delete()
+        # Get the user reference
+        user_ref = db.collection("users").document(user_id)
+
+        # Get the user data
+        user_data = user_ref.get().to_dict()
+
+        # Delete all posts from the user
+        for post in user_data["posts"]:
+            post_ref = db.document(post.path)
+            post_ref.delete()
+
+        # Delete the user
+        user_ref.delete()
 
         # Return a success message
         return jsonify({"message": "User deleted"}), status.HTTP_200_OK

@@ -679,11 +679,6 @@ def create_user(user_id):
         ValueError: If an error occurs while connecting to the database.
         ValueError: If the specific user already exists.
     """
-    # Check that data is valid
-    validation_error, status_code = user_validation(data)
-    if validation_error:
-        return validation_error, status_code
-
     # The request has been validated, connect to the database
     try_connect_to_db()
 

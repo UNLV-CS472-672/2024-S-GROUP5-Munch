@@ -14,7 +14,7 @@ import { TouchableOpacity, useColorScheme } from 'react-native';
 import { tokenCache } from './utils/tokenCache';
 import { TamaguiProvider } from 'tamagui';
 import tamaguiConfig from '@/tamagui.config';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -57,9 +57,9 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
       <QueryClientProvider client={queryClient}>
-          <TamaguiProvider config={tamaguiConfig}>
-            <RootLayoutNav />
-          </TamaguiProvider>
+        <TamaguiProvider config={tamaguiConfig}>
+          <RootLayoutNav />
+        </TamaguiProvider>
       </QueryClientProvider>
     </ClerkProvider>
   );

@@ -5,6 +5,7 @@ from flask import Flask, jsonify, request
 from firebase_admin import credentials
 from firebase_admin import firestore
 from dotenv import load_dotenv
+import copy
 
 app = Flask(__name__)
 
@@ -95,7 +96,7 @@ def field_error_message(message, fields):
 
 # function to check author validitiy
 def invalid_author_check(author, users):
-    if author[len("/users/") :] not in users:
+    if str(author[len("users/") :]) not in users:
         return True
     return False
 
@@ -119,6 +120,7 @@ def post_validation(data):
         "creation_date": "Post creation date",
         "description": "Post description",
         "likes": "Number of likes",
+        "location": "36.1048299,-115.1454664",
         "pictures": [
             "URL to picture 1",
             "URL to picture 2",
@@ -215,17 +217,6 @@ def post_validation(data):
             field for field in comment if field not in required_comment_fields
         ]
 
-        # make sure comment is proper type of dictionary
-        if (
-            not isinstance(comment, dict)
-            or not isinstance(comment["comment"], str)
-            or not isinstance(comment["creation_date"], str)
-        ):
-            return (
-                jsonify({"error": "Invalid format for comment"}),
-                status.HTTP_400_BAD_REQUEST,
-            )
-
         # post error if any missing or extra fields
         if missing_comment_fields:
             return field_error_message(
@@ -235,6 +226,17 @@ def post_validation(data):
         if extra_comment_fields:
             return field_error_message(
                 "Comment input has extra field(s): ", extra_comment_fields
+            )
+
+        # make sure comment is proper type of dictionary
+        if (
+            not isinstance(comment, dict)
+            or not isinstance(comment["comment"], str)
+            or not isinstance(comment["creation_date"], str)
+        ):
+            return (
+                jsonify({"error": "Invalid format for comment"}),
+                status.HTTP_400_BAD_REQUEST,
             )
 
         # make sure commenter is an actual user
@@ -296,18 +298,14 @@ def get_post(post_id):
     # Convert the post to a dictionary
     post_data = post_doc.to_dict()
 
-    # Convert the date to string
-    post_data["creation_date"] = str(post_data["creation_date"])
     # Convert the author to a dictionary
-    post_data["author"] = post_data["author"].get().to_dict()
-    # Convert the comments to a list of dictionaries
-    for comment in post_data["comments"]:
-        # Convert the date to string
-        comment["creation_date"] = str(comment["creation_date"])
-        # Convert the author to a dictionary
-        comment["author"] = comment["author"].get().to_dict()
+    post_data["author"] = post_data["author"].path
 
-    return post_data
+    # Convert the comments to a dictionary
+    for comment in post_data["comments"]:
+        comment["author"] = comment["author"].path
+
+    return jsonify(post_data), status.HTTP_200_OK
 
 
 # Create a new post
@@ -320,12 +318,15 @@ def create_post():
         dict: A dictionary representing the newly created post.
     """
     # Get data, check if it is empty
-    data = request.json
+    res = request.json
 
     # Check that data is valid
-    validation_error, status_code = post_validation(data)
+    validation_error, status_code = post_validation(res)
     if validation_error:
         return validation_error, status_code
+
+    # Make a deep copy of the data
+    data = copy.deepcopy(res)
 
     # The request has been validated, connect to the database
     try_connect_to_db()
@@ -337,22 +338,30 @@ def create_post():
         # Add the new post to the 'posts' collection
         new_post_ref = db.collection("posts").document()
 
-        data["author"] = db.document(
-            "users/" + data["author"][len("/users/") :]
-        )
+        data["author"] = db.document(data["author"])
+
         for comment in data["comments"]:
-            comment["author"] = db.document(
-                "users/" + comment["author"][len("/users/") :]
-            )
+            comment["author"] = db.document(comment["author"])
 
         new_post_ref.set(data)
 
-        data["author"] = data["author"].path
-        for comment in data["comments"]:
-            comment["author"] = comment["author"].path
+        # # Update user posts list
+        # Get the user reference
+        user_ref = db.collection("users").document(data["author"].id)
+
+        # Get the user data
+        user_data = user_ref.get().to_dict()
+
+        post_ref = db.document("posts/" + new_post_ref.id)
+
+        # Add the new post to the user's posts list
+        user_data["posts"].append(post_ref)
+
+        # Update the user data
+        user_ref.update(user_data)
 
         # Return the newly created post
-        return jsonify(data), status.HTTP_201_CREATED
+        return jsonify(res), status.HTTP_201_CREATED
 
     except Exception as e:
         print("Error adding new post:", str(e))
@@ -375,12 +384,15 @@ def update_post(post_id):
         dict: A dictionary representing the updated post.
     """
     # Get the JSON data from the request
-    data = request.json
+    res = request.json
 
-    # Validate the JSON data
-    validation_error, status_code = post_validation(data)
+    # Validate the JSON res
+    validation_error, status_code = post_validation(res)
     if validation_error:
         return jsonify(validation_error), status_code
+
+    # Make a deep copy of the data
+    data = copy.deepcopy(res)
 
     # The request has been validated, connect to the database
     try_connect_to_db()
@@ -391,10 +403,16 @@ def update_post(post_id):
 
         # Update the post in the 'posts' collection
         post_ref = db.collection("posts").document(post_id)
+
+        data["author"] = db.document(data["author"])
+
+        for comment in data["comments"]:
+            comment["author"] = db.document(comment["author"])
+
         post_ref.update(data)
 
         # Return the updated post
-        return jsonify(data), status.HTTP_200_OK
+        return jsonify(res), status.HTTP_200_OK
 
     except Exception as e:
         print("Error updating post:", str(e))
@@ -423,8 +441,28 @@ def delete_post(post_id):
         # Connect to the database
         db = firestore.client()
 
-        # Delete the post from the 'posts' collection
-        db.collection("posts").document(post_id).delete()
+        # Get the post reference
+        post_ref = db.collection("posts").document(post_id)
+
+        # Get the post data
+        post_data = post_ref.get().to_dict()
+
+        # Delete the post
+        post_ref.delete()
+
+        # Get the user reference
+        user_ref = db.collection("users").document(
+            str(post_data["author"].path[len("users/") :])
+        )
+
+        # Get the user data
+        user_data = user_ref.get().to_dict()
+
+        # Get the post reference
+        user_data["posts"].remove(post_ref)
+
+        # Update the user data
+        user_ref.update(user_data)
 
         # Return a success message
         return jsonify({"message": "Post deleted"}), status.HTTP_200_OK
@@ -459,46 +497,49 @@ def get_user_posts(user_id):
         If no posts are found for the specified user, it raises a ValueError.
         If an error occurs while connecting to the database, it raises a ValueError with an appropriate message.
     """
-    # Connect to the database
+    # Check connection to the database
+    try_connect_to_db()
+
     try:
-        connect_to_db()
+        # Get the database
+        db = firestore.client()
+
+        # Query for the first 50 posts of the specified user
+        user_ref = db.collection("users").document(user_id)
+        user_data = user_ref.get().to_dict()
+        post_data = user_data["posts"]
+
+        # Initialize an empty list to store post data
+        user_posts = []
+
+        # Iterate over the query results
+        for post_doc in post_data:
+            # Get the post reference
+            post_ref = db.collection("posts").document(
+                post_doc.path[len("posts/") :]
+            )
+            # Get the post data
+            post_data = post_ref.get().to_dict()
+
+            # Convert the author to a dictionary
+            post_data["author"] = post_data["author"].path
+
+            # Convert the comments to a dictionary
+            for comment in post_data["comments"]:
+                comment["author"] = comment["author"].path
+
+            # Append the post data to the list
+            user_posts.append(post_data)
+
+        # Return the list of post data as JSON response
+        return jsonify(user_posts)
+
     except Exception as e:
-        print("Error connecting to the database:", str(e))
+        print("Error fetching user's posts:", str(e))
         return (
-            jsonify({"error": "Database connection error"}),
+            jsonify({"error": "Error fetiching user's posts"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
-    # Get the database
-    db = firestore.client()
-
-    # Get first 50 posts
-    all_posts = (
-        db.collection("posts")
-        .where("author", "==", db.collection("users").document(user_id))
-        .limit(50)
-        .get()
-    )
-    all_posts = [post.to_dict() for post in all_posts]
-
-    if not all_posts:
-        return jsonify({"error": "No posts found"}), status.HTTP_404_NOT_FOUND
-
-    # Convert non-serializable data to string
-    for post in all_posts:
-        # Convert the date to string
-        post["creation_date"] = str(post["creation_date"])
-        # Convert the author to a dictionary
-        post["author"] = post["author"].get().to_dict()
-        # Convert the comments to a list of dictionaries
-        for comment in post["comments"]:
-            # Convert the date to string
-            comment["creation_date"] = str(comment["creation_date"])
-            # Convert the author to a dictionary
-            comment["author"] = comment["author"].get().to_dict()
-
-    # Return the posts
-    return all_posts
 
 
 # Get a specific user by id

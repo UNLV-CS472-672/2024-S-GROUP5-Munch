@@ -6,6 +6,7 @@ from server import app
 import firebase_admin
 from firebase_admin import credentials, firestore
 
+
 class SetUp:
     base_url = "http://127.0.0.1:5000/api/posts"
     users_url = "http://127.0.0.1:5000/api/users"
@@ -13,6 +14,7 @@ class SetUp:
     def database_connect(self):
         # Connect to database
         server.try_connect_to_db()
+
 
 class TestAPI(unittest.TestCase):
     base_url = "http://127.0.0.1:5000/api/posts"

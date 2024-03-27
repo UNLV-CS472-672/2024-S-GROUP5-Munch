@@ -49,7 +49,7 @@ def middleware():
         jwt.ExpiredSignatureError: If the JWT token has expired.
         jwt.InvalidTokenError: If the JWT token is invalid or malformed.
     """
-    print("Incoming request:", request.method, request.path)
+    print("\nIncoming request:", request.method, request.path)
 
     # Check for Authorization header
     auth_header = request.headers.get("Authorization")
@@ -65,20 +65,21 @@ def middleware():
 
             # Extract user_id and API details from the request
             user_id = decoded_token["uid"]
-            #! Dummy user_id for testing purposes, replace it with actual user_id retrieval
-            # user_id = "h4CJzSv3N1sx1AZp1AFD"
 
+            # api_name is the collection reference
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]
+            
+            # api_address is the request id
             api_address = request.path.split("/", 3)[-1]
 
             # If the user exists, get their data
             if check_user_existance(user_id):
                 result = get_user(user_id)
-            # If the user doesn't exist, create them
             else:
-                print("THE USER DOES NOT EXIST")
-                #! THE BELOW FUNCTION MUST BE MODIFIED BEFORE THIS WORKS
-                # result =  create_user(decoded_token["uid"])
+                # If the user doesn't exist, create them, then get their data
+                print("USER DOESN'T EXIST. CREATING USER!")
+                create_user(user_id)
+                result = get_user(user_id)
 
             # Authorization based on request method and resource type
             if request.method == "GET":

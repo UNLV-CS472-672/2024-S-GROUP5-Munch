@@ -1,4 +1,4 @@
-import { getItemAsync, setItemAsync } from 'expo-secure-store';
+import { getItemAsync, setItemAsync } from "expo-secure-store";
 export const tokenCache = {
   async getToken(key: string) {
     try {

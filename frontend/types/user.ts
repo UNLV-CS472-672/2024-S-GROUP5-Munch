@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export type UserState = {
   username?: string;
@@ -12,7 +12,7 @@ export type UserState = {
 export const RegisterSchema = z.object({
   username: z
     .string()
-    .min(3, { message: 'Username must be 3 characters long.' }),
+    .min(3, { message: "Username must be 3 characters long." }),
   password: z
     .string()
     .refine(
@@ -20,7 +20,7 @@ export const RegisterSchema = z.object({
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/.test(
           val,
         ),
-      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.',
+      "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.",
     ),
   firstName: z.string().optional(),
   lastName: z.string().optional(),
@@ -32,7 +32,7 @@ export type RegisterSchemaInputs = z.infer<typeof RegisterSchema>;
 export const LoginSchema = z.object({
   username: z
     .string()
-    .min(3, { message: 'Username must be 3 characters long.' }),
+    .min(3, { message: "Username must be 3 characters long." }),
   password: z
     .string()
     .refine(
@@ -40,7 +40,7 @@ export const LoginSchema = z.object({
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/.test(
           val,
         ),
-      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.',
+      "Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.",
     ),
 });
 

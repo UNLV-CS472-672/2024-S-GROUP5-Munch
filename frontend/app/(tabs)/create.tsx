@@ -1,4 +1,3 @@
-import { View } from '@/components/Themed';
 import React, { useState } from 'react';
 import {
   Button,
@@ -14,8 +13,9 @@ import {
   H5,
   Text,
   TextArea,
-  Switch,
+  View,
 } from 'tamagui';
+import type { TabsContentProps } from 'tamagui';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -23,23 +23,32 @@ export default function Create() {
   return (
     <View>
       <YStack>
-        <H4 style={{ alignSelf: 'center', color: 'black' }}>NEW POST</H4>
-        <XStack>
-          <Text color={'black'} fontSize='$5' paddingStart='$5'>
-            is this a recipe?
-          </Text>
-          <Switch
-            marginLeft='$2'
-            size='$3'
-            onCheckedChange={() => setEnabledElements(!isEnabled)}
+        <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
+        <Tabs
+          defaultValue='tab1'
+          orientation='horizontal'
+          flexDirection='column'
+          width={400}
+          height={150}
+          borderRadius='$4'
+          borderWidth='$0.25'
+          overflow='hidden'
+          borderColor='$borderColor'
+        >
+          <Tabs.List
+            disablePassBorderRadius='bottom'
+            aria-label='Creating a New Post'
           >
-            <Switch.Thumb animation='bouncy' />
-          </Switch>
-        </XStack>
-        {!isEnabled ? (
-          <YStack>
+            <Tabs.Tab flex={1} value='tab1'>
+              <SizableText fontFamily='$body'>Byte</SizableText>
+            </Tabs.Tab>
+            <Tabs.Tab flex={1} value='tab2'>
+              <SizableText fontFamily='$body'>Recipe</SizableText>
+            </Tabs.Tab>
+          </Tabs.List>
+          <Tabs.Content value='tab1'>
             <TextArea
-              placeholder={'Description...'}
+              placeholder={'Write a Caption...'}
               multiline={true}
               style={{
                 height: 130,
@@ -48,8 +57,10 @@ export default function Create() {
                 textAlignVertical: 'top',
               }}
             />
+          </Tabs.Content>
+          <Tabs.Content value='tab2'>
             <TextArea
-              placeholder={'List Steps...'}
+              placeholder={'List Steps for Recipe...'}
               multiline={true}
               style={{
                 height: 130,
@@ -58,42 +69,8 @@ export default function Create() {
                 textAlignVertical: 'top',
               }}
             />
-            <TextArea
-              placeholder={'List Ingredients...'}
-              multiline={true}
-              style={{
-                height: 130,
-                borderRadius: 5,
-                paddingHorizontal: 10,
-                textAlignVertical: 'top',
-              }}
-            />
-          </YStack>
-        ) : null}
-        {isEnabled ? (
-          <YStack>
-            <TextArea
-              placeholder={'Upload IMG...'}
-              multiline={true}
-              style={{
-                height: 130,
-                borderRadius: 5,
-                paddingHorizontal: 10,
-                textAlignVertical: 'top',
-              }}
-            />
-            <TextArea
-              placeholder={'Caption...'}
-              multiline={true}
-              style={{
-                height: 130,
-                borderRadius: 5,
-                paddingHorizontal: 10,
-                textAlignVertical: 'top',
-              }}
-            />
-          </YStack>
-        ) : null}
+          </Tabs.Content>
+        </Tabs>
         <Button backgroundColor={'cyan'} mx={'$4'}>
           <Text color={'$black2'}>Post</Text>
         </Button>

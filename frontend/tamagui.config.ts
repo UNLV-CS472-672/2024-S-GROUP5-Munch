@@ -4,7 +4,7 @@ import { createMedia } from '@tamagui/react-native-media-driver';
 import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
 import { createTamagui, styled, SizableText, H1, YStack } from 'tamagui';
-import { createSoftenMask, createThemeBuilder } from '@tamagui/theme-builder';
+import { config as DefaultConfig } from '@tamagui/config/v3';
 
 //animation for gestures
 const animations = createAnimations({
@@ -120,6 +120,7 @@ const config = createTamagui({
     hoverNone: { hover: 'none' },
     pointerCoarse: { pointer: 'coarse' },
   }),
+  ...DefaultConfig,
 });
 
 type AppConfig = typeof config;

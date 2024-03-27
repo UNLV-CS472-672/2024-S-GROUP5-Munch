@@ -1,11 +1,14 @@
-import { View, Text } from 'react-native';
 import React from 'react';
+import { SafeAreaView } from 'react-native';
+import { Text, View } from 'tamagui';
 
 const Friends = () => {
   return (
-    <View>
-      <Text>Friends</Text>
-    </View>
+    <SafeAreaView>
+      <View>
+        <Text>Friends/search page</Text>
+      </View>
+    </SafeAreaView>
   );
 };
 

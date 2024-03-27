@@ -516,7 +516,7 @@ def get_user_posts(user_id):
         for post_doc in post_data:
             # Get the post reference
             post_ref = db.collection("posts").document(
-                post_doc.path[len("posts/"):]
+                post_doc.path[len("posts/") :]
             )
             # Get the post data
             post_data = post_ref.get().to_dict()
@@ -591,14 +591,21 @@ def get_user(user_id):
     user_data["bio"] = str(user_data["bio"])
     user_data["username"] = str(user_data["username"])
     # Convert the bookmarks, followers, following, likes, and posts to refernces
-    user_data["bookmarks"] = [ref.path for ref in user_data.get("bookmarks", [])]
-    user_data["followers"] = [ref.path for ref in user_data.get("followers", [])]
-    user_data["following"] = [ref.path for ref in user_data.get("following", [])]
+    user_data["bookmarks"] = [
+        ref.path for ref in user_data.get("bookmarks", [])
+    ]
+    user_data["followers"] = [
+        ref.path for ref in user_data.get("followers", [])
+    ]
+    user_data["following"] = [
+        ref.path for ref in user_data.get("following", [])
+    ]
     user_data["likes"] = [ref.path for ref in user_data.get("likes", [])]
     user_data["posts"] = [ref.path for ref in user_data.get("posts", [])]
 
     # Return the user ID as Dictionary
     return user_data
+
 
 # Validate the post verifying it has the correct fields
 def user_validation(data):

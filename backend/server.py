@@ -586,9 +586,10 @@ def get_user(user_id):
     # Convert the user document to a dictionary
     user_data = user_doc.to_dict()
 
-    # Convert the date to string
+    # Convert the bio and username to strings
     user_data["bio"] = str(user_data["bio"])
     user_data["username"] = str(user_data["username"])
+    # Convert the bookmarks, followers, following, likes, and posts to refernces
     user_data["bookmarks"] = [ref.path for ref in user_data.get("bookmarks", [])]
     user_data["followers"] = [ref.path for ref in user_data.get("followers", [])]
     user_data["following"] = [ref.path for ref in user_data.get("following", [])]

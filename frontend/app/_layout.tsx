@@ -53,7 +53,7 @@ export default function RootLayout() {
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
       <QueryClientProvider client={queryClient}>
-          <RootLayoutNav />
+        <RootLayoutNav />
       </QueryClientProvider>
     </ClerkProvider>
   );

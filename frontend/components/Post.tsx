@@ -60,9 +60,9 @@ export default function Post({
           <Image source={require('../assets/images/heart.png')} />
         </TouchableHighlight>
         {/*Comment*/}
-        <Button size='$5' circular>
-          comm
-        </Button>
+        <Link href={{ pathname: '(tabs)/Subtabs/Comments', params: { name: 'Name' } }} asChild>
+          <Button size='$5' circular>comm</Button>
+        </Link>
         {/*Bookmark*/}
         <Button size='$5' circular>
           save

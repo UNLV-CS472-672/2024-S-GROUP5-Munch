@@ -664,13 +664,13 @@ def user_validation(data):
 
 
 # Create a new user
-@app.route("/api/users", methods=["POST"])
-def create_user():
+@app.route("/api/users/<user_id>", methods=["POST"])
+def create_user(user_id):
     """
     Create a new user.
 
     Args:
-        N/A
+        user_id (str): The user ID for the new user.
 
     Returns:
         dict: A dictionary representing the newly created user.
@@ -695,7 +695,7 @@ def create_user():
         db = firestore.client()
 
         # Add the new user to the 'users' collection
-        new_user_ref = db.collection("users").document()
+        new_user_ref = db.collection("users").document(user_id)
 
         # Set the user data
         new_user_ref.set(data)
@@ -709,7 +709,6 @@ def create_user():
             jsonify({"error": "Error adding new user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
 
 # Update an existing user
 @app.route("/api/users/<user_id>", methods=["PUT"])
@@ -747,16 +746,27 @@ def update_user(user_id):
         new_user_data = new_user_ref.get().to_dict()
 
         # Convert the bookmarks list to a list of document references
-        new_user_data["bookmarks"] = [db.collection("posts").document(bookmark) for bookmark in data["bookmarks"]]
+        new_user_data["bookmarks"] = [
+            db.document(bookmark)
+            for bookmark in data["bookmarks"]
+        ]
 
         # Convert the followers list to a list of document references
-        new_user_data["followers"] = [db.collection("users").document(follower) for follower in data["followers"]]
+        new_user_data["followers"] = [
+            db.document(follower)
+            for follower in data["followers"]
+        ]
 
         # Convert the following list to a list of document references
-        new_user_data["following"] = [db.collection("users").document(following) for following in data["following"]]
+        new_user_data["following"] = [
+            db.document(following)
+            for following in data["following"]
+        ]
 
         # Convert the likes list to a list of document references
-        new_user_data["likes"] = [db.collection("posts").document(like) for like in data["likes"]]
+        new_user_data["likes"] = [
+            db.document(like) for like in data["likes"]
+        ]
 
         # Update the users bio
         new_user_data["bio"] = data["bio"]
@@ -775,7 +785,6 @@ def update_user(user_id):
             jsonify({"error": "Error updating user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
 
 # Delete a user
 @app.route("/api/users/<user_id>", methods=["DELETE"])
@@ -817,7 +826,6 @@ def delete_user(user_id):
             jsonify({"error": "Error deleting user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-
 
 if __name__ == "__main__":
     app.run(debug=True)

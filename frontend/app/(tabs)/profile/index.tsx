@@ -1,8 +1,8 @@
-import { isClerkAPIResponseError, useAuth, useUser } from "@clerk/clerk-expo";
-import { Feather } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { isClerkAPIResponseError, useAuth, useUser } from '@clerk/clerk-expo';
+import { Feather } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
+import { useEffect, useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Avatar,
   Button,
@@ -14,15 +14,15 @@ import {
   Text,
   View,
   H4,
-} from "tamagui";
+} from 'tamagui';
 import {
   MediaTypeOptions,
   launchCameraAsync,
   launchImageLibraryAsync,
-} from "expo-image-picker";
-import { TouchableOpacity } from "react-native";
-import { Label } from "tamagui";
-import { Link } from "expo-router";
+} from 'expo-image-picker';
+import { TouchableOpacity } from 'react-native';
+import { Label } from 'tamagui';
+import { Link } from 'expo-router';
 export default function Profile() {
   const { isSignedIn, signOut } = useAuth();
 
@@ -73,64 +73,64 @@ export default function Profile() {
       {isSignedIn && (
         <View
           style={{
-            display: "flex",
-            justifyContent: "space-between",
-            height: "100%",
+            display: 'flex',
+            justifyContent: 'space-between',
+            height: '100%',
           }}
         >
-          <Card elevate size={"$4"} bordered unstyled>
-            <XStack justifyContent="space-between">
+          <Card elevate size={'$4'} bordered unstyled>
+            <XStack justifyContent='space-between'>
               <Card.Header
-                display="flex"
-                flexDirection="row"
-                gap={"$3"}
-                justifyContent="space-between"
-                alignItems="center"
+                display='flex'
+                flexDirection='row'
+                gap={'$3'}
+                justifyContent='space-between'
+                alignItems='center'
               >
                 <TouchableOpacity onPress={handleUserProfileChange}>
-                  <Avatar circular size={"$5"}>
-                    <Avatar.Image src={user?.hasImage ? user.imageUrl : " "} />
+                  <Avatar circular size={'$5'}>
+                    <Avatar.Image src={user?.hasImage ? user.imageUrl : ' '} />
                   </Avatar>
                 </TouchableOpacity>
-                <YStack gap={"$2"}>
+                <YStack gap={'$2'}>
                   <H4>{user?.username}</H4>
                   <Paragraph>{`${user?.firstName} ${
-                    user?.lastName ?? ""
+                    user?.lastName ?? ''
                   }`}</Paragraph>
                 </YStack>
               </Card.Header>
-              <XStack gap={"$3"}>
-                <YStack display="flex" alignItems="center">
-                  <Label fontSize={"$2"}>Followers</Label>
+              <XStack gap={'$3'}>
+                <YStack display='flex' alignItems='center'>
+                  <Label fontSize={'$2'}>Followers</Label>
                   <Text>{user?.followersCount ?? 0}</Text>
                 </YStack>
 
-                <YStack display="flex" alignItems="center">
-                  <Label fontSize={"$2"}>Following</Label>
+                <YStack display='flex' alignItems='center'>
+                  <Label fontSize={'$2'}>Following</Label>
                   <Text>{user?.followingCount ?? 0}</Text>
                 </YStack>
               </XStack>
-              <Link href="/profile/profileEditModal" asChild>
+              <Link href='/profile/profileEditModal' asChild>
                 <Button
                   iconAfter={
-                    <Feather name={edit ? "save" : "edit"} size={20} />
+                    <Feather name={edit ? 'save' : 'edit'} size={20} />
                   }
                   unstyled
-                  p={"$2"}
+                  p={'$2'}
                 />
               </Link>
             </XStack>
           </Card>
-          <Button onPress={() => signOut()} backgroundColor={"$red9"} mx={"$4"}>
+          <Button onPress={() => signOut()} backgroundColor={'$red9'} mx={'$4'}>
             Sign out
           </Button>
         </View>
       )}
       {!isSignedIn && (
         <Button
-          onPress={() => router.push("/(auth)/login")}
-          marginHorizontal={"$4"}
-          backgroundColor={"$background"}
+          onPress={() => router.push('/(auth)/login')}
+          marginHorizontal={'$4'}
+          backgroundColor={'$background'}
         >
           Log in
         </Button>

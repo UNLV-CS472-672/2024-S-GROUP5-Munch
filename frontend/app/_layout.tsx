@@ -55,7 +55,6 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
           <RootLayoutNav />
       </QueryClientProvider>
-      <RootLayoutNav />
     </ClerkProvider>
   );
 }

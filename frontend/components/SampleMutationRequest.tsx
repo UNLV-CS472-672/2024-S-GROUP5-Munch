@@ -5,13 +5,36 @@ import axios from 'axios';
 import { Card, Text, Button } from 'tamagui';
 import { useMutation } from '@tanstack/react-query';
 
+// axios example
+// const createPost = async (postData) => {
+//   try {
+//     const response = await axios.post(
+//       'http://localhost:5000/api/posts',
+//       postData,
+//     );
+//     return response.data;
+//   } catch (error) {
+//     throw error;
+//   }
+// };
+
+
 const createPost = async (postData) => {
   try {
-    const response = await axios.post(
-      'http://localhost:5000/api/posts/',
-      postData,
-    );
-    return response.data;
+    const response = await fetch('http://localhost:5000/api/posts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(postData)
+    });
+
+    console.log(response)
+    if (!response.ok) {
+      throw new Error('Failed to create post');
+    }
+
+    return response.json();
   } catch (error) {
     throw error;
   }
@@ -40,7 +63,7 @@ export default function SampleMutationRequest() {
       });
       setMutationResult('Post Created!'); // Update state with mutation result
     } catch (error) {
-      setMutationResult('Post Creation Error!');
+      setMutationResult(JSON.stringify(error));
     }
   };
 
@@ -48,7 +71,7 @@ export default function SampleMutationRequest() {
     <Card>
       <Card.Header />
       <Text> Test Mutation </Text>
-      <Text> Results of mutation request: {mutationResult} </Text>
+      <Text> Results of mutation requests: {mutationResult} </Text>
       <Button onPress={handleSubmit}>Submit</Button>
       <Card.Footer />
       <Card.Background />

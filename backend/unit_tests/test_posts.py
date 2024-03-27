@@ -11,7 +11,7 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from dotenv import load_dotenv
 
-
+#Function for setting up database and common functionality between API route calls
 class SetUp:
     base_url = "http://127.0.0.1:5000/api/posts"  # Adjust URL as needed
     users_url = "http://127.0.0.1:5000/api/users"
@@ -21,6 +21,7 @@ class SetUp:
         # Connect to database
         server.try_connect_to_db()
 
+    # Test posting a user to the database
     def test_user(self):
         testing_user_id = ""
         db = firestore.client()
@@ -58,6 +59,7 @@ class SetUp:
         author_id = "users/" + testing_user_id
         return author_id
 
+    # Testing posting a user's post into the database, takes in the user's id
     def test_post(self, author_id):
         testing_id = ""
         db = firestore.client()
@@ -93,6 +95,7 @@ class SetUp:
 
         return testing_id, response
 
+    # Test to update a user's post, takes in the user's id and the post's id
     def test_update(self, author_id, post_id):
         testing_id = ""
         db = firestore.client()
@@ -130,17 +133,24 @@ class SetUp:
         return response
 
 
+# Testing class
 class TestAPI(unittest.TestCase):
     base_url = "http://127.0.0.1:5000/api/posts"  # Adjust URL as needed
     users_url = "http://127.0.0.1:5000/api/users"
     api_url = "http://127.0.0.1:5000/api"
 
+    # Call setup class
     db = SetUp()
+    # Create client application
     client = app.test_client()
 
+    # Create test
     def test_create_post(self):
+        # Connect to db
         self.db.database_connect()
+        # Post user and retrieve author id
         testing_author_id = self.db.test_user()
+        # Post user's post and retrieve post id and response code
         testing_post_id, response = self.db.test_post(testing_author_id)
 
         # Deleting all testing data
@@ -151,17 +161,22 @@ class TestAPI(unittest.TestCase):
             response.status_code, 201
         )  # Check if status code is created
 
+        # Check Bad Data Error
         response = self.client.post(self.users_url, json={"Data": "Bad Data"})
         self.assertNotEqual(response.status_code, 201)
 
+    # Get post test
     def test_get_post(self):
+        # Connect to db
         self.db.database_connect()
+        # Post user and retrieve author id
         testing_author_id = self.db.test_user()
+        # Post user's post and retrieve post id and response code
         testing_post_id, response = self.db.test_post(testing_author_id)
 
+        # Call client to get the post we have created
         response = self.client.get(f"{self.base_url}/{testing_post_id}")
 
-        # response, status_code = server.get_post(testing_post_id)
         # Deleting all testing data
         requests.delete(f"{self.base_url}/{testing_post_id}")
         requests.delete(f"{self.api_url}/{testing_author_id}")
@@ -170,15 +185,20 @@ class TestAPI(unittest.TestCase):
             response.status_code, 200
         )  # Check if status code is OK
 
+        # Check if get error message is correct
         response = self.client.get(f"{self.base_url}/DoesNotExist")
 
         self.assertNotEqual(response.status_code, 200)
 
     def test_update_post(self):
+        # Connect to db
         self.db.database_connect()
+        # Post user and retrieve author id
         testing_author_id = self.db.test_user()
+        # Post user's post and retrieve post id and response code
         testing_post_id, response = self.db.test_post(testing_author_id)
 
+        # Update test into db using author id and existing post id
         response = self.db.test_update(testing_author_id, testing_post_id)
 
         self.assertEqual(response.status_code, 200)
@@ -188,8 +208,11 @@ class TestAPI(unittest.TestCase):
         requests.delete(f"{self.api_url}/{testing_author_id}")
 
     def test_delete_post(self):
+        # Connect to db
         self.db.database_connect()
+        # Post user and retrieve author id
         testing_author_id = self.db.test_user()
+        # Post user's post and retrieve post id and response code
         testing_post_id, response = self.db.test_post(testing_author_id)
 
         # Deleting all testing data

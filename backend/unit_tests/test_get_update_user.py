@@ -12,12 +12,13 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from dotenv import load_dotenv
 
+
 # import unittest
 # from your_module import firestore  # Assuming your Flask firestore instance is named 'firestore'
 class SetUp:
     base_url = "http://127.0.0.1:5000/api/posts"  # Adjust URL as needed
     users_url = "http://127.0.0.1:5000/api/users"
-    
+
     def database_connect(self):
         # Connect to database
         server.try_connect_to_db()
@@ -30,11 +31,11 @@ class TestUser(unittest.TestCase):
 
     def test_get_user(self):
         # Connect to database
-        try: 
+        try:
             res = self.db.database_connect()
         except Exception as e:
             self.assertEqual(res.status_code, 500)
-        
+
         # use a test user_id
         testing_user_id = "f7Mbtze3VqixFLJPQ492"
 
@@ -51,43 +52,34 @@ class TestUser(unittest.TestCase):
             self.assertEqual(response.status_code, 404)
 
     def test_update_user(self):
-        try: 
+        try:
             res = self.db.database_connect()
         except Exception as e:
             self.assertEqual(res.status_code, 500)
-        
-        # use a test user_id    
+
+        # use a test user_id
         testing_user_id = "f7Mbtze3VqixFLJPQ492"
 
         # updated data
         updated_user_data = {
             "bio": "<Users bio for testing update>",
-            "bookmarks": [
-                "URL to post 1",
-                "URL to post 2"
-            ],
+            "bookmarks": ["URL to post 1", "URL to post 2"],
             "followers": [
                 "URL to other users following current user 1",
-                "URL to other users following current user 2"
+                "URL to other users following current user 2",
             ],
             "following": [
                 "URL to other users current user follows 1",
-                "URL to other users current user follows 2"
+                "URL to other users current user follows 2",
             ],
-            "likes": [
-                "URL to other users 1",
-                "URL to other users 2"
-            ],
-            "posts": [
-                "URL to users own posts 1",
-                "URL to users own posts 2"
-            ],
-            "username": "<Users Username for testing update>"
+            "likes": ["URL to other users 1", "URL to other users 2"],
+            "posts": ["URL to users own posts 1", "URL to users own posts 2"],
+            "username": "<Users Username for testing update>",
         }
 
-        # calling put to update the data and if there is an error then do the 
+        # calling put to update the data and if there is an error then do the
         try:
-            
+
             new_path = f"{self.users_url}/{testing_user_id}"
             response = self.client.put(new_path, json=updated_user_data)
             self.assertEqual(response.status_code, 200)
@@ -95,6 +87,5 @@ class TestUser(unittest.TestCase):
             self.assertEqual(response.status_code, 500)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
-

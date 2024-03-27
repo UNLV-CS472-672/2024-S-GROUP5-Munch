@@ -89,13 +89,19 @@ export default function Post({
           <Text>{description}</Text>
         </YStack>
         {/*The recipe*/}
-        <Link href={{ pathname: '(tabs)/Subtabs/recipe', params: { name: 'Name' } }} asChild>
-          <Button size='$5'
+        <Link
+          href={{ pathname: '(tabs)/Subtabs/recipe', params: { name: 'Name' } }}
+          asChild
+        >
+          <Button
+            size='$5'
             borderRadius={25}
             width={250}
             radius={0}
             padding={10}
-          >The Recipe</Button>
+          >
+            The Recipe
+          </Button>
         </Link>
       </YStack>
     </View>

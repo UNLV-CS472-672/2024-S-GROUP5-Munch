@@ -11,7 +11,8 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 from dotenv import load_dotenv
 
-#Function for setting up database and common functionality between API route calls
+
+# Function for setting up database and common functionality between API route calls
 class SetUp:
     base_url = "http://127.0.0.1:5000/api/posts"  # Adjust URL as needed
     users_url = "http://127.0.0.1:5000/api/users"

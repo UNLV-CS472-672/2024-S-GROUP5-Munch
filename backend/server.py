@@ -67,7 +67,7 @@ def middleware():
 
             # Extract user_id and API details from the request
             user_id = decoded_token["uid"]
-            
+
             print("THIS IS THE USER ID:", user_id)
 
             # api_name is the collection reference
@@ -150,7 +150,10 @@ def middleware():
             )
     else:
         print("NO AUTHORIZATION HEADER FOUND")
-        return (jsonify({"error": "AUTHORIZATION HEADER NOT PROVIDED"}), status.HTTP_400_BAD_REQUEST)
+        return (
+            jsonify({"error": "AUTHORIZATION HEADER NOT PROVIDED"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
 
 
 # Error checking for connecting to database, refactored for error repetition

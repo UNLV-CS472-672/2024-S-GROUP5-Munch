@@ -20,7 +20,9 @@ import { useQuery } from '@tanstack/react-query';
 // Function to fetch posts
 const getPosts = async () => {
   try {
-    const response = await fetch('http://localhost:5000/api/posts/Q7LKx6ud2wToavm7fxLw');
+    const response = await fetch(
+      'http://localhost:5000/api/posts/Q7LKx6ud2wToavm7fxLw',
+    );
 
     if (!response.ok) {
       throw new Error('Failed to fetch posts');
@@ -39,22 +41,22 @@ export default function SampleQueryRequest() {
 
   // useQuery: unique key for the query, function that returns a promise and either resolves data or throws error
   const handleSubmit = () => {
-      setSubmitted(true);
-    };
+    setSubmitted(true);
+  };
 
-    const result = useQuery({
-      queryKey: ['UniqueNameSpecificToQuery'],
-      queryFn: getPosts,
-      enabled: submitted, // Enable the query when submitted is true
-    });
+  const result = useQuery({
+    queryKey: ['UniqueNameSpecificToQuery'],
+    queryFn: getPosts,
+    enabled: submitted, // Enable the query when submitted is true
+  });
 
   if (result.isLoading) {
-      return <Text>Loading...</Text>;
-    }
+    return <Text>Loading...</Text>;
+  }
 
   if (result.error) {
-      return <Text>Error: {result.error.message}</Text>;
-    }
+    return <Text>Error: {result.error.message}</Text>;
+  }
 
   return (
     <Card>

@@ -18,18 +18,17 @@ import { useMutation } from '@tanstack/react-query';
 //   }
 // };
 
-
 const createPost = async (postData) => {
   try {
     const response = await fetch('http://localhost:5000/api/posts', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
-      body: JSON.stringify(postData)
+      body: JSON.stringify(postData),
     });
 
-    console.log(response)
+    console.log(response);
     if (!response.ok) {
       throw new Error('Failed to create post');
     }

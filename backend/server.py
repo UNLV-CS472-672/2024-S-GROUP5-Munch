@@ -515,7 +515,7 @@ def get_user_posts(user_id):
         for post_doc in post_data:
             # Get the post reference
             post_ref = db.collection("posts").document(
-                post_doc.path[len("posts/"):]
+                post_doc.path[len("posts/") :]
             )
             # Get the post data
             post_data = post_ref.get().to_dict()
@@ -590,14 +590,21 @@ def get_user(user_id):
     user_data["bio"] = str(user_data["bio"])
     user_data["username"] = str(user_data["username"])
     # Convert the bookmarks, followers, following, likes, and posts to refernces
-    user_data["bookmarks"] = [ref.path for ref in user_data.get("bookmarks", [])]
-    user_data["followers"] = [ref.path for ref in user_data.get("followers", [])]
-    user_data["following"] = [ref.path for ref in user_data.get("following", [])]
+    user_data["bookmarks"] = [
+        ref.path for ref in user_data.get("bookmarks", [])
+    ]
+    user_data["followers"] = [
+        ref.path for ref in user_data.get("followers", [])
+    ]
+    user_data["following"] = [
+        ref.path for ref in user_data.get("following", [])
+    ]
     user_data["likes"] = [ref.path for ref in user_data.get("likes", [])]
     user_data["posts"] = [ref.path for ref in user_data.get("posts", [])]
 
     # Return the user ID as Dictionary
     return user_data
+
 
 # Validate the post verifying it has the correct fields
 def user_validation(data):
@@ -746,16 +753,27 @@ def update_user(user_id):
         new_user_data = new_user_ref.get().to_dict()
 
         # Convert the bookmarks list to a list of document references
-        new_user_data["bookmarks"] = [db.collection("posts").document(bookmark) for bookmark in data["bookmarks"]]
+        new_user_data["bookmarks"] = [
+            db.collection("posts").document(bookmark)
+            for bookmark in data["bookmarks"]
+        ]
 
         # Convert the followers list to a list of document references
-        new_user_data["followers"] = [db.collection("users").document(follower) for follower in data["followers"]]
+        new_user_data["followers"] = [
+            db.collection("users").document(follower)
+            for follower in data["followers"]
+        ]
 
         # Convert the following list to a list of document references
-        new_user_data["following"] = [db.collection("users").document(following) for following in data["following"]]
+        new_user_data["following"] = [
+            db.collection("users").document(following)
+            for following in data["following"]
+        ]
 
         # Convert the likes list to a list of document references
-        new_user_data["likes"] = [db.collection("posts").document(like) for like in data["likes"]]
+        new_user_data["likes"] = [
+            db.collection("posts").document(like) for like in data["likes"]
+        ]
 
         # Update the users bio
         new_user_data["bio"] = data["bio"]

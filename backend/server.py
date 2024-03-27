@@ -68,7 +68,7 @@ def middleware():
 
             # api_name is the collection reference
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]
-            
+
             # api_address is the request id
             api_address = request.path.split("/", 3)[-1]
 

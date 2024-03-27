@@ -27,9 +27,9 @@ class PostTest(TestCase):
                 "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
-                    "comment": "Post Validation Unit Test Input",
-                    "creation_date": "2024-03-25 22:53:36.118000+00:00"
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "comment": "Post Validation Unit Test Input",
+                        "creation_date": "2024-03-25 22:53:36.118000+00:00",
                     }
                 ],
                 "description": "Test for missing fields in input",
@@ -50,9 +50,9 @@ class PostTest(TestCase):
                 "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
-                    "comment": "Post Validation Unit Test Input",
-                    "creation_date": "2024-03-25 22:53:36.118000+00:00"
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "comment": "Post Validation Unit Test Input",
+                        "creation_date": "2024-03-25 22:53:36.118000+00:00",
                     }
                 ],
                 "creation_date": "2024-03-25 21:41:30.786000+00:00",
@@ -74,9 +74,9 @@ class PostTest(TestCase):
                 "author": 0,
                 "comments": [
                     {
-                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
-                    "comment": "Post Validation Unit Test Input",
-                    "creation_date": "2024-03-25 22:53:36.118000+00:00"
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "comment": "Post Validation Unit Test Input",
+                        "creation_date": "2024-03-25 22:53:36.118000+00:00",
                     }
                 ],
                 "creation_date": "2024-03-25 21:41:30.786000+00:00",
@@ -97,9 +97,9 @@ class PostTest(TestCase):
                 "author": "users/fakeuser",
                 "comments": [
                     {
-                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
-                    "comment": "Post Validation Unit Test Input",
-                    "creation_date": "2024-03-25 22:53:36.118000+00:00"
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "comment": "Post Validation Unit Test Input",
+                        "creation_date": "2024-03-25 22:53:36.118000+00:00",
                     }
                 ],
                 "creation_date": "2024-03-25 21:41:30.786000+00:00",
@@ -122,7 +122,7 @@ class PostTest(TestCase):
                 "comments": [
                     {
                         "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
-                        "creation_date": "2024-03-25 21:41:30.786000+00:00"
+                        "creation_date": "2024-03-25 21:41:30.786000+00:00",
                     }
                 ],
                 "creation_date": "2024-03-25 21:41:30.786000+00:00",
@@ -167,9 +167,7 @@ class PostTest(TestCase):
             # test when comment is not a dict
             testInput = {
                 "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
-                "comments": [
-                    ["author", "comment", "creation_date"]
-                ],
+                "comments": [["author", "comment", "creation_date"]],
                 "creation_date": "2024-03-25 21:41:30.786000+00:00",
                 "description": "Test when comment is not a dict",
                 "likes": 0,

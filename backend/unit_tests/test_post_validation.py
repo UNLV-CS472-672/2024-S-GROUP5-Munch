@@ -22,10 +22,10 @@ class PostTest(TestCase):
 
             # test for missing fields
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                    "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                     "comment": "Post Validation Unit Test Input",
                     "creation_date": "2024-03-25 22:53:36.118000+00:00"
                     }
@@ -45,10 +45,10 @@ class PostTest(TestCase):
 
             # test for extra fields
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                    "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                     "comment": "Post Validation Unit Test Input",
                     "creation_date": "2024-03-25 22:53:36.118000+00:00"
                     }
@@ -73,7 +73,7 @@ class PostTest(TestCase):
                 "author": 0,
                 "comments": [
                     {
-                    "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                     "comment": "Post Validation Unit Test Input",
                     "creation_date": "2024-03-25 22:53:36.118000+00:00"
                     }
@@ -94,10 +94,10 @@ class PostTest(TestCase):
 
             # make sure author is an actual user in the databse
             testInput = {
-                "author": "/users/fakeuser",
+                "author": "users/fakeuser",
                 "comments": [
                     {
-                    "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                    "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                     "comment": "Post Validation Unit Test Input",
                     "creation_date": "2024-03-25 22:53:36.118000+00:00"
                     }
@@ -118,10 +118,10 @@ class PostTest(TestCase):
 
             # test when comment is missing fields
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }
                 ],
@@ -141,10 +141,10 @@ class PostTest(TestCase):
     
             # test when comment has an extra field
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": "Post Validation Unit Test Input",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00",
                         "test": "extra field"
@@ -166,7 +166,7 @@ class PostTest(TestCase):
 
             # test when comment is not a dict
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     ["author", "comment", "creation_date"]
                 ],
@@ -186,10 +186,10 @@ class PostTest(TestCase):
 
             # test when the actual comment is not a string
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": 0,
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }
@@ -210,10 +210,10 @@ class PostTest(TestCase):
 
             # test when creation date for comment is not a string
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": "Post Validation Unit Test Input",
                         "creation_date": 0
                     }
@@ -234,10 +234,10 @@ class PostTest(TestCase):
 
             # test when author in a comment is not an actual user
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/fakeuser",
+                        "author": "users/fakeuser",
                         "comment": "Post Validation Unit Test Input",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }
@@ -258,10 +258,10 @@ class PostTest(TestCase):
             
             # test when creation date for post is not a string
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": "Post Validation Unit Test Input",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }
@@ -282,10 +282,10 @@ class PostTest(TestCase):
 
             # test when description is not a string
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": "Post Validation Unit Test Input",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }
@@ -306,10 +306,10 @@ class PostTest(TestCase):
 
             # test when likes is not an int
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": "Post Validation Unit Test Input",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }
@@ -330,10 +330,10 @@ class PostTest(TestCase):
 
             # test when pictures is not a list
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": "Post Validation Unit Test Input",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }
@@ -351,10 +351,10 @@ class PostTest(TestCase):
 
             # testing valid input
             testInput = {
-                "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                 "comments": [
                     {
-                        "author": "/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
+                        "author": "users/user_2cwMgsX7SwXnnnYJ2piefltKxLO",
                         "comment": "Valid Input",
                         "creation_date": "2024-03-25 21:41:30.786000+00:00"
                     }

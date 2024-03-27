@@ -559,14 +559,7 @@ def get_user(user_id):
         ValueError: If the specific user is not found.
     """
     # Connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     # Get the database
     db = firestore.client()
@@ -686,9 +679,6 @@ def create_user(user_id):
         ValueError: If an error occurs while connecting to the database.
         ValueError: If the specific user already exists.
     """
-    # Get data from the request
-    data = request.json
-
     # Check that data is valid
     validation_error, status_code = user_validation(data)
     if validation_error:
@@ -704,26 +694,15 @@ def create_user(user_id):
         # Add the new user to the 'users' collection
         new_user_ref = db.collection("users").document(user_id)
 
-        # Convert the bookmarks list to a list of document references
-        data["bookmarks"] = [
-            db.document(bookmark) for bookmark in data["bookmarks"]
-        ]
-
-        # Convert the followers list to a list of document references
-        data["followers"] = [
-            db.document(follower) for follower in data["followers"]
-        ]
-
-        # Convert the following list to a list of document references
-        data["following"] = [
-            db.document(following) for following in data["following"]
-        ]
-
-        # Convert the likes list to a list of document references
-        data["likes"] = [db.document(like) for like in data["likes"]]
-
-        # Convert the posts list to a list of document references
-        data["posts"] = [db.document(post) for post in data["posts"]]
+        data = {
+            "bio": "",
+            "username": "",
+            "bookmarks": [],
+            "followers": [],
+            "following": [],
+            "likes": [],
+            "posts": [],
+        }
 
         # Set the user data
         new_user_ref.set(data)

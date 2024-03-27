@@ -55,6 +55,8 @@ def middleware():
     auth_header = request.headers.get("Authorization")
     if auth_header:
         token = auth_header  # JWT token without "Bearer" prefix
+        print(auth_header)
+        print()
         try:
             # Verify and decode JWT token
             decoded_token = jwt.decode(
@@ -65,6 +67,8 @@ def middleware():
 
             # Extract user_id and API details from the request
             user_id = decoded_token["uid"]
+            
+            print("THIS IS THE USER ID:", user_id)
 
             # api_name is the collection reference
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]
@@ -144,6 +148,9 @@ def middleware():
                 jsonify({"error": "Invalid token"}),
                 status.HTTP_401_UNAUTHORIZED,
             )
+    else:
+        print("NO AUTHORIZATION HEADER FOUND")
+        return (jsonify({"error": "AUTHORIZATION HEADER NOT PROVIDED"}), status.HTTP_400_BAD_REQUEST)
 
 
 # Error checking for connecting to database, refactored for error repetition

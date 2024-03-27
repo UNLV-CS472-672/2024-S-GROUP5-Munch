@@ -792,6 +792,9 @@ def update_user(user_id):
         # Convert the likes list to a list of document references
         new_user_data["likes"] = [db.document(like) for like in data["likes"]]
 
+        # Convert the posts list to a list of document references
+        new_user_data["posts"] = [db.document(post) for post in data["posts"]]
+
         # Update the users bio
         new_user_data["bio"] = data["bio"]
 

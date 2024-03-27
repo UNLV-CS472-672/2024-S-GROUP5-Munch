@@ -22,39 +22,39 @@ export default function Create() {
 
   return (
     <View>
-          <YStack>
-            <H4 style={{ alignSelf: 'center', paddingTop: 75 }}>EDIT RECIPE</H4>
-                <TextArea
-                  placeholder={'Change your Description...'}
-                  multiline={true}
-                  style={{
-                    height: 130,
-                    borderRadius: 5,
-                    paddingHorizontal: 10,
-                    textAlignVertical: 'top',
-                  }}
-                />
-                <TextArea
-                  placeholder={'Change your Steps...'}
-                  multiline={true}
-                  style={{
-                    height: 130,
-                    borderRadius: 5,
-                    paddingHorizontal: 10,
-                    textAlignVertical: 'top',
-                  }}
-                />
-                <TextArea
-                  placeholder={'Change your Ingredients...'}
-                  multiline={true}
-                  style={{
-                    height: 130,
-                    borderRadius: 5,
-                    paddingHorizontal: 10,
-                    textAlignVertical: 'top',
-                  }}
-                />
-          </YStack>
-        </View>
+      <YStack>
+        <H4 style={{ alignSelf: 'center', paddingTop: 75 }}>EDIT RECIPE</H4>
+        <TextArea
+          placeholder={'Change your Description...'}
+          multiline={true}
+          style={{
+            height: 130,
+            borderRadius: 5,
+            paddingHorizontal: 10,
+            textAlignVertical: 'top',
+          }}
+        />
+        <TextArea
+          placeholder={'Change your Steps...'}
+          multiline={true}
+          style={{
+            height: 130,
+            borderRadius: 5,
+            paddingHorizontal: 10,
+            textAlignVertical: 'top',
+          }}
+        />
+        <TextArea
+          placeholder={'Change your Ingredients...'}
+          multiline={true}
+          style={{
+            height: 130,
+            borderRadius: 5,
+            paddingHorizontal: 10,
+            textAlignVertical: 'top',
+          }}
+        />
+      </YStack>
+    </View>
   );
 }

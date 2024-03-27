@@ -23,9 +23,9 @@ export default function Create() {
   return (
     <View>
       <YStack>
-        <H4 style={{ alignSelf: 'center', color: 'black' }}>NEW POST</H4>
+        <H4 style={{ alignSelf: 'center', color: 'accentColor' }}>NEW POST</H4>
         <XStack>
-          <Text color={'black'} fontSize='$5' paddingStart='$5'>
+          <Text color={'accentColor'} fontSize='$5' paddingStart='$5'>
             is this a recipe?
           </Text>
           <Switch
@@ -95,7 +95,7 @@ export default function Create() {
           </YStack>
         ) : null}
         <Button backgroundColor={'cyan'} mx={'$4'}>
-          <Text color={'$black2'}>Post</Text>
+          <Text color={'$accentColor'}>Post</Text>
         </Button>
       </YStack>
     </View>

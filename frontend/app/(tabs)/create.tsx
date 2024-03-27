@@ -1,6 +1,6 @@
-import { View } from '@/components/Themed';
 import React, { useState } from 'react';
 import {
+  View,
   Button,
   H1,
   H2,

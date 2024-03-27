@@ -120,6 +120,7 @@ def post_validation(data):
         "creation_date": "Post creation date",
         "description": "Post description",
         "likes": "Number of likes",
+        "location": "36.1048299,-115.1454664",
         "pictures": [
             "URL to picture 1",
             "URL to picture 2",
@@ -216,17 +217,6 @@ def post_validation(data):
             field for field in comment if field not in required_comment_fields
         ]
 
-        # make sure comment is proper type of dictionary
-        if (
-            not isinstance(comment, dict)
-            or not isinstance(comment["comment"], str)
-            or not isinstance(comment["creation_date"], str)
-        ):
-            return (
-                jsonify({"error": "Invalid format for comment"}),
-                status.HTTP_400_BAD_REQUEST,
-            )
-
         # post error if any missing or extra fields
         if missing_comment_fields:
             return field_error_message(
@@ -236,6 +226,17 @@ def post_validation(data):
         if extra_comment_fields:
             return field_error_message(
                 "Comment input has extra field(s): ", extra_comment_fields
+            )
+
+        # make sure comment is proper type of dictionary
+        if (
+            not isinstance(comment, dict)
+            or not isinstance(comment["comment"], str)
+            or not isinstance(comment["creation_date"], str)
+        ):
+            return (
+                jsonify({"error": "Invalid format for comment"}),
+                status.HTTP_400_BAD_REQUEST,
             )
 
         # make sure commenter is an actual user

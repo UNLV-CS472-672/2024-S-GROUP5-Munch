@@ -717,6 +717,7 @@ def create_user(user_id):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
+
 # Update an existing user
 @app.route("/api/users/<user_id>", methods=["PUT"])
 def update_user(user_id):
@@ -754,26 +755,21 @@ def update_user(user_id):
 
         # Convert the bookmarks list to a list of document references
         new_user_data["bookmarks"] = [
-            db.document(bookmark)
-            for bookmark in data["bookmarks"]
+            db.document(bookmark) for bookmark in data["bookmarks"]
         ]
 
         # Convert the followers list to a list of document references
         new_user_data["followers"] = [
-            db.document(follower)
-            for follower in data["followers"]
+            db.document(follower) for follower in data["followers"]
         ]
 
         # Convert the following list to a list of document references
         new_user_data["following"] = [
-            db.document(following)
-            for following in data["following"]
+            db.document(following) for following in data["following"]
         ]
 
         # Convert the likes list to a list of document references
-        new_user_data["likes"] = [
-            db.document(like) for like in data["likes"]
-        ]
+        new_user_data["likes"] = [db.document(like) for like in data["likes"]]
 
         # Update the users bio
         new_user_data["bio"] = data["bio"]
@@ -792,6 +788,7 @@ def update_user(user_id):
             jsonify({"error": "Error updating user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
 
 # Delete a user
 @app.route("/api/users/<user_id>", methods=["DELETE"])
@@ -833,6 +830,7 @@ def delete_user(user_id):
             jsonify({"error": "Error deleting user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
 
 if __name__ == "__main__":
     app.run(debug=True)

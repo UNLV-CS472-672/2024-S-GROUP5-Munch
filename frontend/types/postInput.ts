@@ -1,5 +1,6 @@
 import { z } from 'zod';
 
+// for checking image
 const ACCEPTED_IMAGE_TYPES = ['image/HEIC', 'image/jpeg'];
 const MAX_IMAGE_SIZE = 4;
 

@@ -71,7 +71,6 @@ def middleware():
 
             # Extract user_id and API details from the request
             user_id = decoded_token["uid"]
-            user_id = "tester"
 
             # Extract API name and address from request path
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]

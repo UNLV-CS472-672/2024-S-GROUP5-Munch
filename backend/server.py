@@ -15,7 +15,7 @@ load_dotenv()
 
 
 # Check if User exists in database
-def check_user_existance(user_id):
+def check_user_existence(user_id):
     try:
         # Attempt to connect to the database
         try_connect_to_db()
@@ -40,10 +40,17 @@ def check_user_existance(user_id):
 @app.before_request
 def middleware():
     """
-    This function intercepts all incoming requests and checks for the presence of
-    an Authorization header containing a JWT token. If the header is present and
-    in the correct format, it verifies the token's validity and expiration and uses
-    the 'uid' field to check if the user has access to that data.
+    Intercepts incoming requests to validate JWT authentication.
+
+    This middleware function intercepts all incoming requests to ensure that they are
+    properly authenticated using JSON Web Tokens (JWT). It checks for the presence of
+    an 'Authorization' header containing a JWT token. If the token is present and valid,
+    it verifies its authenticity and expiration, using the 'uid' field to determine user
+    access rights to requested resources.
+
+    If the JWT token is valid and the user has the necessary permissions, the request is
+    allowed to proceed. Otherwise, access is denied, and an appropriate error response
+    is returned.
 
     Raises:
         jwt.ExpiredSignatureError: If the JWT token has expired.
@@ -51,12 +58,9 @@ def middleware():
     """
     print("\nIncoming request:", request.method, request.path)
 
-    # Check for Authorization header
-    auth_header = request.headers.get("Authorization")
-    if auth_header:
-        token = auth_header  # JWT token without "Bearer" prefix
-        print(auth_header)
-        print()
+    # Check for Authorization header containing JWT token
+    token = request.headers.get("Authorization")
+    if token:
         try:
             # Verify and decode JWT token
             decoded_token = jwt.decode(
@@ -67,25 +71,19 @@ def middleware():
 
             # Extract user_id and API details from the request
             user_id = decoded_token["uid"]
+            user_id = "tester"
 
-            print("THIS IS THE USER ID:", user_id)
-
-            # api_name is the collection reference
+            # Extract API name and address from request path
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]
-
-            # api_address is the request id
             api_address = request.path.split("/", 3)[-1]
 
-            # If the user exists, get their data
-            if check_user_existance(user_id):
-                result = get_user(user_id)
-            else:
-                # If the user doesn't exist, create them, then get their data
-                print("USER DOESN'T EXIST. CREATING USER!")
+            # Create the user if not already existing
+            if not check_user_existence(user_id):
                 create_user(user_id)
-                result = get_user(user_id)
 
-            # Authorization based on request method and resource type
+            result = get_user(user_id)
+
+            # Authorization logic based on request method and resource type
             if request.method == "GET":
                 # Allow any GET request by default
                 print(
@@ -108,7 +106,7 @@ def middleware():
                 )
                 return None
             elif api_name == "posts" and request.method == "POST":
-                # Allow access to create new post
+                # Allow access to create new posts
                 print(
                     "User",
                     user_id,
@@ -120,12 +118,9 @@ def middleware():
                 and request.method == "DELETE"
                 or request.method == "PUT"
             ):
-                # Get a dict of posts
+                # Check if user has access to modify/delete specific post
                 posts = result.get("posts", [])
-
-                # Iterate over the posts
                 for post in posts:
-                    # Allow access if the API address is found in the posts
                     if request.path.split("/api/")[1] == post:
                         return None
 

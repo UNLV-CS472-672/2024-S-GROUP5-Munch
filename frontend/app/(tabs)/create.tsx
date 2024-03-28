@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
 import {
   View,
   Button,
@@ -23,9 +24,9 @@ export default function Create() {
   return (
     <View>
       <YStack>
-        <H4 style={{ alignSelf: 'center', color: 'accentColor' }}>NEW POST</H4>
+        <H4 style={{ alignSelf: 'center', color: '$accentColor' }}>NEW POST</H4>
         <XStack>
-          <Text color={'accentColor'} fontSize='$5' paddingStart='$5'>
+          <Text color={'$accentColor'} fontSize='$5' paddingStart='$5'>
             is this a recipe?
           </Text>
           <Switch
@@ -94,8 +95,8 @@ export default function Create() {
             />
           </YStack>
         ) : null}
-        <Button backgroundColor={'cyan'} mx={'$4'}>
-          <Text color={'$accentColor'}>Post</Text>
+        <Button backgroundColor={'cyan'} mx={'$4'} unstyled>
+          <Text>Post</Text>
         </Button>
       </YStack>
     </View>

@@ -1,74 +1,69 @@
 import { z } from 'zod';
 
-const ACCEPTED_IMAGE_TYPES = ["image/HEIC", "image/jpeg"];
+const ACCEPTED_IMAGE_TYPES = ['image/HEIC', 'image/jpeg'];
 const MAX_IMAGE_SIZE = 4;
 
 const sizeInMB = (sizeInBytes: number, decimalsNum = 2) => {
-    const result = sizeInBytes / (1024 * 1024);
-    return +result.toFixed(decimalsNum);
+  const result = sizeInBytes / (1024 * 1024);
+  return +result.toFixed(decimalsNum);
 };
 
 export type ByteState = {
-    image?: string[];
-    description?: string;
+  image?: string[];
+  description?: string;
 };
 
 export type RecipeState = {
-    image?: string[];
-    description?: string;
-    ingredients?: string;
-    steps?: string;
+  image?: string[];
+  description?: string;
+  ingredients?: string;
+  steps?: string;
 };
 
-// byte post 
+// byte post
 export const ByteSchema = z.object({
-    image: z
-        .custom<FileList>()
-        .refine((files) => {
-            return Array.from(files ?? []).length !== 0;
-        }, "Image is required")
-        .refine((files) => {
-            return Array.from(files ?? []).every(
-                (file) => sizeInMB(file.size) <= MAX_IMAGE_SIZE
-            );
-        }, `The maximum image size is ${MAX_IMAGE_SIZE}MB`)
-        .refine((files) => {
-            return Array.from(files ?? []).every((file) =>
-                ACCEPTED_IMAGE_TYPES.includes(file.type)
-            );
-        }, "File type is not supported"),
-    description: z
-        .string().optional()
+  image: z
+    .custom<FileList>()
+    .refine((files) => {
+      return Array.from(files ?? []).length !== 0;
+    }, 'Image is required')
+    .refine((files) => {
+      return Array.from(files ?? []).every(
+        (file) => sizeInMB(file.size) <= MAX_IMAGE_SIZE,
+      );
+    }, `The maximum image size is ${MAX_IMAGE_SIZE}MB`)
+    .refine((files) => {
+      return Array.from(files ?? []).every((file) =>
+        ACCEPTED_IMAGE_TYPES.includes(file.type),
+      );
+    }, 'File type is not supported'),
+  description: z.string().optional(),
 });
 
 export type ByteSchemaInputs = z.infer<typeof ByteSchema>;
 
-
-// recipe post 
+// recipe post
 export const RecipeSchema = z.object({
-    image: z
-        .custom<FileList>()
-        .refine((files) => {
-            return Array.from(files ?? []).length !== 0;
-        }, "Image is required")
-        .refine((files) => {
-            return Array.from(files ?? []).every(
-                (file) => sizeInMB(file.size) <= MAX_IMAGE_SIZE
-            );
-        }, `The maximum image size is ${MAX_IMAGE_SIZE}MB`)
-        .refine((files) => {
-            return Array.from(files ?? []).every((file) =>
-                ACCEPTED_IMAGE_TYPES.includes(file.type)
-            );
-        }, "File type is not supported"),
-    description: z
-        .string().optional(),
-    ingredients: z
-        .string()
-        .min(3, { message: 'Recipe must have at least one ingredient.' }),
-    steps: z
-        .string()
-        .min(3, { message: 'Recipe must have at least one step.' }),
+  image: z
+    .custom<FileList>()
+    .refine((files) => {
+      return Array.from(files ?? []).length !== 0;
+    }, 'Image is required')
+    .refine((files) => {
+      return Array.from(files ?? []).every(
+        (file) => sizeInMB(file.size) <= MAX_IMAGE_SIZE,
+      );
+    }, `The maximum image size is ${MAX_IMAGE_SIZE}MB`)
+    .refine((files) => {
+      return Array.from(files ?? []).every((file) =>
+        ACCEPTED_IMAGE_TYPES.includes(file.type),
+      );
+    }, 'File type is not supported'),
+  description: z.string().optional(),
+  ingredients: z
+    .string()
+    .min(3, { message: 'Recipe must have at least one ingredient.' }),
+  steps: z.string().min(3, { message: 'Recipe must have at least one step.' }),
 });
 
-export type RecipeSchemaInputs = z.infer<typeof ByteSchema>; 
+export type RecipeSchemaInputs = z.infer<typeof ByteSchema>;

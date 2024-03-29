@@ -11,7 +11,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: useClientOnlyValue(false, true),
+        headerShown: useClientOnlyValue(false, true)
       }}
     >
       <Tabs.Screen
@@ -21,7 +21,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <Entypo name={'home'} color={color} size={size} />
           ),
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Tabs.Screen
@@ -31,7 +31,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name='user-friends' color={color} size={size} />
           ),
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Tabs.Screen
@@ -46,11 +46,11 @@ export default function TabLayout() {
               style={{
                 height: size - 1,
                 width: size - 1,
-                textAlign: 'center',
+                textAlign: 'center'
               }}
             />
           ),
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Tabs.Screen
@@ -65,11 +65,11 @@ export default function TabLayout() {
               style={{
                 height: size - 1,
                 width: size - 1,
-                textAlign: 'center',
+                textAlign: 'center'
               }}
             />
           ),
-          headerShown: false,
+          headerShown: false
         }}
       />
       <Tabs.Screen
@@ -79,7 +79,7 @@ export default function TabLayout() {
           tabBarIcon: ({ color, size }) => (
             <AntDesign name='user' color={color} size={size} />
           ),
-          headerShown: false,
+          headerShown: false
         }}
       />
     </Tabs>

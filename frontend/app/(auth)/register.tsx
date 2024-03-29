@@ -11,7 +11,7 @@ import { Button, Form, Separator, Text, View, XStack, YStack } from 'tamagui';
 const Register = () => {
   const {
     signUp: { create },
-    setActive,
+    setActive
   } = useSignUp();
 
   const router = useRouter();
@@ -19,13 +19,13 @@ const Register = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm<RegisterSchemaInputs>({
     resolver: zodResolver(RegisterSchema),
     defaultValues: {
       username: '',
-      password: '',
-    },
+      password: ''
+    }
   });
   const registerUser: SubmitHandler<RegisterSchemaInputs> = async (data) => {
     try {
@@ -33,7 +33,7 @@ const Register = () => {
         username: data.username,
         password: data.password,
         firstName: data.firstName ?? '',
-        lastName: data.lastName ?? '',
+        lastName: data.lastName ?? ''
       });
 
       if (status === 'abandoned' || status === 'missing_requirements') {

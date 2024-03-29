@@ -15,7 +15,7 @@ const UserInput = <T extends any>({
   labelID,
   placeholder,
   useLabel,
-  sx,
+  sx
 }: UserInputProps<T>) => {
   const colorScheme = useColorScheme();
   return (

@@ -13,13 +13,13 @@ import {
   YStack,
   Text,
   View,
-  H4,
+  H4
 } from 'tamagui';
 import { ToastProvider } from '@tamagui/toast';
 import {
   MediaTypeOptions,
   launchCameraAsync,
-  launchImageLibraryAsync,
+  launchImageLibraryAsync
 } from 'expo-image-picker';
 import { TouchableOpacity } from 'react-native';
 import { Label } from 'tamagui';
@@ -54,7 +54,7 @@ export default function Profile() {
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
-      base64: true,
+      base64: true
     });
 
     if (!pfp.canceled) {
@@ -71,13 +71,12 @@ export default function Profile() {
 
   return (
     <SafeAreaView>
-      <ToastProvider></ToastProvider>
       {isSignedIn && (
         <View
           style={{
             display: 'flex',
             justifyContent: 'space-between',
-            height: '100%',
+            height: '100%'
           }}
         >
           <Card elevate size={'$4'} bordered unstyled>

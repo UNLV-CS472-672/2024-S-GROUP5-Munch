@@ -15,15 +15,15 @@
  *               Avatar.Image from Tamagui's Avatar
  */
 
+import { Subtitle } from '@/tamagui.config';
 import { TouchableHighlight, Dimensions } from 'react-native';
 import { Button, YStack, Image, Avatar, Text, View } from 'tamagui';
-import { Title, Subtitle } from '../tamagui.config.ts';
 
 export default function Post({
   title = 'A yummy recipe',
   description = 'Munch on this delicious recipe!',
   image,
-  avatarImage,
+  avatarImage
 }) {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height - 100;
@@ -34,7 +34,6 @@ export default function Post({
         source={image}
         width={width}
         height={height}
-        resizeImage={'contain'}
         position={'absolute'}
       />
       {/*Right-hand functions: Avatar, like, comment, share*/}
@@ -89,7 +88,7 @@ export default function Post({
           <Text>{description}</Text>
         </YStack>
         {/*The recipe*/}
-        <Button size='$5' borderRadius={25} width={250} radius={0} padding={10}>
+        <Button size='$5' borderRadius={25} width={250} padding={10}>
           The Recipe
         </Button>
       </YStack>

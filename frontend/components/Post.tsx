@@ -24,7 +24,7 @@ export default function Post({
   title = 'A yummy recipe',
   description = 'Munch on this delicious recipe!',
   image,
-  avatarImage
+  avatarImage,
 }) {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height - 100;
@@ -63,7 +63,7 @@ export default function Post({
         <Link
           href={{
             pathname: '(tabs)/Subtabs/Comments',
-            params: { name: 'Name' }
+            params: { name: 'Name' },
           }}
           asChild
         >

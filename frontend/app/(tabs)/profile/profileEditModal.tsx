@@ -13,14 +13,14 @@ const ProfileEditModal = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty, dirtyFields }
+    formState: { errors, isDirty, dirtyFields },
   } = useForm<UserState>({
     defaultValues: {
       username: user?.username,
       firstName: user?.firstName,
       lastName: user?.lastName,
-      password: user?.passwordEnabled ? 'password' : ''
-    }
+      password: user?.passwordEnabled ? 'password' : '',
+    },
   });
 
   const updateUserData: SubmitHandler<UserState> = async (data) => {
@@ -32,7 +32,7 @@ const ProfileEditModal = () => {
         await user?.update({
           username: data.username,
           firstName: data.firstName,
-          lastName: data.lastName
+          lastName: data.lastName,
         });
       }
 
@@ -55,7 +55,7 @@ const ProfileEditModal = () => {
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
-      base64: true
+      base64: true,
     });
 
     if (!pfp.canceled) {
@@ -73,7 +73,7 @@ const ProfileEditModal = () => {
           type: 'error',
           text1: 'Profile Picture Update Failed!',
           position: 'bottom',
-          visibilityTime: 1000
+          visibilityTime: 1000,
         });
       }
     }

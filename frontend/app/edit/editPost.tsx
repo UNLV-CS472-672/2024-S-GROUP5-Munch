@@ -13,7 +13,7 @@ import {
   H5,
   Text,
   TextArea,
-  View
+  View,
 } from 'tamagui';
 import type { TabsContentProps } from 'tamagui';
 
@@ -29,7 +29,7 @@ export default function EditPost() {
             height: 130,
             borderRadius: 5,
             paddingHorizontal: 10,
-            textAlignVertical: 'top'
+            textAlignVertical: 'top',
           }}
         />
       </View>

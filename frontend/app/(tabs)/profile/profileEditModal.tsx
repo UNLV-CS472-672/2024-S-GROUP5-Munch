@@ -10,7 +10,6 @@ import { Avatar, Button, Form, Separator, View, XStack, YStack } from 'tamagui';
 
 const ProfileEditModal = () => {
   const { user } = useUser();
-
   const {
     handleSubmit,
     control,
@@ -69,6 +68,13 @@ const ProfileEditModal = () => {
           Toast.show({ text1: err.message, type: 'error' });
           console.error(err.errors);
         }
+
+        Toast.show({
+          type: 'error',
+          text1: 'Profile Picture Update Failed!',
+          position: 'bottom',
+          visibilityTime: 1000
+        });
       }
     }
   };

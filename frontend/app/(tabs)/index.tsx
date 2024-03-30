@@ -6,6 +6,61 @@
  *   Posts come with a background image, recipe title, and description
  */
 
+<<<<<<< HEAD
+<<<<<<< HEAD
+import { Dimensions, TouchableHighlight } from "react-native";
+import { Avatar, Button, Image, ScrollView, View, YStack } from "tamagui";
+=======
+import { Dimensions, TouchableHighlight } from 'react-native';
+import { Avatar, Button, Image, ScrollView, View, YStack } from 'tamagui';
+>>>>>>> 12b5ceba1766fb33c5f1b8ade2104149fb32dc2b
+
+export default function Index() {
+  const backgroundImage = { uri: 'https://picsum.photos/1080/1920' };
+  const windowWidth = Dimensions.get('window').width;
+  const windowHeight = Dimensions.get('window').height;
+  return (
+    <ScrollView>
+      <View
+        flexDirection={'row-reverse'}
+        width={windowWidth}
+        height={windowHeight}
+        verticalPadding={60}
+      >
+        <Image
+          source={backgroundImage}
+          width={windowWidth}
+          height={windowHeight - 100}
+          resizeImage={'contain'}
+          position={'absolute'}
+        />
+        <YStack
+          backgroundColor={'grey'}
+          width={70}
+          height={240}
+          y={300}
+          justifyContent={'space-around'}
+          alignItems={'center'}
+        >
+          <Avatar circular size='$6'>
+            <Avatar.Image src='https://picsum.photos/300/300' />
+          </Avatar>
+          <TouchableHighlight
+            onPress={() => console.log('Button pressed')}
+            underlayColor='crimson'
+            activeOpacity={1}
+          >
+            <Image source={require('../../assets/images/heart.png')} />
+          </TouchableHighlight>
+          <Button size='$5' circular>
+            comm
+          </Button>
+          <Button size='$5' circular>
+            share
+          </Button>
+        </YStack>
+      </View>
+=======
 import { Link } from 'expo-router';
 import { Dimensions } from 'react-native';
 import { View, ScrollView } from 'tamagui';
@@ -40,6 +95,7 @@ export default function Index() {
         }}
         avatarImage='https://fastly.picsum.photos/id/175/300/300.jpg?hmac=vC3FhlD3cqzNijD5Bt9mBvZCzA6MSj3QsQNrIBv1uSo'
       />
+>>>>>>> 5dc0636bdf6d97460ee502860bded0b3536d6b1f
     </ScrollView>
   );
 }

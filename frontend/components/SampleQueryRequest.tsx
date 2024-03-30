@@ -3,51 +3,36 @@
 import axios from 'axios';
 import React, { useState } from 'react';
 import { Card, Text, Button } from 'tamagui';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-// const getPosts = async () => {
-//   try {
-//     const response = await axios.get(
-//       'http://localhost:5000/api/posts/Q7LKx6ud2wToavm7fxLw',
-//     );
-//     console.log(response.data)
-//     return response.data;
-//   } catch (error) {
-//     return error;
-//   }
-// };
-
-// Function to fetch posts
+// Make GET request with axios
 const getPosts = async () => {
   try {
-    const response = await fetch(
-      'http://localhost:5000/api/posts/Q7LKx6ud2wToavm7fxLw',
+    const response = await axios.get(
+      'http://localhost:5000/api/posts/3xUM3gtEQMlaYJjNA0qY'
     );
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch posts');
-    }
-
-    const data = await response.json();
-    console.log(data);
-    return data;
+    return response.data;
   } catch (error) {
-    return error;
+    return error.message;
   }
 };
 
 export default function SampleQueryRequest() {
   const [submitted, setSubmitted] = useState(false);
-
-  // useQuery: unique key for the query, function that returns a promise and either resolves data or throws error
   const handleSubmit = () => {
-    setSubmitted(true);
+    setSubmitted(submitted => !submitted);
   };
 
+  const queryClient = useQueryClient()
+  const clearQueryCache = () => {
+      queryClient.invalidateQueries('posts'); // Clear query cache
+      handleSubmit();
+    };
+
   const result = useQuery({
-    queryKey: ['UniqueNameSpecificToQuery'],
-    queryFn: getPosts,
-    enabled: submitted, // Enable the query when submitted is true
+    queryKey: ['UniqueNameSpecificToQuery'], // Descriptive key to identify this specific query
+    queryFn: getPosts,                       // Function that defines how to fetch data for this query
+    enabled: submitted,                      // Optional: Execute the query only when the variable submitted is true
   });
 
   if (result.isLoading) {
@@ -65,7 +50,9 @@ export default function SampleQueryRequest() {
       <Text> Results of query request: {JSON.stringify(result)} </Text>
       <Text> Results of query request: {JSON.stringify(result.data)} </Text>
       <Button onPress={handleSubmit}>Submit</Button>
+      <Button onPress={clearQueryCache}>Clear Query Cache</Button>
       <Card.Footer />
+
       <Card.Background />
     </Card>
   );

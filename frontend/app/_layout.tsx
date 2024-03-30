@@ -13,6 +13,7 @@ import { useColorScheme } from 'react-native';
 import { TamaguiProvider } from 'tamagui';
 import { tokenCache } from './utils/tokenCache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DevToolsBubble } from 'react-native-react-query-devtools';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -54,6 +55,7 @@ export default function RootLayout() {
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
       <QueryClientProvider client={queryClient}>
         <RootLayoutNav />
+        {/* <DevToolsBubble />  // uncomment for dev tools */}
       </QueryClientProvider>
     </ClerkProvider>
   );

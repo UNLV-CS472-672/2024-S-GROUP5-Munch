@@ -532,7 +532,7 @@ def get_user_posts(user_id):
             user_posts.append(post_data)
 
         # Return the list of post data as JSON response
-        return jsonify(user_posts)
+        return jsonify(user_posts), status.HTTP_200_OK
 
     except Exception as e:
         print("Error fetching user's posts:", str(e))
@@ -559,14 +559,7 @@ def get_user(user_id):
         ValueError: If the specific user is not found.
     """
     # Connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     # Get the database
     db = firestore.client()
@@ -579,9 +572,6 @@ def get_user(user_id):
 
     # Check if the user exists
     if not user_doc.exists:
-        return jsonify({"error": "User not found"}), status.HTTP_404_NOT_FOUND
-
-    if not user_doc.exists:
         return (
             jsonify({"error": "No user found"}),
             status.HTTP_404_NOT_FOUND,
@@ -590,15 +580,21 @@ def get_user(user_id):
     # Convert the user document to a dictionary
     user_data = user_doc.to_dict()
 
-    # Convert the date to string
+    # Convert the bio and username to strings
     user_data["bio"] = str(user_data["bio"])
     user_data["username"] = str(user_data["username"])
-    user_data["userID"] = str(user_data["userID"])
-    user_data["bookmarks"] = str(user_data["bookmarks"])
-    user_data["likes"] = str(user_data["likes"])
-    user_data["posts"] = str(user_data["posts"])
-    user_data["followers"] = str(user_data["followers"])
-    user_data["following"] = str(user_data["following"])
+    # Convert the bookmarks, followers, following, likes, and posts to refernces
+    user_data["bookmarks"] = [
+        ref.path for ref in user_data.get("bookmarks", [])
+    ]
+    user_data["followers"] = [
+        ref.path for ref in user_data.get("followers", [])
+    ]
+    user_data["following"] = [
+        ref.path for ref in user_data.get("following", [])
+    ]
+    user_data["likes"] = [ref.path for ref in user_data.get("likes", [])]
+    user_data["posts"] = [ref.path for ref in user_data.get("posts", [])]
 
     # Return the user ID as Dictionary
     return user_data
@@ -614,7 +610,6 @@ def user_validation(data):
     {
         "bio": "<Users bio>",
         "username": "<Users Username>",
-        "userID": "<Users unique ID>",
         "bookmarks": "<Users number of bookmarks>",
         "likes": "<Users number of likes>",
         "posts": "<Users number of posts>",
@@ -639,7 +634,6 @@ def user_validation(data):
     required_fields = [
         "bio",
         "username",
-        "userID",
         "bookmarks",
         "likes",
         "posts",
@@ -653,7 +647,6 @@ def user_validation(data):
         not isinstance(data, dict)
         or "bio" not in data
         or "username" not in data
-        or "userID" not in data
         or "bookmarks" not in data
         or "likes" not in data
         or "posts" not in data
@@ -671,13 +664,13 @@ def user_validation(data):
 
 
 # Create a new user
-@app.route("/api/users", methods=["POST"])
-def create_user():
+@app.route("/api/users/<user_id>", methods=["POST"])
+def create_user(user_id):
     """
     Create a new user.
 
     Args:
-        N/A
+        user_id (str): The user ID for the new user.
 
     Returns:
         dict: A dictionary representing the newly created user.
@@ -686,30 +679,27 @@ def create_user():
         ValueError: If an error occurs while connecting to the database.
         ValueError: If the specific user already exists.
     """
-    # Get data from the request
-    data = request.json
-
-    # Check that data is valid
-    validation_error, status_code = user_validation(data)
-    if validation_error:
-        return validation_error, status_code
-
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
         db = firestore.client()
 
         # Add the new user to the 'users' collection
-        new_user_ref = db.collection("users").document()
+        new_user_ref = db.collection("users").document(user_id)
+
+        data = {
+            "bio": "",
+            "username": "",
+            "bookmarks": [],
+            "followers": [],
+            "following": [],
+            "likes": [],
+            "posts": [],
+        }
+
+        # Set the user data
         new_user_ref.set(data)
 
         # Return the newly created user
@@ -748,14 +738,7 @@ def update_user(user_id):
         return validation_error, status_code
 
     # The request has been validated, connect to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
@@ -763,7 +746,36 @@ def update_user(user_id):
 
         # Add the new user to the 'users' collection
         new_user_ref = db.collection("users").document(user_id)
-        new_user_ref.update(data)
+        new_user_data = new_user_ref.get().to_dict()
+
+        # Convert the bookmarks list to a list of document references
+        new_user_data["bookmarks"] = [
+            db.document(bookmark) for bookmark in data["bookmarks"]
+        ]
+
+        # Convert the followers list to a list of document references
+        new_user_data["followers"] = [
+            db.document(follower) for follower in data["followers"]
+        ]
+
+        # Convert the following list to a list of document references
+        new_user_data["following"] = [
+            db.document(following) for following in data["following"]
+        ]
+
+        # Convert the likes list to a list of document references
+        new_user_data["likes"] = [db.document(like) for like in data["likes"]]
+
+        # Convert the posts list to a list of document references
+        new_user_data["posts"] = [db.document(post) for post in data["posts"]]
+
+        # Update the users bio
+        new_user_data["bio"] = data["bio"]
+
+        # Update the users username
+        new_user_data["username"] = data["username"]
+
+        new_user_ref.update(new_user_data)
 
         # Return the newly created user
         return jsonify(data), status.HTTP_200_OK
@@ -787,21 +799,25 @@ def delete_user(user_id):
         tuple: A tuple containing a JSON response and a status code.
     """
     # Check connection to the database
-    try:
-        connect_to_db()
-    except Exception as e:
-        print("Error connecting to the database:", str(e))
-        return (
-            jsonify({"error": "Database connection error"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR,
-        )
+    try_connect_to_db()
 
     try:
         # Connect to the database
         db = firestore.client()
 
-        # Delete the post from the 'posts' collection
-        db.collection("users").document(user_id).delete()
+        # Get the user reference
+        user_ref = db.collection("users").document(user_id)
+
+        # Get the user data
+        user_data = user_ref.get().to_dict()
+
+        # Delete all posts from the user
+        for post in user_data["posts"]:
+            post_ref = db.document(post.path)
+            post_ref.delete()
+
+        # Delete the user
+        user_ref.delete()
 
         # Return a success message
         return jsonify({"message": "User deleted"}), status.HTTP_200_OK

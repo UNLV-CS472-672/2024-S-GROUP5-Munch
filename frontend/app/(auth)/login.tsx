@@ -5,7 +5,7 @@ import {
   isClerkAPIResponseError,
   useOAuth,
   useSignIn,
-  useUser,
+  useUser
 } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -14,13 +14,14 @@ import { collection, getFirestore } from 'firebase/firestore';
 import React, { useCallback, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { View } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { Button, Form, Separator, Text, XStack, YStack } from 'tamagui';
 import { app } from '../firebaseConfig';
 
 enum Strategies {
   Google = 'oauth-google',
   Apple = 'oauth-apple',
-  Manual = 'manual',
+  Manual = 'manual'
 }
 const Login = () => {
   useWarmUpBrowser();
@@ -28,7 +29,7 @@ const Login = () => {
   const { isSignedIn } = useUser();
   const {
     signIn: { create },
-    setActive,
+    setActive
   } = useSignIn();
   const [userToken, setUserToken] = useState('');
 
@@ -49,7 +50,7 @@ const Login = () => {
     try {
       const { createdSessionId } = await create({
         identifier: data.username,
-        password: data.password,
+        password: data.password
       });
 
       if (createdSessionId) {
@@ -57,15 +58,17 @@ const Login = () => {
       }
     } catch (err) {
       if (isClerkAPIResponseError(err)) {
+        const { errors } = err;
+        console.log(errors[0].longMessage);
+        Toast.show({ text1: errors[0].longMessage, type: 'error' });
       }
-      console.error('Manual sign in err', err);
     }
   };
   const authProviderSignIn = useCallback(async (strategy: Strategies) => {
     try {
       const curAuth = {
         [Strategies.Apple]: aOAuth,
-        [Strategies.Google]: gOAuth,
+        [Strategies.Google]: gOAuth
       }[strategy];
 
       const { createdSessionId, setActive } = await curAuth();
@@ -85,13 +88,13 @@ const Login = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors }
   } = useForm<LoginSchemaInputs>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       username: '',
-      password: '',
-    },
+      password: ''
+    }
   });
 
   return (

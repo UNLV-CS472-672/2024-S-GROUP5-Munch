@@ -1,7 +1,6 @@
 import { isClerkAPIResponseError, useAuth, useUser } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
-import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Avatar,
@@ -13,13 +12,12 @@ import {
   YStack,
   Text,
   View,
-  H4,
+  H4
 } from 'tamagui';
-import { ToastProvider } from '@tamagui/toast';
 import {
   MediaTypeOptions,
   launchCameraAsync,
-  launchImageLibraryAsync,
+  launchImageLibraryAsync
 } from 'expo-image-picker';
 import { TouchableOpacity } from 'react-native';
 import { Label } from 'tamagui';
@@ -30,31 +28,12 @@ export default function Profile() {
   const { user } = useUser();
   const router = useRouter();
 
-  const [edit, setEdit] = useState(false);
-  // const handleEdit = async () => {
-  //   if (edit) {
-  //     try {
-  //       await user?.update({
-  //         firstName: userInfo.firstName!,
-  //         lastName: userInfo.lastName!,
-  //       });
-  //     } catch (err) {
-  //       if (isClerkAPIResponseError(err)) {
-  //         console.log(err.errors);
-  //       }
-  //     }
-  //   }
-
-  //   // setEdit(!edit);
-  //   return;
-  // };
-
   const handleUserProfileChange = async () => {
     let pfp = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 1,
-      base64: true,
+      base64: true
     });
 
     if (!pfp.canceled) {
@@ -71,13 +50,12 @@ export default function Profile() {
 
   return (
     <SafeAreaView>
-      <ToastProvider></ToastProvider>
       {isSignedIn && (
         <View
           style={{
             display: 'flex',
-            justifyContent: 'space-between',
-            height: '100%',
+            flexDirection: 'column',
+            justifyContent: 'space-between'
           }}
         >
           <Card elevate size={'$4'} bordered unstyled>
@@ -91,7 +69,7 @@ export default function Profile() {
               >
                 <TouchableOpacity onPress={handleUserProfileChange}>
                   <Avatar circular size={'$5'}>
-                    <Avatar.Image src={user?.hasImage ? user.imageUrl : ' '} />
+                    <Avatar.Image src={user.imageUrl ?? ' '} />
                   </Avatar>
                 </TouchableOpacity>
                 <YStack gap={'$2'}>
@@ -114,9 +92,7 @@ export default function Profile() {
               </XStack>
               <Link href='/profile/profileEditModal' asChild>
                 <Button
-                  iconAfter={
-                    <Feather name={edit ? 'save' : 'edit'} size={20} />
-                  }
+                  iconAfter={<Feather name={'edit'} size={20} />}
                   unstyled
                   p={'$2'}
                 />

@@ -6,9 +6,8 @@
  *   Posts come with a background image, recipe title, and description
  */
 
-import { Link } from 'expo-router';
 import { Dimensions } from 'react-native';
-import { View, ScrollView } from 'tamagui';
+import { ScrollView } from 'tamagui';
 import Post from '../../components/Post';
 export default function Index() {
   return (
@@ -28,7 +27,7 @@ export default function Index() {
         title='Banana cream pie'
         description="My auntie's banana cream pie is to die for! She uses reduced plantains as a secret ingredient"
         image={{
-          uri: 'https://fastly.picsum.photos/id/376/1080/1920.jpg?hmac=jowyHgQNXzKXZpoM25AeaYGH1WewzmOT18IQO6A-KRY',
+          uri: 'https://fastly.picsum.photos/id/376/1080/1920.jpg?hmac=jowyHgQNXzKXZpoM25AeaYGH1WewzmOT18IQO6A-KRY'
         }}
         avatarImage='https://fastly.picsum.photos/id/788/300/300.jpg?hmac=vZbkqAx5e6Wjik2rP-gC-xLBHoE6tjXGGKebHc_0CAI'
       />
@@ -36,7 +35,7 @@ export default function Index() {
         title='Kimchi Fried Rice'
         description='A quick an easy breakfast that I learned from a college roommate. You just need rice, kimchi, an egg, and whatever seasonings you want'
         image={{
-          uri: 'https://fastly.picsum.photos/id/348/1080/1920.jpg?hmac=JaRpzUiCbui3ranCaln8sSuScy1nnnSVkh9FZVVRGVs',
+          uri: 'https://fastly.picsum.photos/id/348/1080/1920.jpg?hmac=JaRpzUiCbui3ranCaln8sSuScy1nnnSVkh9FZVVRGVs'
         }}
         avatarImage='https://fastly.picsum.photos/id/175/300/300.jpg?hmac=vC3FhlD3cqzNijD5Bt9mBvZCzA6MSj3QsQNrIBv1uSo'
       />

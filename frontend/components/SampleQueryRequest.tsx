@@ -9,7 +9,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query';
 const getPosts = async () => {
   try {
     const response = await axios.get(
-      'http://localhost:5000/api/posts/3xUM3gtEQMlaYJjNA0qY'
+      'http://localhost:5000/api/posts/3xUM3gtEQMlaYJjNA0qY',
     );
     return response.data;
   } catch (error) {
@@ -20,19 +20,19 @@ const getPosts = async () => {
 export default function SampleQueryRequest() {
   const [submitted, setSubmitted] = useState(false);
   const handleSubmit = () => {
-    setSubmitted(submitted => !submitted);
+    setSubmitted((submitted) => !submitted);
   };
 
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
   const clearQueryCache = () => {
-      queryClient.invalidateQueries('posts'); // Clear query cache
-      handleSubmit();
-    };
+    queryClient.invalidateQueries('posts'); // Clear query cache
+    handleSubmit();
+  };
 
   const result = useQuery({
     queryKey: ['UniqueNameSpecificToQuery'], // Descriptive key to identify this specific query
-    queryFn: getPosts,                       // Function that defines how to fetch data for this query
-    enabled: submitted,                      // Optional: Execute the query only when the variable submitted is true
+    queryFn: getPosts, // Function that defines how to fetch data for this query
+    enabled: submitted, // Optional: Execute the query only when the variable submitted is true
   });
 
   if (result.isLoading) {

@@ -8,7 +8,7 @@ export default function CommentComponent({
   parent_id, // parent comment id,
   name, // commenting person name,
   image, // commenting person image,
-  text, // comment text,
+  text // comment text,
 }) {
   const width = Dimensions.get('window').width;
   const height = Dimensions.get('window').height - 100;

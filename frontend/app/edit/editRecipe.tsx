@@ -13,7 +13,7 @@ import {
   H5,
   Text,
   TextArea,
-  View,
+  View
 } from 'tamagui';
 import type { TabsContentProps } from 'tamagui';
 
@@ -31,7 +31,7 @@ export default function Create() {
             height: 130,
             borderRadius: 5,
             paddingHorizontal: 10,
-            textAlignVertical: 'top',
+            textAlignVertical: 'top'
           }}
         />
         <TextArea
@@ -41,7 +41,7 @@ export default function Create() {
             height: 130,
             borderRadius: 5,
             paddingHorizontal: 10,
-            textAlignVertical: 'top',
+            textAlignVertical: 'top'
           }}
         />
         <TextArea
@@ -51,7 +51,7 @@ export default function Create() {
             height: 130,
             borderRadius: 5,
             paddingHorizontal: 10,
-            textAlignVertical: 'top',
+            textAlignVertical: 'top'
           }}
         />
       </YStack>

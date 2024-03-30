@@ -30,7 +30,7 @@ export default function Recipe() {
       <Stack.Screen
         options={{
           title: 'Super Cool Recipe',
-          headerCenter: () => <BackButton />,
+          headerCenter: () => <BackButton />
         }}
       />
       <Main>
@@ -40,7 +40,7 @@ export default function Recipe() {
             style={{ width: 400, height: 300 }}
             resizeMode='contain'
             source={{
-              uri: 'https://cdn.loveandlemons.com/wp-content/uploads/2021/04/green-salad.jpg',
+              uri: 'https://cdn.loveandlemons.com/wp-content/uploads/2021/04/green-salad.jpg'
             }}
           />
           <Title color='white'>Recipe Title</Title>

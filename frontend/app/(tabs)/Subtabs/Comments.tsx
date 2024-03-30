@@ -9,7 +9,7 @@ import {
   Text,
   View,
   ScrollView,
-  TextArea,
+  TextArea
 } from 'tamagui';
 import { Title, Subtitle, Container, Main } from '../../../tamagui.config.ts';
 import { Feather } from '@expo/vector-icons';
@@ -45,7 +45,7 @@ export default function CommentPage() {
       <BackButton
         style={{
           height: 60,
-          padding: 10,
+          padding: 10
         }}
       />
       <Container>
@@ -59,14 +59,14 @@ export default function CommentPage() {
                 width: 300,
                 borderRadius: 5,
                 paddingHorizontal: 10,
-                textAlignVertical: 'top',
+                textAlignVertical: 'top'
               }}
             />
             <Button
               backgroundColor='cyan'
               style={{
                 height: 60,
-                width: 100,
+                width: 100
               }}
             >
               Send
@@ -99,7 +99,7 @@ export default function CommentPage() {
         <Stack.Screen
           options={{
             title: 'Comment Section',
-            headerCenter: () => <BackButton />,
+            headerCenter: () => <BackButton />
           }}
         />
         <Main>

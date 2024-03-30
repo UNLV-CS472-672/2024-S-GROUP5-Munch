@@ -49,7 +49,6 @@ const ProfileEditModal = () => {
         Toast.show({ text1: err.message, type: 'error' });
       }
     }
-    console.log(data);
   };
 
   const handleUserProfileChange = async () => {
@@ -80,7 +79,7 @@ const ProfileEditModal = () => {
       <YStack gap={'$1'} px={'$2'}>
         <TouchableOpacity onPress={handleUserProfileChange}>
           <Avatar circular margin={'auto'} size={'$5'} my={'$4'}>
-            <Avatar.Image src={user.hasImage ? user.imageUrl! : ' '} />
+            <Avatar.Image src={user.imageUrl ?? ' '} />
           </Avatar>
         </TouchableOpacity>
         <Separator />

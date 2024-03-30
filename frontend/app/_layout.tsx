@@ -17,7 +17,6 @@ import Toast, {
 } from 'react-native-toast-message';
 import { TamaguiProvider, useTheme } from 'tamagui';
 import { tokenCache } from './utils/tokenCache';
-
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary

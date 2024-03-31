@@ -5,6 +5,7 @@ from flask import jsonify
 from firebase_admin import credentials
 from firebase_admin import firestore
 
+
 # Check if User exists in database
 def check_user_existence(user_id):
     try:
@@ -324,4 +325,3 @@ def user_validation(data):
         )
 
     return None, status.HTTP_200_OK
-

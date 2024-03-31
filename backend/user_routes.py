@@ -5,6 +5,7 @@ from helper_functions import try_connect_to_db, user_validation
 
 user_bp = Blueprint("user", __name__)
 
+
 # Get a specific user by id
 @user_bp.route("/api/users/<user_id>", methods=["GET"])
 def get_user(user_id):
@@ -228,4 +229,3 @@ def delete_user(user_id):
             jsonify({"error": "Error deleting user"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-

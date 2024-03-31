@@ -72,4 +72,3 @@ def get_user_posts(user_id):
             jsonify({"error": "Error fetiching user's posts"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-

@@ -4,16 +4,19 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { Card, Text, Button } from 'tamagui';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useAuth } from '@clerk/clerk-react'
 
 export default function SampleQueryRequest() {
   const [submitted, setSubmitted] = useState(false);
+  const { getToken } = useAuth()
 
   // Make GET request with axios
   const getPosts = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:5000/api/posts/3xUM3gtEQMlaYJjNA0qY',
-      );
+        'http://localhost:5000/api/posts/3xUM3gtEQMlaYJjNA0qY', {
+        headers: { "Authorization": `Bearer ${await getToken()}` }
+      });
       return response.data;
     } catch (error) {
       return error.message;

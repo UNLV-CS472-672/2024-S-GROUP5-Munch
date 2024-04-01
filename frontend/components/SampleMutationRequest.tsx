@@ -15,22 +15,22 @@ export default function SampleMutationRequest() {
   const createPost = async (postData) => {
     try {
         const token = await getToken();
-        const response = await axios.post(
-          'http://localhost:5000/api/posts',
-          postData, {
+      const response = await axios.post(
+        'http://localhost:5000/api/posts',
+        postData, {
           headers: {
               "Authorization": `Bearer ${token}`
-          }}
-        );
-        if (response.status === 201) {
-          return response.data;
-        } else {
-          throw new Error(`Request failed with status ${response.status} and token ${token}`);
-        }
-      } catch (error) {
-        throw new Error(error.message);
+          }},
+      );
+      if (response.status === 201) {
+        return response.data;
+      } else {
+        throw new Error(`Request failed with status ${response.status} and token ${token}`);
       }
-    };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 
   const mutation = useMutation({
     // mutationKey: ['UniqueNameSpecificToMutation'], // Optional: Descriptive key to identify this specific mutation

@@ -5,7 +5,7 @@ import {
   TouchableHighlight,
   Dimensions,
   Platform,
-  Linking
+  Linking,
 } from 'react-native';
 import { Button, YStack, Image, Avatar, Text, View, XStack } from 'tamagui';
 import { Byte, Recipe } from '@/types/post';
@@ -55,9 +55,9 @@ const Post: FC<PostProps> = ({ post }) => {
       const res = await fetch('http://localhost:5000/api/posts', {
         headers: {
           Authorization: `Bearer ${token}`,
-          ContentType: 'application/json'
+          ContentType: 'application/json',
         },
-        method: 'GET'
+        method: 'GET',
       });
       // const data = await res.json();
       // console.log(data);

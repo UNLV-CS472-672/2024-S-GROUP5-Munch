@@ -5,7 +5,7 @@ import {
   isClerkAPIResponseError,
   useOAuth,
   useSignIn,
-  useUser
+  useUser,
 } from '@clerk/clerk-expo';
 import { Ionicons } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,7 +25,7 @@ import {
 enum Strategies {
   Google = 'oauth-google',
   Apple = 'oauth-apple',
-  Manual = 'manual'
+  Manual = 'manual',
 }
 const Login = () => {
   useWarmUpBrowser();
@@ -33,7 +33,7 @@ const Login = () => {
   const { isSignedIn } = useUser();
   const {
     signIn: { create },
-    setActive
+    setActive,
   } = useSignIn();
   const [userToken, setUserToken] = useState('');
 
@@ -62,7 +62,7 @@ const Login = () => {
     try {
       const { createdSessionId } = await create({
         identifier: data.username,
-        password: data.password
+        password: data.password,
       });
 
       if (createdSessionId) {
@@ -80,7 +80,7 @@ const Login = () => {
     try {
       const curAuth = {
         [Strategies.Apple]: aOAuth,
-        [Strategies.Google]: gOAuth
+        [Strategies.Google]: gOAuth,
       }[strategy];
 
       const { createdSessionId, setActive } = await curAuth();
@@ -100,13 +100,13 @@ const Login = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors }
+    formState: { errors },
   } = useForm<LoginSchemaInputs>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
       username: '',
-      password: ''
-    }
+      password: '',
+    },
   });
 
   return (

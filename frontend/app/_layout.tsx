@@ -3,7 +3,7 @@ import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
 import {
   DarkTheme,
   DefaultTheme,
-  ThemeProvider
+  ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
 import { Slot, Stack, useRouter, useSegments } from 'expo-router';
@@ -13,18 +13,18 @@ import { useColorScheme } from 'react-native';
 import Toast, {
   BaseToast,
   ErrorToast,
-  ToastConfigParams
+  ToastConfigParams,
 } from 'react-native-toast-message';
 import { TamaguiProvider, useTheme } from 'tamagui';
 import { tokenCache } from './utils/tokenCache';
 export {
   // Catch any errors thrown by the Layout component.
-  ErrorBoundary
+  ErrorBoundary,
 } from 'expo-router';
 
 export const unstable_settings = {
   // Ensure that reloading on `/modal` keeps a back button present.
-  initialRouteName: '(tabs)'
+  initialRouteName: '(tabs)',
 };
 
 const CLERK_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
@@ -34,7 +34,7 @@ export default function RootLayout() {
   const colorScheme = useColorScheme();
   const [loaded, error] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
-    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf')
+    InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
   });
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
@@ -88,10 +88,10 @@ function RootLayoutNav() {
         {...props}
         style={{
           borderLeftColor: theme.green10.get(),
-          backgroundColor: theme.backgroundHover.get()
+          backgroundColor: theme.backgroundHover.get(),
         }}
         text1Style={{
-          color: theme.accentColor.get()
+          color: theme.accentColor.get(),
         }}
         text1NumberOfLines={3}
       />
@@ -101,14 +101,14 @@ function RootLayoutNav() {
         {...props}
         style={{
           borderLeftColor: theme.red10.get(),
-          backgroundColor: theme.backgroundHover.get()
+          backgroundColor: theme.backgroundHover.get(),
         }}
         text1Style={{
-          color: theme.accentColor.get()
+          color: theme.accentColor.get(),
         }}
         text1NumberOfLines={3}
       />
-    )
+    ),
   };
   if (!isLoaded) {
     return <Slot />;
@@ -122,14 +122,14 @@ function RootLayoutNav() {
           name='(auth)/login'
           options={{
             presentation: 'card',
-            title: 'Log in'
+            title: 'Log in',
           }}
         />
         <Stack.Screen
           name='(auth)/register'
           options={{
             presentation: 'card',
-            title: 'Register '
+            title: 'Register ',
           }}
         />
       </Stack>

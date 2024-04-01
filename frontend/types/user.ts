@@ -18,12 +18,12 @@ export const RegisterSchema = z.object({
     .refine(
       (val) =>
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/.test(
-          val
+          val,
         ),
-      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.'
+      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.',
     ),
   firstName: z.string().optional(),
-  lastName: z.string().optional()
+  lastName: z.string().optional(),
 });
 
 export type RegisterSchemaInputs = z.infer<typeof RegisterSchema>;
@@ -38,10 +38,10 @@ export const LoginSchema = z.object({
     .refine(
       (val) =>
         /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{6,}$/.test(
-          val
+          val,
         ),
-      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.'
-    )
+      'Password must contain at least one uppercase letter, one lowercase letter, one number and one special character.',
+    ),
 });
 
 export type LoginSchemaInputs = z.infer<typeof LoginSchema>;

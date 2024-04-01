@@ -4,28 +4,32 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { Card, Text, Button } from 'tamagui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useAuth } from '@clerk/clerk-react'
+import { useAuth } from '@clerk/clerk-react';
 
 export default function SampleMutationRequest() {
   const [mutationResult, setMutationResult] = useState(null);
   const [error, setError] = useState(null);
-  const { getToken } = useAuth()
+  const { getToken } = useAuth();
 
   // Make POST request with axios
   const createPost = async (postData) => {
     try {
-        const token = await getToken();
+      const token = await getToken();
       const response = await axios.post(
         'http://localhost:5000/api/posts',
-        postData, {
+        postData,
+        {
           headers: {
-              "Authorization": `Bearer ${token}`
-          }},
+            Authorization: `Bearer ${token}`,
+          },
+        },
       );
       if (response.status === 201) {
         return response.data;
       } else {
-        throw new Error(`Request failed with status ${response.status} and token ${token}`);
+        throw new Error(
+          `Request failed with status ${response.status} and token ${token}`,
+        );
       }
     } catch (error) {
       throw new Error(error.message);

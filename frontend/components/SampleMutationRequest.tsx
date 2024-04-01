@@ -12,19 +12,19 @@ export default function SampleMutationRequest() {
   // Make POST request with axios
   const createPost = async (postData) => {
     try {
-        const response = await axios.post(
-          'http://localhost:5000/api/posts',
-          postData
-        );
-        if (response.status === 201) {
-          return response.data;
-        } else {
-          throw new Error(`Request failed with status ${response.status}`);
-        }
-      } catch (error) {
-        throw new Error(error.message);
+      const response = await axios.post(
+        'http://localhost:5000/api/posts',
+        postData,
+      );
+      if (response.status === 201) {
+        return response.data;
+      } else {
+        throw new Error(`Request failed with status ${response.status}`);
       }
-    };
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  };
 
   const mutation = useMutation({
     // mutationKey: ['UniqueNameSpecificToMutation'], // Optional: Descriptive key to identify this specific mutation

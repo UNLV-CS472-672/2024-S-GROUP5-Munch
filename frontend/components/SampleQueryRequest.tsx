@@ -21,14 +21,14 @@ export default function SampleQueryRequest() {
   };
 
   const result = useQuery({
-      queryKey: ['UniqueNameSpecificToQuery'], // Descriptive key to identify this specific query
-      queryFn: getPosts, // Function that defines how to fetch data for this query
-      enabled: submitted, // Optional: Execute the query only when the variable submitted is true
-    });
+    queryKey: ['UniqueNameSpecificToQuery'], // Descriptive key to identify this specific query
+    queryFn: getPosts, // Function that defines how to fetch data for this query
+    enabled: submitted, // Optional: Execute the query only when the variable submitted is true
+  });
 
   const handleSubmit = () => {
-      setSubmitted((submitted) => !submitted);
-    };
+    setSubmitted((submitted) => !submitted);
+  };
 
   // clear everything in query cache
   const queryClient = useQueryClient();
@@ -36,8 +36,6 @@ export default function SampleQueryRequest() {
     queryClient.invalidateQueries('UniqueNameSpecificToQuery'); // Clear query cache with the key 'UniqueNameSpecificToQuery'
     handleSubmit();
   };
-
-
 
   if (result.isLoading) {
     return <Text>Loading...</Text>;

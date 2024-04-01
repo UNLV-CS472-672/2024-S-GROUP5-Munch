@@ -5,23 +5,26 @@ import axios from 'axios';
 import { Card, Text, Button } from 'tamagui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-// Make POST request with axios
-const createPost = async (postData) => {
-  try {
-    const response = await axios.post(
-      'http://localhost:5000/api/posts',
-      postData,
-    );
-    return response.data;
-  } catch (error) {
-    return error.message;
-  }
-};
-
 export default function SampleMutationRequest() {
   const [mutationResult, setMutationResult] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  // Make POST request with axios
+  const createPost = async (postData) => {
+    try {
+        const response = await axios.post(
+          'http://localhost:5000/api/posts',
+          postData
+        );
+        if (response.status === 201) {
+          return response.data;
+        } else {
+          throw new Error(`Request failed with status ${response.status}`);
+        }
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    };
 
   const mutation = useMutation({
     // mutationKey: ['UniqueNameSpecificToMutation'], // Optional: Descriptive key to identify this specific mutation
@@ -30,8 +33,7 @@ export default function SampleMutationRequest() {
 
   // on submit, send HTTP request
   const handleSubmit = async () => {
-    setIsLoading(true);
-    setError(null);
+    if (mutation.isPending) return; // Prevent multiple submissions
     try {
       const data = await mutation.mutateAsync({
         author: 'users/user_2cwMgsX7SwXnnnYJ2piefltKxLO',
@@ -50,9 +52,7 @@ export default function SampleMutationRequest() {
       });
       setMutationResult('Post Created!');
     } catch (error) {
-      setError(error.message); // Set error state
-    } finally {
-      setIsLoading(false); // Reset loading state
+      setError(error.message);
     }
   };
 
@@ -60,11 +60,11 @@ export default function SampleMutationRequest() {
     <Card>
       <Card.Header />
       <Text> Test Mutation </Text>
-      <Button onPress={handleSubmit} disabled={isLoading}>
-        {isLoading ? 'Submitting...' : 'Submit'}
+      <Button onPress={handleSubmit} disabled={mutation.isPending}>
+        {mutation.isPending ? 'Submitting...' : 'Submit'}
       </Button>
-      {error && <Text>Error: {error}</Text>}
-      {mutationResult && <Text>Mutation Result: {mutationResult}</Text>}
+      {mutation.isError && <Text>Error: {error}</Text>}
+      {mutation.isSuccess && <Text>Mutation Result: {mutationResult}</Text>}
       <Card.Footer />
       <Card.Background />
     </Card>

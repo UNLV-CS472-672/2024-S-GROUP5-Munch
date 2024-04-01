@@ -82,6 +82,10 @@ export default function TabLayout() {
           headerShown: false
         }}
       />
+      <Tabs.Screen
+        name='post/[id]'
+        options={{ href: null, headerShown: false, tabBarLabel: 'None' }}
+      />
     </Tabs>
   );
 }

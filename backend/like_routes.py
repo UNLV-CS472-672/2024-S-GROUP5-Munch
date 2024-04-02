@@ -34,8 +34,10 @@ def like_post(user_id, post_id):
 
         # Ensure the user exists
         if not user_data:
-            return jsonify({"error": "User not found"}
-                           ), status.HTTP_404_NOT_FOUND
+            return (
+                jsonify({"error": "User not found"}),
+                status.HTTP_404_NOT_FOUND,
+            )
 
         # Fetch post document from Firestore
         post_ref = db.collection("posts").document(post_id)
@@ -43,8 +45,10 @@ def like_post(user_id, post_id):
 
         # Ensure the post exists
         if not post_data:
-            return jsonify({"error": "Post not found"}
-                           ), status.HTTP_404_NOT_FOUND
+            return (
+                jsonify({"error": "Post not found"}),
+                status.HTTP_404_NOT_FOUND,
+            )
 
         # Append post reference to user's likes
         user_likes = user_data.get("likes", [])
@@ -57,8 +61,10 @@ def like_post(user_id, post_id):
             post_likes = post_data.get("likes", 0)
             post_ref.update({"likes": post_likes + 1})
 
-        return jsonify({"message": "Post liked successfully"}
-                       ), status.HTTP_200_OK
+        return (
+            jsonify({"message": "Post liked successfully"}),
+            status.HTTP_200_OK,
+        )
 
     except Exception as e:
         print("Error liking post:", str(e))
@@ -96,8 +102,10 @@ def unlike_post(user_id, post_id):
 
         # Ensure the user exists
         if not user_data:
-            return jsonify({"error": "User not found"}
-                           ), status.HTTP_404_NOT_FOUND
+            return (
+                jsonify({"error": "User not found"}),
+                status.HTTP_404_NOT_FOUND,
+            )
 
         # Fetch post document from Firestore
         post_ref = db.collection("posts").document(post_id)
@@ -105,8 +113,10 @@ def unlike_post(user_id, post_id):
 
         # Ensure the post exists
         if not post_data:
-            return jsonify({"error": "Post not found"}
-                           ), status.HTTP_404_NOT_FOUND
+            return (
+                jsonify({"error": "Post not found"}),
+                status.HTTP_404_NOT_FOUND,
+            )
 
         # Remove post reference from user's likes if it exists
         user_likes = user_data.get("likes", [])
@@ -120,8 +130,10 @@ def unlike_post(user_id, post_id):
             if post_likes > 0:
                 post_ref.update({"likes": post_likes - 1})
 
-        return jsonify({"message": "Post unliked successfully"}
-                       ), status.HTTP_200_OK
+        return (
+            jsonify({"message": "Post unliked successfully"}),
+            status.HTTP_200_OK,
+        )
 
     except Exception as e:
         print("Error unliking post:", str(e))

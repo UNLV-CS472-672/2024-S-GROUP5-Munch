@@ -81,7 +81,7 @@ def middleware():
         # Extract API name and address from request path
         api_parts = request.path.split("/")[2:]
         api_name = api_parts[0]
-        if (len(api_parts) >= 2):
+        if len(api_parts) >= 2:
             api_address = api_parts[1]
 
         # Create the user if not already existing

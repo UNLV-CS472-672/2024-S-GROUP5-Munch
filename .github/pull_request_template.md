@@ -1,19 +1,20 @@
 This is related to issue #
 
 ## Description / Changes Made
-- 
+
+-
 
 ## Portions of this code that utilized AI generation
-- 
-Link to Generated Code (If Applicable): 
+
+- Link to Generated Code (If Applicable):
 
 ## Screenshots (optional)
 
 ![image](#)
 
 ## How to Test
-1. 
 
+1.
 
 ## Checklist
 

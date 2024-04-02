@@ -1,18 +1,19 @@
-This is related to issue # _replace or delete if N/A_
+This is related to issue #
 
 ## Description / Changes Made
+- 
 
-- _List the specific changes made in this pull request. Include any new features, bug fixes, improvements, or refactorings._
--
+## Portions of this code that utilized AI generation
+- 
+Link to Generated Code (If Applicable): 
 
 ## Screenshots (optional)
 
 ![image](#)
 
 ## How to Test
+1. 
 
-1. _Provide step-by-step instructions on how to test the changes in this pull request for the reviewers. Include any specific setups or configurations needed._
-2.
 
 ## Checklist
 

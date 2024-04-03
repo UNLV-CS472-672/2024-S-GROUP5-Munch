@@ -6,12 +6,9 @@
  *   Posts come with a background image, recipe title, and description
  */
 
+import Post from '@/components/Post/Post';
 import { FlatList } from 'react-native';
 import { View } from 'tamagui';
-import { Byte } from '@/types/post';
-import Post from '@/components/Post';
-import { useAuth } from '@clerk/clerk-expo';
-import { useEffect } from 'react';
 
 const items = [
   {
@@ -72,18 +69,13 @@ const items = [
   },
 ];
 export default function Index() {
-  const { getToken } = useAuth();
-
   return (
     <View>
       <FlatList
         data={items}
         renderItem={({ item }) => <Post post={item} />}
         showsVerticalScrollIndicator={false}
-        // pagingEnabled={true}
-        // snapToAlignment='start'
         decelerationRate={'fast'}
-        // disableIntervalMomentum={true}
       />
     </View>
   );

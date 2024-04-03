@@ -3,7 +3,14 @@ import { createInterFont } from '@tamagui/font-inter';
 import { createMedia } from '@tamagui/react-native-media-driver';
 import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
-import { createTamagui, styled, SizableText, H1, YStack } from 'tamagui';
+import {
+  createTamagui,
+  styled,
+  SizableText,
+  H1,
+  YStack,
+  GetProps,
+} from 'tamagui';
 import { config as DefaultConfig } from '@tamagui/config/v3';
 
 //animation for gestures

@@ -11,10 +11,10 @@ import {
   ScrollView,
   TextArea,
 } from 'tamagui';
-import { Title, Subtitle, Container, Main } from '../../../tamagui.config.ts';
+import { Title, Subtitle, Container, Main } from '@/tamagui.config';
 import { Feather } from '@expo/vector-icons';
 import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
-import CommentComponent from '../../../components/CommentComponent';
+import CommentComponent from '@/components/Comment';
 
 export default function CommentPage() {
   const { name } = useLocalSearchParams();
@@ -22,32 +22,25 @@ export default function CommentPage() {
   {
     /*This is the back button that goes back to the home page*/
   }
-  const BackButton = () => (
-    <Button
-      unstyled
-      flexDirection='row'
-      backgroundColor='transparent'
-      paddingLeft={0}
-      pressStyle={{ opacity: 0.5 }}
-      onPress={router.back}
-      icon={<Feather name='chevron-left' size={16} color='#007AFF' />}
-    >
-      <Text color='#007AFF'>Back</Text>
-    </Button>
-  );
 
+  //NOTE USE THE Comment.tsx COMPONENT
   return (
     <ScrollView
-      snapToInterval={Dimensions.get('window').height - 100}
+      snapToInterval={Dimensions.get('window').height / 2}
       disableIntervalMomentum={true}
       decelerationRate='fast'
     >
-      <BackButton
-        style={{
-          height: 60,
-          padding: 10,
-        }}
-      />
+      <Button
+        unstyled
+        flexDirection='row'
+        backgroundColor='transparent'
+        paddingLeft={0}
+        pressStyle={{ opacity: 0.5 }}
+        onPress={router.back}
+        icon={<Feather name='chevron-left' size={16} color='#007AFF' />}
+      >
+        <Text color='#007AFF'>Back</Text>
+      </Button>
       <Container>
         <Main>
           <XStack>
@@ -96,7 +89,7 @@ export default function CommentPage() {
         text='this is parent cooment 3'
       />
       <Container>
-        <Stack.Screen
+        {/* <Stack.Screen
           options={{
             title: 'Comment Section',
             headerCenter: () => <BackButton />,
@@ -106,7 +99,7 @@ export default function CommentPage() {
           <YStack>
             <BackButton />
           </YStack>
-        </Main>
+        </Main> */}
       </Container>
     </ScrollView>
   );

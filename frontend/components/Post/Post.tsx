@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from 'react';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { Subtitle } from '@/tamagui.config';
 import {
   TouchableHighlight,
@@ -7,12 +7,21 @@ import {
   Platform,
   Linking,
 } from 'react-native';
-import { Button, YStack, Image, Avatar, Text, View, XStack } from 'tamagui';
+import {
+  Button,
+  YStack,
+  Image,
+  Avatar,
+  Text,
+  View,
+  XStack,
+  Tooltip,
+} from 'tamagui';
 import { Byte, Recipe } from '@/types/post';
-import { getCurrentPositionAsync } from 'expo-location';
 import { EvilIcons } from '@expo/vector-icons';
 import { isByte, isRecipe } from '@/app/utils/typeGuard';
 import { useAuth } from '@clerk/clerk-expo';
+import ButtonIcon from './ButtonIcon';
 
 interface PostProps {
   post: Byte | Recipe;
@@ -38,9 +47,11 @@ const getDateDifference = (creation_date: string) => {
 const Post: FC<PostProps> = ({ post }) => {
   const { author, comments, creation_date, description, likes, pictures, key } =
     post;
-  const { getToken } = useAuth();
+
   const byte = isByte(post) ? post : null;
   const recipe = isRecipe(post) ? post : null;
+
+  const router = useRouter();
   const { height } = Dimensions.get('screen');
 
   const openMaps = async () => {
@@ -49,23 +60,8 @@ const Post: FC<PostProps> = ({ post }) => {
     Linking.openURL(Platform.OS === 'ios' ? iosLink : androidLink);
   };
 
-  const testPost = async () => {
-    const token = await getToken();
-    try {
-      const res = await fetch('http://localhost:5000/api/posts', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          ContentType: 'application/json',
-        },
-        method: 'GET',
-      });
-      // const data = await res.json();
-      // console.log(data);
-    } catch (err) {
-      console.log(err);
-    }
-  };
   const handleLike = async () => {};
+  const handleBookmark = async () => {};
   return (
     <View py={'$3'}>
       {/*Avatar*/}
@@ -74,59 +70,29 @@ const Post: FC<PostProps> = ({ post }) => {
       </Avatar>
       <Image
         source={{ uri: pictures[0], cache: 'force-cache' }}
-        height={height / 2}
+        height={height / 1.5}
         borderRadius={'$2'}
       />
       <YStack display='flex'>
         <XStack display='flex' justifyContent='center'>
           {/*Like*/}
-          <Button
-            size={'$4'}
-            circular
-            icon={<EvilIcons name='heart' size={30} />}
-            display='flex'
-            justifyContent='center'
-            alignItems='center'
-            onPress={handleLike}
-            unstyled
-          />
+          <ButtonIcon iconName={'heart'} onPress={handleLike} />
           {/*Comment*/}
-          <Button
-            size='$4'
-            circular
-            //change color of icon based on theme
-            icon={<EvilIcons name='comment' size={30} />}
-            display='flex'
-            justifyContent='center'
-            alignItems='center'
-            unstyled
+          <ButtonIcon
+            iconName='comment'
+            onPress={() => {
+              router.push('/(modals)/comments');
+            }}
           />
           {/*Bookmark*/}
-          <Button
-            size='$4'
-            circular
-            icon={<EvilIcons name='star' size={30} />}
-            display='flex'
-            justifyContent='center'
-            alignItems='center'
-            unstyled
-          />
+          <ButtonIcon iconName='star' onPress={handleBookmark} />
+          {/*Location*/}
           {byte?.location && (
-            <Button
-              size='$4'
-              unstyled
-              circular
-              display='flex'
-              justifyContent='center'
-              alignItems='center'
-              icon={<EvilIcons name='location' size={30} />}
-              onPress={openMaps}
-            />
+            <ButtonIcon iconName='location' onPress={openMaps} />
           )}
         </XStack>
         <YStack px={'$2.5'}>
           {/* Description */}
-          <Text onPress={testPost}>CLICK HERE </Text>
           <Link href={`/post/${key}`} replace>
             <Text>{description}</Text>
           </Link>

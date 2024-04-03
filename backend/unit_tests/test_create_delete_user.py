@@ -1,14 +1,14 @@
-import firebase_admin
-from flask import Flask
-from unittest.mock import patch
-import unittest
-from server import user_bp
-import sys
-import os
-
+import sys, os
 
 # Add parent directory to the sys.path to allow relative imports
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+
+from flask import Flask
+import firebase_admin
+from server import user_bp
+import unittest
+from unittest.mock import patch
 
 
 class TestUserRoutes(unittest.TestCase):

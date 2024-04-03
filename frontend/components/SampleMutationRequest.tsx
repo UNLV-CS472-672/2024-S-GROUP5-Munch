@@ -5,7 +5,7 @@ import axios from 'axios';
 import { Card, Text, Button } from 'tamagui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-react';
-import { getCurrentDateTime } from '../app/utils/getCurrentDateTime'
+import { getCurrentDateTime } from '../app/utils/getCurrentDateTime';
 
 export default function SampleMutationRequest() {
   const [mutationResult, setMutationResult] = useState(null);
@@ -48,8 +48,7 @@ export default function SampleMutationRequest() {
     try {
       const data = await mutation.mutateAsync({
         author: `users/${userId}`,
-        comments: [
-        ],
+        comments: [],
         creation_date: getCurrentDateTime(),
         description: '#StaceyWasHere (Test Creating A Post)!',
         likes: 0,

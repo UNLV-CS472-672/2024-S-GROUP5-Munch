@@ -19,7 +19,7 @@ import { Button, Form, Separator, Text, XStack, YStack } from 'tamagui';
 import { app } from '../firebaseConfig';
 import {
   getCurrentPositionAsync,
-  requestForegroundPermissionsAsync
+  requestForegroundPermissionsAsync,
 } from 'expo-location';
 
 enum Strategies {
@@ -51,7 +51,7 @@ const Login = () => {
           await requestForegroundPermissionsAsync();
         console.log({ status, expires, granted, android, ios });
         const {
-          coords: { longitude, latitude }
+          coords: { longitude, latitude },
         } = await getCurrentPositionAsync();
       })();
       router.push('/');

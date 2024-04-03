@@ -1,14 +1,18 @@
-import tamaguiConfig from '@/tamagui.config';
-import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
+import { UserContext, UserContextType } from '@/contexts/UserContext';
+import config from '@/tamagui.config';
+import { tokenCache } from '@/utils/tokenCache';
+import { ClerkProvider, useAuth, useUser } from '@clerk/clerk-expo';
+import { UserResource } from '@clerk/types';
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
 import Toast, {
   BaseToast,
@@ -16,9 +20,6 @@ import Toast, {
   ToastConfigParams,
 } from 'react-native-toast-message';
 import { TamaguiProvider, useTheme } from 'tamagui';
-import { tokenCache } from './utils/tokenCache';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { DevToolsBubble } from 'react-native-react-query-devtools';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -59,10 +60,7 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
-      <TamaguiProvider
-        config={tamaguiConfig}
-        defaultTheme={colorScheme as string}
-      >
+      <TamaguiProvider config={config} defaultTheme={colorScheme as string}>
         <QueryClientProvider client={queryClient}>
           <RootLayoutNav />
           {/* <DevToolsBubble />  // uncomment for dev tools */}
@@ -73,22 +71,24 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
+  //themes
   const colorScheme = useColorScheme();
-  const { isLoaded, isSignedIn } = useAuth();
-  const segments = useSegments();
   const theme = useTheme();
-  const router = useRouter();
-  useEffect(() => {
-    if (!isLoaded) return;
-    const inTabGroup = segments[0] === '(auth)';
 
-    if (isSignedIn && !inTabGroup) {
-      router.replace('/');
-    }
-    if (!isSignedIn) {
-      router.replace('/login');
-    }
-  }, [isSignedIn]);
+  //routes
+  const segments = useSegments();
+  const router = useRouter();
+
+  //auth
+  const { isLoaded, isSignedIn, getToken } = useAuth();
+  const { user } = useUser();
+  const [userContext, setUserContext] = useState<UserContextType>({
+    token: '',
+    user: {} as UserResource,
+    user_id: '',
+  });
+
+  //config
 
   const toastConfig = {
     success: (props: ToastConfigParams<any>) => (
@@ -118,39 +118,69 @@ function RootLayoutNav() {
       />
     ),
   };
+
+  useEffect(() => {
+    (async () => {
+      if (!isLoaded) return;
+      const inTabGroup = segments[0] === '(auth)';
+
+      if (isSignedIn && !inTabGroup) {
+        //fill in the context if we are signed in
+        setUserContext({
+          token: await getToken(),
+          user: user,
+          user_id: user.id,
+        });
+        router.replace('/');
+      }
+      if (!isSignedIn) {
+        router.replace('/login');
+      }
+    })();
+  }, [isSignedIn]);
+
   if (!isLoaded) {
     return <Slot />;
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-        <Stack.Screen
-          name='(auth)/login'
-          options={{
-            presentation: 'card',
-            title: 'Log in',
-          }}
-        />
-        <Stack.Screen
-          name='(auth)/register'
-          options={{
-            presentation: 'card',
-            title: 'Register ',
-          }}
-        />
-        <Stack.Screen
-          name='(modals)/comments'
-          options={{
-            presentation: 'modal',
-            title: 'Comments',
-            animation: 'slide_from_bottom',
-            contentStyle: { height: '50%' },
-          }}
-        />
-      </Stack>
-      <Toast position='bottom' config={toastConfig} visibilityTime={2000} />
-    </ThemeProvider>
+    <UserContext.Provider
+      value={{
+        token: userContext.token,
+        user: userContext.user,
+        user_id: userContext.user_id,
+        setUserProperties: setUserContext,
+      }}
+    >
+      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+        <Stack>
+          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+          <Stack.Screen
+            name='(auth)/login'
+            options={{
+              presentation: 'card',
+              title: 'Log in',
+            }}
+          />
+          <Stack.Screen
+            name='(auth)/register'
+            options={{
+              presentation: 'card',
+              title: 'Register ',
+            }}
+          />
+          <Stack.Screen
+            name='(modals)/comments'
+            options={{
+              presentation: 'modal',
+              title: 'Comments',
+              animation: 'slide_from_bottom',
+              contentStyle: { height: '50%' },
+            }}
+          />
+        </Stack>
+        <Toast position='bottom' config={toastConfig} visibilityTime={2000} />
+      </ThemeProvider>
+    </UserContext.Provider>
   );
 }

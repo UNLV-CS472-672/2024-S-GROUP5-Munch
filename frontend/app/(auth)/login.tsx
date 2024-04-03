@@ -10,13 +10,11 @@ import {
 import { Ionicons } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { collection, getFirestore } from 'firebase/firestore';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { Button, Form, Separator, Text, XStack, YStack } from 'tamagui';
-import { app } from '../firebaseConfig';
 
 enum Strategies {
   Google = 'oauth-google',
@@ -31,9 +29,7 @@ const Login = () => {
     signIn: { create },
     setActive,
   } = useSignIn();
-  const [userToken, setUserToken] = useState('');
 
-  const db = getFirestore(app);
   const router = useRouter();
 
   const { startOAuthFlow: gOAuth } = useOAuth({ strategy: 'oauth_google' });
@@ -74,8 +70,6 @@ const Login = () => {
 
       if (createdSessionId) {
         setActive({ session: createdSessionId });
-
-        collection(db, 'users');
       }
     } catch (err) {
       console.error('OAuth err', err);

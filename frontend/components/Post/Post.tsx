@@ -1,26 +1,10 @@
-import React, { FC, useEffect } from 'react';
-import { Link, useRouter } from 'expo-router';
-import { Subtitle } from '@/tamagui.config';
-import {
-  TouchableHighlight,
-  Dimensions,
-  Platform,
-  Linking,
-} from 'react-native';
-import {
-  Button,
-  YStack,
-  Image,
-  Avatar,
-  Text,
-  View,
-  XStack,
-  Tooltip,
-} from 'tamagui';
-import { Byte, Recipe } from '@/types/post';
-import { EvilIcons } from '@expo/vector-icons';
 import { isByte, isRecipe } from '@/app/utils/typeGuard';
-import { useAuth } from '@clerk/clerk-expo';
+import { Subtitle } from '@/tamagui.config';
+import { Byte, Recipe } from '@/types/post';
+import { Link, useRouter } from 'expo-router';
+import React, { FC } from 'react';
+import { Dimensions, Linking, Platform } from 'react-native';
+import { Avatar, Image, Text, View, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
 
 interface PostProps {

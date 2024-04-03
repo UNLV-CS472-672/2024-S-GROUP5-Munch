@@ -10,7 +10,12 @@ import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
-import { TamaguiProvider } from 'tamagui';
+import Toast, {
+  BaseToast,
+  ErrorToast,
+  ToastConfigParams,
+} from 'react-native-toast-message';
+import { TamaguiProvider, useTheme } from 'tamagui';
 import { tokenCache } from './utils/tokenCache';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { DevToolsBubble } from 'react-native-react-query-devtools';
@@ -31,6 +36,7 @@ const queryClient = new QueryClient();
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
   const [loaded, error] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
@@ -53,10 +59,16 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
-      <QueryClientProvider client={queryClient}>
+
+        <TamaguiProvider
+        config={tamaguiConfig}
+        defaultTheme={colorScheme as string}
+        >
+        <QueryClientProvider client={queryClient}>
         <RootLayoutNav />
         {/* <DevToolsBubble />  // uncomment for dev tools */}
-      </QueryClientProvider>
+        </QueryClientProvider>
+      </TamaguiProvider>
     </ClerkProvider>
   );
 }
@@ -65,7 +77,7 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { isLoaded, isSignedIn } = useAuth();
   const segments = useSegments();
-
+  const theme = useTheme();
   const router = useRouter();
   useEffect(() => {
     if (!isLoaded) return;
@@ -79,41 +91,58 @@ function RootLayoutNav() {
     }
   }, [isSignedIn]);
 
+  const toastConfig = {
+    success: (props: ToastConfigParams<any>) => (
+      <BaseToast
+        {...props}
+        style={{
+          borderLeftColor: theme.green10.get(),
+          backgroundColor: theme.backgroundHover.get(),
+        }}
+        text1Style={{
+          color: theme.accentColor.get(),
+        }}
+        text1NumberOfLines={3}
+      />
+    ),
+    error: (props: ToastConfigParams<any>) => (
+      <ErrorToast
+        {...props}
+        style={{
+          borderLeftColor: theme.red10.get(),
+          backgroundColor: theme.backgroundHover.get(),
+        }}
+        text1Style={{
+          color: theme.accentColor.get(),
+        }}
+        text1NumberOfLines={3}
+      />
+    ),
+  };
   if (!isLoaded) {
-    return (
-      <TamaguiProvider
-        config={tamaguiConfig}
-        defaultTheme={colorScheme as string}
-      >
-        <Slot />
-      </TamaguiProvider>
-    );
+    return <Slot />;
   }
 
   return (
-    <TamaguiProvider
-      config={tamaguiConfig}
-      defaultTheme={colorScheme as string}
-    >
-      <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-        <Stack>
-          <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-          <Stack.Screen
-            name='(auth)/login'
-            options={{
-              presentation: 'card',
-              title: 'Log in',
-            }}
-          />
-          <Stack.Screen
-            name='(auth)/register'
-            options={{
-              presentation: 'card',
-              title: 'Register ',
-            }}
-          />
-        </Stack>
-      </ThemeProvider>
-    </TamaguiProvider>
+    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <Stack>
+        <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+        <Stack.Screen
+          name='(auth)/login'
+          options={{
+            presentation: 'card',
+            title: 'Log in',
+          }}
+        />
+        <Stack.Screen
+          name='(auth)/register'
+          options={{
+            presentation: 'card',
+            title: 'Register ',
+          }}
+        />
+      </Stack>
+      <Toast position='bottom' config={toastConfig} visibilityTime={2000} />
+    </ThemeProvider>
   );
 }

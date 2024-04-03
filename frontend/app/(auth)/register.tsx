@@ -6,6 +6,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import Toast from 'react-native-toast-message';
 import { Button, Form, Separator, Text, View, XStack, YStack } from 'tamagui';
 
 const Register = () => {
@@ -45,9 +46,10 @@ const Register = () => {
       }
     } catch (err) {
       if (isClerkAPIResponseError(err)) {
-        console.error({ ...err });
+        const { errors } = err;
+        Toast.show({ text1: errors[0].longMessage, type: 'error' });
       } else {
-        console.error(err);
+        Toast.show({ text1: 'Something unexpected happened', type: 'error' });
       }
     }
   };

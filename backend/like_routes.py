@@ -6,7 +6,7 @@ from helper_functions import try_connect_to_db
 like_bp = Blueprint("like", __name__)
 
 
-@like_bp.route("/api/users/<user_id>/like/<post_id>", methods=["PUT"])
+@like_bp.route("/api/users/<user_id>/like/<post_id>", methods=["PATCH"])
 def like_post(user_id, post_id):
     """
     Like a post.
@@ -74,7 +74,7 @@ def like_post(user_id, post_id):
         )
 
 
-@like_bp.route("/api/users/<user_id>/unlike/<post_id>", methods=["PUT"])
+@like_bp.route("/api/users/<user_id>/unlike/<post_id>", methods=["PATCH"])
 def unlike_post(user_id, post_id):
     """
     Unlike a post.

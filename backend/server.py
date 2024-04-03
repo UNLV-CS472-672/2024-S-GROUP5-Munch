@@ -123,7 +123,7 @@ def middleware():
         elif (
             api_name == "posts"
             and request.method == "DELETE"
-            or request.method == "PUT"
+            or request.method == "PATCH"
         ):
             # Check if user has access to modify/delete specific post
             posts = result.get("posts", [])

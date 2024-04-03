@@ -17,6 +17,9 @@ import Toast, {
 } from 'react-native-toast-message';
 import { TamaguiProvider, useTheme } from 'tamagui';
 import { tokenCache } from './utils/tokenCache';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DevToolsBubble } from 'react-native-react-query-devtools';
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -28,6 +31,8 @@ export const unstable_settings = {
 };
 
 const CLERK_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const queryClient = new QueryClient();
+
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
@@ -58,7 +63,10 @@ export default function RootLayout() {
         config={tamaguiConfig}
         defaultTheme={colorScheme as string}
       >
-        <RootLayoutNav />
+        <QueryClientProvider client={queryClient}>
+          <RootLayoutNav />
+          {/* <DevToolsBubble />  // uncomment for dev tools */}
+        </QueryClientProvider>
       </TamaguiProvider>
     </ClerkProvider>
   );

@@ -18,6 +18,7 @@
 import { TouchableHighlight, Dimensions } from 'react-native';
 import { Button, YStack, Image, Avatar, Text, View } from 'tamagui';
 import { Title, Subtitle } from '../tamagui.config.ts';
+import { Link } from 'expo-router';
 
 export default function Post({
   title = 'A yummy recipe',

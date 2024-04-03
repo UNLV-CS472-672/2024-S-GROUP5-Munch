@@ -15,9 +15,10 @@ export default function SampleMutationRequest() {
   const createPost = async (postData) => {
     try {
       const token = await getToken();
-      const response = await axios.post(
-        'http://localhost:5000/api/posts',
-        postData,
+        console.log(token);
+        const response = await axios.post(
+          `http://${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
+          postData,
         {
           headers: {
             Authorization: `Bearer ${token}`,

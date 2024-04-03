@@ -14,7 +14,7 @@ export default function SampleQueryRequest() {
   const getPosts = async () => {
     try {
       const response = await axios.get(
-        'http://localhost:5000/api/posts/3xUM3gtEQMlaYJjNA0qY',
+        `http://${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/3xUM3gtEQMlaYJjNA0qY`,
         {
           headers: { Authorization: `Bearer ${await getToken()}` },
         },

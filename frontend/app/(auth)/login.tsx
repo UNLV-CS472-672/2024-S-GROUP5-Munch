@@ -1,6 +1,6 @@
 import UserInput from '@/components/UserInput';
-import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
 import { LoginSchema, LoginSchemaInputs } from '@/types/user';
+import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
 import {
   isClerkAPIResponseError,
   useOAuth,
@@ -17,10 +17,6 @@ import { View } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { Button, Form, Separator, Text, XStack, YStack } from 'tamagui';
 import { app } from '../firebaseConfig';
-import {
-  getCurrentPositionAsync,
-  requestForegroundPermissionsAsync,
-} from 'expo-location';
 
 enum Strategies {
   Google = 'oauth-google',
@@ -46,14 +42,6 @@ const Login = () => {
   //on mount sign in
   useEffect(() => {
     if (isSignedIn) {
-      (async () => {
-        const { status, expires, granted, android, ios } =
-          await requestForegroundPermissionsAsync();
-        console.log({ status, expires, granted, android, ios });
-        const {
-          coords: { longitude, latitude },
-        } = await getCurrentPositionAsync();
-      })();
       router.push('/');
     }
   }, [isSignedIn]);

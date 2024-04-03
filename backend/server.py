@@ -54,7 +54,7 @@ def middleware():
     print("\nIncoming request:", request.method, request.path)
 
     # Check for Authorization header containing JWT token
-    token = request.headers.get("Authorization")
+    token = request.headers.get("Authorization").split(" ")[1]
     if token:
         try:
             # Verify and decode JWT token
@@ -65,7 +65,7 @@ def middleware():
             )
 
             # Extract user_id and API details from the request
-            user_id = decoded_token["uid"]
+            user_id = decoded_token["sub"]
 
             # Extract API name and address from request path
             api_name = request.path.split("/", 2)[-1].split("/", 1)[0]

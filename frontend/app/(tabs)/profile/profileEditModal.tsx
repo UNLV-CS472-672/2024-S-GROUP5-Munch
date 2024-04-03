@@ -1,19 +1,19 @@
 import UserInput from '@/components/UserInput';
 import { UserState } from '@/types/user';
-import { isClerkAPIResponseError, useAuth, useUser } from '@clerk/clerk-expo';
+import { isClerkAPIResponseError, useUser } from '@clerk/clerk-expo';
 import { MediaTypeOptions, launchImageLibraryAsync } from 'expo-image-picker';
 import { Stack } from 'expo-router';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TouchableOpacity } from 'react-native';
-import { Avatar, Separator, View, YStack, Form, XStack, Button } from 'tamagui';
+import Toast from 'react-native-toast-message';
+import { Avatar, Button, Form, Separator, View, XStack, YStack } from 'tamagui';
 
 const ProfileEditModal = () => {
   const { user } = useUser();
-
   const {
     handleSubmit,
     control,
-    formState: { errors },
+    formState: { errors, isDirty, dirtyFields },
   } = useForm<UserState>({
     defaultValues: {
       username: user?.username,
@@ -22,6 +22,33 @@ const ProfileEditModal = () => {
       password: user?.passwordEnabled ? 'password' : '',
     },
   });
+
+  const updateUserData: SubmitHandler<UserState> = async (data) => {
+    try {
+      const isDirtyClerk =
+        dirtyFields.firstName || dirtyFields.lastName || dirtyFields.username;
+      const isNotDirtyClerk = dirtyFields.bio;
+      if (isDirtyClerk) {
+        await user?.update({
+          username: data.username,
+          firstName: data.firstName,
+          lastName: data.lastName,
+        });
+      }
+
+      if (isNotDirtyClerk) {
+        //api call to update
+      }
+
+      if (isDirty) {
+        Toast.show({ text1: 'Profile Updated', type: 'success' });
+      }
+    } catch (err) {
+      if (isClerkAPIResponseError(err)) {
+        Toast.show({ text1: err.message, type: 'error' });
+      }
+    }
+  };
 
   const handleUserProfileChange = async () => {
     let pfp = await launchImageLibraryAsync({
@@ -35,10 +62,19 @@ const ProfileEditModal = () => {
       const base64 = `data:image/png;base64,${pfp.assets[0].base64}`;
       try {
         user?.setProfileImage({ file: base64 });
+        Toast.show({ text1: 'Profile Image Updated', type: 'success' });
       } catch (err) {
         if (isClerkAPIResponseError(err)) {
-          console.log(err.errors);
+          Toast.show({ text1: err.message, type: 'error' });
+          console.error(err.errors);
         }
+
+        Toast.show({
+          type: 'error',
+          text1: 'Profile Picture Update Failed!',
+          position: 'bottom',
+          visibilityTime: 1000,
+        });
       }
     }
   };
@@ -49,15 +85,11 @@ const ProfileEditModal = () => {
       <YStack gap={'$1'} px={'$2'}>
         <TouchableOpacity onPress={handleUserProfileChange}>
           <Avatar circular margin={'auto'} size={'$5'} my={'$4'}>
-            <Avatar.Image src={user.hasImage ? user.imageUrl! : ' '} />
+            <Avatar.Image src={user.imageUrl ?? ' '} />
           </Avatar>
         </TouchableOpacity>
         <Separator />
-        <Form
-          onSubmit={handleSubmit((data) => {
-            console.log(data);
-          })}
-        >
+        <Form onSubmit={handleSubmit(updateUserData)}>
           <Controller
             name={'username'}
             control={control}

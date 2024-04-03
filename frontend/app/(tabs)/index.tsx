@@ -6,9 +6,8 @@
  *   Posts come with a background image, recipe title, and description
  */
 
-import { Link } from 'expo-router';
 import { Dimensions } from 'react-native';
-import { View, ScrollView } from 'tamagui';
+import { ScrollView } from 'tamagui';
 import Post from '../../components/Post';
 export default function Index() {
   return (

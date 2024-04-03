@@ -6,8 +6,8 @@
     "development": {
       "developmentClient": true,
       "distribution": "internal",
-      "ios":{
-        "resourceClass" : "m-medium",
+      "ios": {
+        "resourceClass": "m-medium",
         "simulator": true
       }
     },

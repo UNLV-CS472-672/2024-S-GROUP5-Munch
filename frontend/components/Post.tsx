@@ -15,9 +15,10 @@
  *               Avatar.Image from Tamagui's Avatar
  */
 
-import { TouchableHighlight, Dimensions } from 'react-native';
-import { Button, YStack, Image, Avatar, Text, View } from 'tamagui';
-import { Title, Subtitle } from '../tamagui.config.ts';
+import { Subtitle } from '@/tamagui.config';
+import { Link } from 'expo-router';
+import { Dimensions, TouchableHighlight } from 'react-native';
+import { Avatar, Button, Image, Text, View, YStack } from 'tamagui';
 
 export default function Post({
   title = 'A yummy recipe',
@@ -34,7 +35,6 @@ export default function Post({
         source={image}
         width={width}
         height={height}
-        resizeImage={'contain'}
         position={'absolute'}
       />
       {/*Right-hand functions: Avatar, like, comment, share*/}

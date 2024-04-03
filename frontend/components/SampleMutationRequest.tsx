@@ -9,13 +9,12 @@ import { useAuth } from '@clerk/clerk-react';
 export default function SampleMutationRequest() {
   const [mutationResult, setMutationResult] = useState(null);
   const [error, setError] = useState(null);
-  const { getToken } = useAuth();
+  const { getToken, userId } = useAuth();
 
   // Make POST request with axios
   const createPost = async (postData) => {
     try {
       const token = await getToken();
-        console.log(token);
         const response = await axios.post(
           `http://${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
           postData,
@@ -47,7 +46,7 @@ export default function SampleMutationRequest() {
     if (mutation.isPending) return; // Prevent multiple submissions
     try {
       const data = await mutation.mutateAsync({
-        author: 'users/user_2cwMgsX7SwXnnnYJ2piefltKxLO',
+        author: `users/${userId}`,
         comments: [
           {
             author: 'users/user_2cwMgsX7SwXnnnYJ2piefltKxLO',

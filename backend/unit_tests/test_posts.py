@@ -1,16 +1,9 @@
 import unittest
 import requests
-import server
+from helper_functions import try_connect_to_db
 from server import app
 
-import os
-import firebase_admin
-import status
-from flask import Flask, jsonify, request
-from firebase_admin import credentials
 from firebase_admin import firestore
-from dotenv import load_dotenv
-
 
 # Function for setting up database and common functionality between API route calls
 class SetUp:
@@ -20,7 +13,7 @@ class SetUp:
 
     def database_connect(self):
         # Connect to database
-        server.try_connect_to_db()
+        try_connect_to_db()
 
     # Test posting a user to the database
     def test_user(self):

@@ -1,17 +1,7 @@
 import unittest
 import unittest
-import requests
-import server
+from helper_functions import try_connect_to_db
 from server import app
-
-import os
-import firebase_admin
-import status
-from flask import Flask, jsonify, request
-from firebase_admin import credentials
-from firebase_admin import firestore
-from dotenv import load_dotenv
-
 
 # import unittest
 # from your_module import firestore  # Assuming your Flask firestore instance is named 'firestore'
@@ -21,7 +11,7 @@ class SetUp:
 
     def database_connect(self):
         # Connect to database
-        server.try_connect_to_db()
+        try_connect_to_db()
 
 
 class TestUser(unittest.TestCase):

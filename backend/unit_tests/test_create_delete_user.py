@@ -23,6 +23,7 @@ class TestUserRoutes(unittest.TestCase):
         2. Initialize Firebase Admin SDK using the `setUpClass` method.
         3. Use the `test_create_user` and `test_delete_user` methods to write test cases for creating and deleting users, respectively.
     """
+
     @classmethod
     def setUpClass(cls):
         """
@@ -32,7 +33,8 @@ class TestUserRoutes(unittest.TestCase):
         It is called once before running any test cases in the class.
         """
         cred = firebase_admin.credentials.Certificate(
-            "../" + os.getenv("DB_PRIV_KEY_PATH"))
+            "../" + os.getenv("DB_PRIV_KEY_PATH")
+        )
         firebase_admin.initialize_app(cred)
 
     def setUp(self):

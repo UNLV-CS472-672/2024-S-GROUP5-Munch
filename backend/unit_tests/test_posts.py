@@ -5,6 +5,7 @@ from server import app
 
 from firebase_admin import firestore
 
+
 # Function for setting up database and common functionality between API route calls
 class SetUp:
     base_url = "http://127.0.0.1:5000/api/posts"  # Adjust URL as needed

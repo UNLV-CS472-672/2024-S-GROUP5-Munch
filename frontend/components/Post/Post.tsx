@@ -1,4 +1,4 @@
-import { isByte, isRecipe } from '@/app/utils/typeGuard';
+import { isByte, isRecipe } from '@/utils/typeGuard';
 import { Subtitle } from '@/tamagui.config';
 import { Byte, Recipe } from '@/types/post';
 import { Link, useRouter } from 'expo-router';

@@ -59,7 +59,6 @@ const Login = () => {
     } catch (err) {
       if (isClerkAPIResponseError(err)) {
         const { errors } = err;
-        console.log(errors[0].longMessage);
         Toast.show({ text1: errors[0].longMessage, type: 'error' });
       }
     }
@@ -77,8 +76,6 @@ const Login = () => {
         setActive({ session: createdSessionId });
 
         collection(db, 'users');
-        //ISSUE here
-        // router.back();
       }
     } catch (err) {
       console.error('OAuth err', err);

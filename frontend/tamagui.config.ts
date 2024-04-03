@@ -1,17 +1,10 @@
 import { createAnimations } from '@tamagui/animations-react-native';
+import { config as DefaultConfig } from '@tamagui/config/v3';
 import { createInterFont } from '@tamagui/font-inter';
 import { createMedia } from '@tamagui/react-native-media-driver';
 import { shorthands } from '@tamagui/shorthands';
 import { themes, tokens } from '@tamagui/themes';
-import {
-  createTamagui,
-  styled,
-  SizableText,
-  H1,
-  YStack,
-  GetProps,
-} from 'tamagui';
-import { config as DefaultConfig } from '@tamagui/config/v3';
+import { H1, SizableText, YStack, createTamagui, styled } from 'tamagui';
 
 //animation for gestures
 const animations = createAnimations({

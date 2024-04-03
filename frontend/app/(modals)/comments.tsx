@@ -1,20 +1,9 @@
-import { Link } from 'expo-router';
-import { TouchableHighlight, Dimensions } from 'react-native';
-import {
-  Button,
-  XStack,
-  YStack,
-  Image,
-  Avatar,
-  Text,
-  View,
-  ScrollView,
-  TextArea,
-} from 'tamagui';
-import { Title, Subtitle, Container, Main } from '@/tamagui.config';
-import { Feather } from '@expo/vector-icons';
-import { Stack, useRouter, useLocalSearchParams } from 'expo-router';
 import CommentComponent from '@/components/Comment';
+import { Container, Main } from '@/tamagui.config';
+import { Feather } from '@expo/vector-icons';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { Dimensions } from 'react-native';
+import { Button, ScrollView, Text, TextArea, XStack } from 'tamagui';
 
 export default function CommentPage() {
   const { name } = useLocalSearchParams();
@@ -88,19 +77,6 @@ export default function CommentPage() {
         image=''
         text='this is parent cooment 3'
       />
-      <Container>
-        {/* <Stack.Screen
-          options={{
-            title: 'Comment Section',
-            headerCenter: () => <BackButton />,
-          }}
-        />
-        <Main>
-          <YStack>
-            <BackButton />
-          </YStack>
-        </Main> */}
-      </Container>
     </ScrollView>
   );
 }

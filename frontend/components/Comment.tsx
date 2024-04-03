@@ -1,6 +1,7 @@
 import { Link } from 'expo-router';
 import { TouchableHighlight, Dimensions } from 'react-native';
 import { Button, YStack, Image, Avatar, Text, View } from 'tamagui';
+import { Title, Subtitle } from '../tamagui.config.ts';
 
 export default function CommentComponent({
   id, // id,

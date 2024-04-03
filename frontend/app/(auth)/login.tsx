@@ -1,6 +1,6 @@
 import UserInput from '@/components/UserInput';
-import { LoginSchema, LoginSchemaInputs } from '@/types/user';
 import { useWarmUpBrowser } from '@/hooks/useWarmUpBrowser';
+import { LoginSchema, LoginSchemaInputs } from '@/types/user';
 import {
   isClerkAPIResponseError,
   useOAuth,

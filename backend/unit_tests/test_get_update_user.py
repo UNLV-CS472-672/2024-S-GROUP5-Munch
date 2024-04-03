@@ -1,16 +1,13 @@
 import unittest
 import unittest
-import requests
-import server
-from server import app
 
 import os
-import firebase_admin
-import status
-from flask import Flask, jsonify, request
-from firebase_admin import credentials
-from firebase_admin import firestore
-from dotenv import load_dotenv
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from helper_functions import try_connect_to_db
+from server import app
 
 
 # import unittest
@@ -21,7 +18,7 @@ class SetUp:
 
     def database_connect(self):
         # Connect to database
-        server.try_connect_to_db()
+        try_connect_to_db()
 
 
 class TestUser(unittest.TestCase):

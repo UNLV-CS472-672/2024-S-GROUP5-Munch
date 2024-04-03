@@ -1,10 +1,12 @@
 import unittest
-import requests
-import server
-from server import app
 
-import firebase_admin
-from firebase_admin import credentials, firestore
+import os
+import sys
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+from helper_functions import try_connect_to_db
+from server import app
 
 
 class SetUp:
@@ -13,7 +15,7 @@ class SetUp:
 
     def database_connect(self):
         # Connect to database
-        server.try_connect_to_db()
+        try_connect_to_db()
 
 
 class TestAPI(unittest.TestCase):

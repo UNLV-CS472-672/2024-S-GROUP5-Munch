@@ -59,14 +59,13 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
-
-        <TamaguiProvider
+      <TamaguiProvider
         config={tamaguiConfig}
         defaultTheme={colorScheme as string}
-        >
+      >
         <QueryClientProvider client={queryClient}>
-        <RootLayoutNav />
-        {/* <DevToolsBubble />  // uncomment for dev tools */}
+          <RootLayoutNav />
+          {/* <DevToolsBubble />  // uncomment for dev tools */}
         </QueryClientProvider>
       </TamaguiProvider>
     </ClerkProvider>

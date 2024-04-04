@@ -1,19 +1,24 @@
+import tamaguiConfig from '@/tamagui.config';
 import { ClerkProvider, useAuth } from '@clerk/clerk-expo';
-import { Ionicons } from '@expo/vector-icons';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack, useRouter } from 'expo-router';
+import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { TouchableOpacity, useColorScheme } from 'react-native';
+import { useColorScheme } from 'react-native';
+import Toast, {
+  BaseToast,
+  ErrorToast,
+  ToastConfigParams,
+} from 'react-native-toast-message';
+import { TamaguiProvider, useTheme } from 'tamagui';
 import { tokenCache } from './utils/tokenCache';
-import { TamaguiProvider } from 'tamagui';
-import tamaguiConfig from '@/tamagui.config';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DevToolsBubble } from 'react-native-react-query-devtools';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -26,11 +31,12 @@ export const unstable_settings = {
 };
 
 const CLERK_KEY = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
+const queryClient = new QueryClient();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const colorScheme = useColorScheme();
   const [loaded, error] = useFonts({
     Inter: require('@tamagui/font-inter/otf/Inter-Medium.otf'),
     InterBold: require('@tamagui/font-inter/otf/Inter-Bold.otf'),
@@ -53,8 +59,14 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
-      <TamaguiProvider config={tamaguiConfig}>
-        <RootLayoutNav />
+      <TamaguiProvider
+        config={tamaguiConfig}
+        defaultTheme={colorScheme as string}
+      >
+        <QueryClientProvider client={queryClient}>
+          <RootLayoutNav />
+          {/* <DevToolsBubble />  // uncomment for dev tools */}
+        </QueryClientProvider>
       </TamaguiProvider>
     </ClerkProvider>
   );
@@ -63,33 +75,73 @@ export default function RootLayout() {
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const { isLoaded, isSignedIn } = useAuth();
+  const segments = useSegments();
+  const theme = useTheme();
   const router = useRouter();
+  useEffect(() => {
+    if (!isLoaded) return;
+    const inTabGroup = segments[0] === '(auth)';
 
-  useEffect(() => {
-    if (!isLoaded && !isSignedIn) {
-      router.push('/(auths)/login');
+    if (isSignedIn && !inTabGroup) {
+      router.replace('/');
     }
-  }, [isLoaded]);
-  useEffect(() => {
-    console.log(isSignedIn);
+    if (!isSignedIn) {
+      router.replace('/login');
+    }
   }, [isSignedIn]);
+
+  const toastConfig = {
+    success: (props: ToastConfigParams<any>) => (
+      <BaseToast
+        {...props}
+        style={{
+          borderLeftColor: theme.green10.get(),
+          backgroundColor: theme.backgroundHover.get(),
+        }}
+        text1Style={{
+          color: theme.accentColor.get(),
+        }}
+        text1NumberOfLines={3}
+      />
+    ),
+    error: (props: ToastConfigParams<any>) => (
+      <ErrorToast
+        {...props}
+        style={{
+          borderLeftColor: theme.red10.get(),
+          backgroundColor: theme.backgroundHover.get(),
+        }}
+        text1Style={{
+          color: theme.accentColor.get(),
+        }}
+        text1NumberOfLines={3}
+      />
+    ),
+  };
+  if (!isLoaded) {
+    return <Slot />;
+  }
+
   return (
     <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
       <Stack>
         <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
         <Stack.Screen
-          name='(auths)/login'
+          name='(auth)/login'
           options={{
-            presentation: 'modal',
-            title: 'Log in or Sign up to Munch',
-            headerLeft: () => (
-              <TouchableOpacity onPress={() => router.back()}>
-                <Ionicons name='close-outline' size={28} />
-              </TouchableOpacity>
-            ),
+            presentation: 'card',
+            title: 'Log in',
+          }}
+        />
+        <Stack.Screen
+          name='(auth)/register'
+          options={{
+            presentation: 'card',
+            title: 'Register ',
           }}
         />
       </Stack>
+      <Toast position='bottom' config={toastConfig} visibilityTime={2000} />
     </ThemeProvider>
   );
 }

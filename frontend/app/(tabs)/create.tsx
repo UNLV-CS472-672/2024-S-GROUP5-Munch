@@ -1,4 +1,3 @@
-import { View } from '@/components/Themed';
 import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
@@ -19,6 +18,7 @@ import {
   Image,
   ScrollView,
 } from 'tamagui';
+import type { TabsContentProps } from 'tamagui';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -76,7 +76,7 @@ export default function Create() {
               />
             ) : null}
             <TextArea
-              placeholder={'Description...'}
+              placeholder={'Write a Caption...'}
               multiline={true}
               style={{
                 height: 150,

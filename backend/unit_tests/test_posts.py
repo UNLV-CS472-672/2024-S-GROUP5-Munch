@@ -20,12 +20,13 @@ class TestAPI(unittest.TestCase):
 
     def test_post(self):
         testing_user_id = "test_user_id"
-        
+
         # Create a test user for route check
         create_user_response = self.client.post(f"/api/users/{testing_user_id}")
-        self.assertEqual(create_user_response.status_code, status.HTTP_201_CREATED)
-        
-        
+        self.assertEqual(
+            create_user_response.status_code, status.HTTP_201_CREATED
+        )
+
         # Test creating a new post
         new_post_mock_data = {
             "author": f"users/{testing_user_id}",
@@ -45,13 +46,14 @@ class TestAPI(unittest.TestCase):
             "pictures": [],
             "username": "test_user",
         }
-        
+
         # Create post
-        create_response = self.client.post(f"/api/posts", json=new_post_mock_data)
+        create_response = self.client.post(
+            f"/api/posts", json=new_post_mock_data
+        )
         self.assertEqual(new_post_mock_data, create_response.json)
         self.assertEqual(create_response.status_code, status.HTTP_201_CREATED)
 
-        
         # Call to get user route to get list of posts, this is to find post_id
         get_user_response = self.client.get(f"/api/users/{testing_user_id}")
         # Save the post id from the above response
@@ -78,27 +80,29 @@ class TestAPI(unittest.TestCase):
         }
 
         # Update post
-        update_response = self.client.put(f"api/posts/{post_id}", json=updated_post_mock_data)
+        update_response = self.client.put(
+            f"api/posts/{post_id}", json=updated_post_mock_data
+        )
         self.assertEqual(updated_post_mock_data, update_response.json)
         self.assertEqual(update_response.status_code, status.HTTP_200_OK)
-        
 
         # Get post
         get_response = self.client.get(f"/api/posts/{post_id}")
         self.assertEqual(updated_post_mock_data, get_response.json)
         self.assertEqual(get_response.status_code, status.HTTP_200_OK)
-        
-        
+
         # Delete Post
         delete_response = self.client.delete(f"api/posts/{post_id}")
         self.assertEqual(delete_response.json, {"message": "Post deleted"})
         self.assertEqual(delete_response.status_code, status.HTTP_200_OK)
-        
-        
+
         # Delete test user after route check is done
-        delete_user_response = self.client.delete(f"/api/users/{testing_user_id}")
-        self.assertEqual(delete_user_response.json, {'message': 'User deleted'})
+        delete_user_response = self.client.delete(
+            f"/api/users/{testing_user_id}"
+        )
+        self.assertEqual(delete_user_response.json, {"message": "User deleted"})
         self.assertEqual(delete_user_response.status_code, status.HTTP_200_OK)
+
 
 if __name__ == "__main__":
     unittest.main()

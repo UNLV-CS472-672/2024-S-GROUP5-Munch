@@ -5,7 +5,15 @@ import coverage
 
 def run_tests():
     # Start code coverage measurement
-    cov = coverage.Coverage(source=["server", "user_routes", "post_routes", "feed_routes", "recipe_routes"])
+    cov = coverage.Coverage(
+        source=[
+            "server",
+            "user_routes",
+            "post_routes",
+            "feed_routes",
+            "recipe_routes",
+        ]
+    )
     cov.start()
 
     # Discover and run all test files in the "unit_tests" directory

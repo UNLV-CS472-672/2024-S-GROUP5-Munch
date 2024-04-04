@@ -10,6 +10,7 @@ import unittest
 import status
 from server import app
 
+
 class TestAPI(unittest.TestCase):
 
     def setUp(self):
@@ -51,7 +52,9 @@ class TestAPI(unittest.TestCase):
         }
 
         # Update user
-        update_response = self.client.put(f"/api/users/{testing_user_id}", json=updated_user_mock_data)
+        update_response = self.client.put(
+            f"/api/users/{testing_user_id}", json=updated_user_mock_data
+        )
         self.assertEqual(updated_user_mock_data, update_response.json)
         self.assertEqual(update_response.status_code, status.HTTP_200_OK)
 
@@ -63,8 +66,9 @@ class TestAPI(unittest.TestCase):
         # Delete user
         delete_response = self.client.delete(f"/api/users/{testing_user_id}")
         # When user is deleted, the json returned is the below
-        self.assertEqual(delete_response.json, {'message': 'User deleted'})
+        self.assertEqual(delete_response.json, {"message": "User deleted"})
         self.assertEqual(delete_response.status_code, status.HTTP_200_OK)
+
 
 if __name__ == "__main__":
     unittest.main()

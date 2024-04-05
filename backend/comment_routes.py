@@ -4,6 +4,7 @@ from firebase_admin import firestore
 from helper_functions import try_connect_to_db
 import datetime
 import uuid
+import copy
 
 
 def generate_unique_id():
@@ -32,6 +33,10 @@ def comment_post(user_id, post_id):
 
     post_ref = db.collection("posts").document(post_id)
     post_data = post_ref.get().to_dict()
+    
+    user_ref = db.collection("users").document(user_id)
+    user_data = user_ref.get().to_dict()
+    
 
     if not post_data:
         return (
@@ -42,29 +47,32 @@ def comment_post(user_id, post_id):
     post_comments = post_data.get("comments")
 
     res = request.json
+    data = copy.deepcopy(res)
 
-    new_author = "/users/" + user_id
+    new_author = db.document("users/" + user_id)
     new_comment = res["comment"]
     new_comment_id = generate_unique_id()
+    username = user_data["username"]
 
     testing_json = {
         "author": new_author,
         "comment": new_comment,
         "comment_id": new_comment_id,
         "creation_date": current_time,
+        "username": username
     }
 
     post_comments.append(testing_json)
     post_data["comments"] = post_comments
-    post_ref.update(post_data)
+    post_ref.set(post_data)
 
     return jsonify(request.json), status.HTTP_200_OK
 
 
 @comment_bp.route(
-    "/api/posts/comment/<post_id>/<comment_id>", methods=["DELETE"]
+    "/api/posts/comment/<user_id>/<post_id>/<comment_id>", methods=["DELETE"]
 )
-def delete_comment_post(post_id, comment_id):
+def delete_comment_post(user_id, post_id, comment_id):
     # user_id: Who commented on the post
     # post_id: The post reference itself
 
@@ -73,7 +81,7 @@ def delete_comment_post(post_id, comment_id):
 
     post_ref = db.collection("posts").document(post_id)
     post_data = post_ref.get().to_dict()
-
+    
     if not post_data:
         return (
             jsonify({"error": "Post not found"}),
@@ -81,6 +89,18 @@ def delete_comment_post(post_id, comment_id):
         )
 
     post_comments = post_data.get("comments")
+    
+    
+    # Error Checking if Comment ID exist
+    comment_to_delete = next(
+        (comment for comment in post_comments if comment["comment_id"] == comment_id),
+        None,
+    )
+    if comment_to_delete is None:
+        return (
+            jsonify({"error": "Comment not found"}),
+            status.HTTP_404_NOT_FOUND,
+    )
 
     # Create a new list with comments except the one with the specified comment_id
 
@@ -89,7 +109,7 @@ def delete_comment_post(post_id, comment_id):
         for comment in post_comments
         if comment["comment_id"] != comment_id
     ]
-
+    
     post_data["comments"] = post_comments
     post_ref.update(post_data)
 

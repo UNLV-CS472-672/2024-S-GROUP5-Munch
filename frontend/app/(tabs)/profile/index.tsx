@@ -1,6 +1,10 @@
+import Post from '@/components/Post/Post';
 import { UserContext } from '@/contexts/UserContext';
+import { UserType } from '@/types/firebaseTypes';
 import { isClerkAPIResponseError, useAuth } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { MediaTypeOptions, launchImageLibraryAsync } from 'expo-image-picker';
 import { Link, useRouter } from 'expo-router';
 import { useContext } from 'react';
@@ -13,6 +17,7 @@ import {
   H4,
   Label,
   Paragraph,
+  Spinner,
   Text,
   View,
   XStack,
@@ -20,7 +25,20 @@ import {
 } from 'tamagui';
 export default function Profile() {
   const { isSignedIn, signOut } = useAuth();
-  const { user } = useContext(UserContext);
+  const { user, user_id, token } = useContext(UserContext);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['userInfo'],
+    queryFn: async () =>
+      (
+        await axios.get<UserType>(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${user_id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+      ).data,
+  });
 
   const router = useRouter();
 
@@ -46,7 +64,8 @@ export default function Profile() {
 
   return (
     <SafeAreaView>
-      {isSignedIn && (
+      {isLoading && <Spinner />}
+      {isSignedIn && !isLoading && (
         <View
           style={{
             display: 'flex',
@@ -73,17 +92,18 @@ export default function Profile() {
                   <Paragraph>{`${user?.firstName} ${
                     user?.lastName ?? ''
                   }`}</Paragraph>
+                  <Paragraph>{`${data.bio}`}</Paragraph>
                 </YStack>
               </Card.Header>
               <XStack gap={'$3'}>
                 <YStack display='flex' alignItems='center'>
                   <Label fontSize={'$2'}>Followers</Label>
-                  <Text>{user?.followersCount ?? 0}</Text>
+                  <Text>{data.followers.length ?? 0}</Text>
                 </YStack>
 
                 <YStack display='flex' alignItems='center'>
                   <Label fontSize={'$2'}>Following</Label>
-                  <Text>{user?.followingCount ?? 0}</Text>
+                  <Text>{data.following.length ?? 0}</Text>
                 </YStack>
               </XStack>
               <Link href='/profile/profileEditModal' asChild>
@@ -95,6 +115,10 @@ export default function Profile() {
               </Link>
             </XStack>
           </Card>
+
+          {data.posts.map((post) => (
+            <Post key={post} post={post} />
+          ))}
           <Button onPress={() => signOut()} backgroundColor={'$red9'} mx={'$4'}>
             Sign out
           </Button>

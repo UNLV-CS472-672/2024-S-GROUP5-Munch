@@ -64,6 +64,7 @@ backend/__pycache__
 backend/yelpAPI/__pycache__/
 backend/unit_tests/__pycache__/
 backend/.coverage
-
-# Model
-model/model.pkl.npz
+backend/firestore-export
+backend/firebase-debug.log
+backend/firestore-debug.log
+backend/ui-debug.log

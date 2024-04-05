@@ -9,6 +9,8 @@ import {
 } from '@clerk/clerk-expo';
 import { SignUpStatus } from '@clerk/types';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
@@ -24,15 +26,31 @@ const Register = () => {
     setActive,
   } = useSignUp();
 
+  const { mutate } = useMutation({
+    mutationKey: ['register'],
+    mutationFn: async () => {
+      await axios.get(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`,
+        {
+          headers: { Authorization: `Bearer: ${await getToken()}` },
+        },
+      );
+    },
+  });
+
   useEffect(() => {
-    (async () => {
-      setUserProperties({
-        token: await getToken(),
-        user: user,
-        user_id: userId,
-      });
-    })();
+    if (isSignedIn) {
+      (async () => {
+        setUserProperties({
+          token: await getToken(),
+          user: user,
+          user_id: userId,
+        });
+        mutate();
+      })();
+    }
   }, [isSignedIn]);
+
   const router = useRouter();
   const [status, setStatus] = useState<SignUpStatus>();
   const {
@@ -46,6 +64,7 @@ const Register = () => {
       password: '',
     },
   });
+
   const registerUser: SubmitHandler<RegisterSchemaInputs> = async (data) => {
     try {
       const { createdSessionId, status } = await create({

@@ -33,10 +33,9 @@ def comment_post(user_id, post_id):
 
     post_ref = db.collection("posts").document(post_id)
     post_data = post_ref.get().to_dict()
-    
+
     user_ref = db.collection("users").document(user_id)
     user_data = user_ref.get().to_dict()
-    
 
     if not post_data:
         return (
@@ -59,7 +58,7 @@ def comment_post(user_id, post_id):
         "comment": new_comment,
         "comment_id": new_comment_id,
         "creation_date": current_time,
-        "username": username
+        "username": username,
     }
 
     post_comments.append(testing_json)
@@ -81,7 +80,7 @@ def delete_comment_post(user_id, post_id, comment_id):
 
     post_ref = db.collection("posts").document(post_id)
     post_data = post_ref.get().to_dict()
-    
+
     if not post_data:
         return (
             jsonify({"error": "Post not found"}),
@@ -89,18 +88,21 @@ def delete_comment_post(user_id, post_id, comment_id):
         )
 
     post_comments = post_data.get("comments")
-    
-    
+
     # Error Checking if Comment ID exist
     comment_to_delete = next(
-        (comment for comment in post_comments if comment["comment_id"] == comment_id),
+        (
+            comment
+            for comment in post_comments
+            if comment["comment_id"] == comment_id
+        ),
         None,
     )
     if comment_to_delete is None:
         return (
             jsonify({"error": "Comment not found"}),
             status.HTTP_404_NOT_FOUND,
-    )
+        )
 
     # Create a new list with comments except the one with the specified comment_id
 
@@ -109,7 +111,7 @@ def delete_comment_post(user_id, post_id, comment_id):
         for comment in post_comments
         if comment["comment_id"] != comment_id
     ]
-    
+
     post_data["comments"] = post_comments
     post_ref.update(post_data)
 

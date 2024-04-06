@@ -4,6 +4,7 @@ import status
 from flask import jsonify
 from firebase_admin import credentials
 from firebase_admin import firestore
+import uuid
 
 
 # Check if User exists in database
@@ -325,3 +326,13 @@ def user_validation(data):
         )
 
     return None, status.HTTP_200_OK
+
+
+def generate_unique_id():
+    """
+    Generate a new unique ID.
+
+    Returns:
+        str: A new unique ID.
+    """
+    return str(uuid.uuid4())

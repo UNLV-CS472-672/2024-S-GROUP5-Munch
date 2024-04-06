@@ -35,7 +35,7 @@ def comment_post(user_id, post_id):
     # Grab the posts reference from firebase DB using post id, then grab data from reference
     post_ref = db.collection("posts").document(post_id)
     post_data = post_ref.get().to_dict()
-    
+
     # Error checking that post exists
 
     user_ref = db.collection("users").document(user_id)
@@ -46,24 +46,24 @@ def comment_post(user_id, post_id):
             jsonify({"error": "Post not found"}),
             status.HTTP_404_NOT_FOUND,
         )
-    
+
     # Grab the users reference from firebase DB using user id, the grab data from reference
     user_ref = db.collection("users").document(user_id)
     user_data = user_ref.get().to_dict()
-    
+
     # Error checking that user exists
     if not user_data:
-        return(
+        return (
             jsonify({"error": "User not found"}),
             status.HTTP_404_NOT_FOUND,
         )
-        
-    # Grab comments from the post 
+
+    # Grab comments from the post
     post_comments = post_data.get("comments")
 
     # Get the request's json (Should be the comment itself) i.e. "comment": "Some comment information"
     res = request.json
-    
+
     # Create a copy of the result
     data = copy.deepcopy(res)
 
@@ -102,7 +102,7 @@ def delete_comment_post(user_id, post_id, comment_id):
     # Grab the posts reference from firebase DB using post id, then grab data from reference
     post_ref = db.collection("posts").document(post_id)
     post_data = post_ref.get().to_dict()
-    
+
     # Error checking that post exists
 
     if not post_data:
@@ -135,7 +135,7 @@ def delete_comment_post(user_id, post_id, comment_id):
         for comment in post_comments
         if comment["comment_id"] != comment_id
     ]
-    
+
     # Set it to the new post data and set it into the reference
 
     post_data["comments"] = post_comments

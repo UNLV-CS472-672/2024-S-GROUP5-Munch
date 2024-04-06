@@ -1,0 +1,48 @@
+import status
+from flask import jsonify, request, Blueprint
+from firebase_admin import firestore
+import copy
+from helper_functions import try_connect_to_db
+
+bookmark_bp = Blueprint("bookmark", __name__)
+
+@bookmark_bp.route("/api/users/<user_id>/bookmarks", methods=["PATCH"])
+def add_bookmark(user_id):
+    res = request.json
+
+    if "post" not in res:
+        return (jsonify({"error": f"Missing post to bookmark"}),
+        status.HTTP_400_BAD_REQUEST)
+
+    data = copy.deepcopy(res)
+
+    try_connect_to_db()
+
+    try:
+        db = firestore.client()
+
+        posts_collection = db.collection("posts")
+
+        post_ids = [post.id for post in posts_collection.stream()]
+
+        if str(data["post"][len("posts/"): ]) not in post_ids:
+            return (jsonify({"error": f"Post, {data["post"]}, does not exist"}), 
+                    status.HTTP_400_BAD_REQUEST)
+
+        user_ref = db.collection("users").document(user_id)
+        user_data = user_ref.get().to_dict()
+
+        post_ref =  db.document(data["post"])
+
+        user_data["bookmarks"].append(post_ref)
+        user_ref.update(user_data)
+
+        return jsonify(res), status.HTTP_200_OK
+
+    except Exception as e:
+        print("Error adding new bookmark:", str(e))
+        return (
+            jsonify({"error": "Error adding new bookmark"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
+    

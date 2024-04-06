@@ -25,13 +25,15 @@ const Register = () => {
   } = useSignUp();
 
   useEffect(() => {
-    (async () => {
-      setUserProperties({
-        token: await getToken(),
-        user: user,
-        user_id: userId,
-      });
-    })();
+    if (isSignedIn) {
+      (async () => {
+        setUserProperties({
+          token: await getToken(),
+          user: user,
+          user_id: userId,
+        });
+      })();
+    }
   }, [isSignedIn]);
   const router = useRouter();
   const [status, setStatus] = useState<SignUpStatus>();

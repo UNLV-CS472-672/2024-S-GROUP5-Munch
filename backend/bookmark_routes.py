@@ -7,7 +7,7 @@ from helper_functions import try_connect_to_db
 bookmark_bp = Blueprint("bookmark", __name__)
 
 @bookmark_bp.route("/api/users/<user_id>/bookmarks", methods=["PATCH"])
-def add_bookmark(user_id):
+def toggle_bookmark(user_id):
     res = request.json
 
     if "post" not in res:
@@ -34,8 +34,14 @@ def add_bookmark(user_id):
 
         post_ref =  db.document(data["post"])
 
-        user_data["bookmarks"].append(post_ref)
-        user_ref.update(user_data)
+        # if bookmark is not in user database, add to user database
+        if str(data["post"]) not in [bookmark.path for bookmark in user_data["bookmarks"]]:
+            user_data["bookmarks"].append(post_ref)
+            user_ref.update(user_data)
+        # if bookmark already in user database, remove from user database
+        else:
+            user_data["bookmarks"].remove(post_ref)
+            user_ref.update(user_data)
 
         return jsonify(res), status.HTTP_200_OK
 

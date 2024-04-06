@@ -25,7 +25,6 @@ def comment_post(user_id, post_id):
     # Grab the posts reference from firebase DB using post id, then grab data from reference
     post_ref = db.collection("posts").document(post_id)
     post_data = post_ref.get().to_dict()
-    
 
     # Error checking that post exists
     if not post_data:
@@ -37,7 +36,7 @@ def comment_post(user_id, post_id):
     # Grab the users reference from firebase DB using user id, the grab data from reference
     user_ref = db.collection("users").document(user_id)
     user_data = user_ref.get().to_dict()
-     # Error checking that user exists
+    # Error checking that user exists
     if not user_data:
         return (
             jsonify({"error": "User not found"}),
@@ -82,7 +81,7 @@ def delete_comment_post(user_id, post_id, comment_id):
     # user_id: Who commented on the post
     # post_id: The post reference itself
     # comment_id: The ID of the comment on the post
-    
+
     try_connect_to_db()
     db = firestore.client()
 

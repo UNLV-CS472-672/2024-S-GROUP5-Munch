@@ -11,6 +11,7 @@ from post_routes import post_bp
 from feed_routes import feed_bp
 from recipe_routes import recipe_bp
 from like_routes import like_bp
+from comment_routes import comment_bp
 
 # Import functions needed for middleware
 from helper_functions import check_user_existence
@@ -27,6 +28,7 @@ app.register_blueprint(post_bp)
 app.register_blueprint(feed_bp)
 app.register_blueprint(recipe_bp)
 app.register_blueprint(like_bp)
+app.register_blueprint(comment_bp)
 
 
 # Load environment variables from .env file

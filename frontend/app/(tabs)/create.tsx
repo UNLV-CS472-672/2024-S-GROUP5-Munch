@@ -82,6 +82,7 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
+        {/* byte form */}
         <Form
           onSubmit={handleSubmitByte(createByte)}
           gap={'$2'}
@@ -124,6 +125,7 @@ export default function Create() {
             </YStack>
           ) : null}
         </Form>
+        {/* redipe form */}
         <Form
           onSubmit={handleSubmitRecipe(createRecipe)}
           gap={'$2'}

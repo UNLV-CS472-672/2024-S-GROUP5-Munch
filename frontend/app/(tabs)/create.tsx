@@ -16,9 +16,14 @@ import {
   Text,
   TextArea,
   Switch,
-  Form
+  Form,
 } from 'tamagui';
-import { ByteSchema, ByteSchemaInputs, RecipeSchema, RecipeSchemaInputs } from '@/types/postInput';
+import {
+  ByteSchema,
+  ByteSchemaInputs,
+  RecipeSchema,
+  RecipeSchemaInputs,
+} from '@/types/postInput';
 import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
 
@@ -32,7 +37,7 @@ export default function Create() {
   } = useForm<ByteSchemaInputs>({
     resolver: zodResolver(ByteSchema),
     defaultValues: {
-      description: ''
+      description: '',
     },
   });
 
@@ -45,11 +50,11 @@ export default function Create() {
     defaultValues: {
       descr: '',
       ingredients: '',
-      steps: ''
+      steps: '',
     },
   });
   const createByte: SubmitHandler<ByteSchemaInputs> = (data) => {
-    console.log("dfljkfd");
+    console.log('dfljkfd');
     try {
       console.log(data.description);
     } catch (err) {
@@ -98,7 +103,7 @@ export default function Create() {
                   <UserInput
                     field={field}
                     labelID={'description'}
-                    placeholder={'Whatcha munchin\' on?'}
+                    placeholder={"Whatcha munchin' on?"}
                     key={'description'}
                     sx={{ borderWidth: 1, size: '$5', width: '100%' }}
                   />
@@ -118,9 +123,7 @@ export default function Create() {
               }}
             /> */}
               <Form.Trigger asChild>
-                <Button backgroundColor={'$red9'}>
-                  Post
-                </Button>
+                <Button backgroundColor={'$red9'}>Post</Button>
               </Form.Trigger>
             </YStack>
           ) : null}
@@ -141,7 +144,7 @@ export default function Create() {
                   <UserInput
                     field={field}
                     labelID={'descr'}
-                    placeholder={'Whatcha munchin\' on?'}
+                    placeholder={"Whatcha munchin' on?"}
                     key={'descr'}
                     sx={{ borderWidth: 1, size: '$5', width: '100%' }}
                   />
@@ -157,7 +160,7 @@ export default function Create() {
                   <UserInput
                     field={field}
                     labelID={'ingredients'}
-                    placeholder={'What\'s in your munch?'}
+                    placeholder={"What's in your munch?"}
                     key={'ingredients'}
                     sx={{ borderWidth: 1, size: '$5', width: '100%' }}
                   />
@@ -186,14 +189,12 @@ export default function Create() {
                 <Text color={'$red10'}>{errorsRecipe.steps.message}</Text>
               )}
               <Form.Trigger asChild>
-                <Button backgroundColor={'$red9'}>
-                  Post
-                </Button>
+                <Button backgroundColor={'$red9'}>Post</Button>
               </Form.Trigger>
             </YStack>
           ) : null}
         </Form>
       </YStack>
-    </View >
+    </View>
   );
 }

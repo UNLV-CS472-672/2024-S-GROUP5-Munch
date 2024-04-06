@@ -38,7 +38,9 @@ export const ByteSchema = z.object({
   //       ACCEPTED_IMAGE_TYPES.includes(file.type),
   //     );
   //   }, 'File type is not supported'),
-  description: z.string().min(1, { message: 'Description must have one character.' }),
+  description: z
+    .string()
+    .min(1, { message: 'Description must have one character.' }),
 });
 
 export type ByteSchemaInputs = z.infer<typeof ByteSchema>;

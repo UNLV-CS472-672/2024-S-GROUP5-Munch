@@ -1,4 +1,3 @@
-import { isByte, isRecipe } from '@/app/utils/typeGuard';
 import { Subtitle } from '@/tamagui.config';
 import { Byte, Recipe } from '@/types/post';
 import { Link, useRouter } from 'expo-router';
@@ -6,27 +5,12 @@ import React, { FC } from 'react';
 import { Dimensions, Linking, Platform } from 'react-native';
 import { Avatar, Image, Text, View, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
+import { isByte, isRecipe } from '@/app/utils/typeGuard';
+import { getDateDifference } from '@/app/utils/getCurrentDateTime';
 
 interface PostProps {
   post: Byte | Recipe;
 }
-
-const getDateDifference = (creation_date: string) => {
-  const currentDate = new Date();
-  const creationDate = new Date(creation_date);
-
-  const dateDiff = currentDate.getDate() - creationDate.getDate();
-  const hourDiff = currentDate.getHours() - creationDate.getHours();
-  const minuteDiff = currentDate.getMinutes() - creationDate.getMinutes();
-
-  if (dateDiff > 1) {
-    return `${dateDiff} days ago`;
-  } else if (hourDiff < 24 && hourDiff > 0) {
-    return `${hourDiff} hours ago`;
-  } else if (minuteDiff < 60) {
-    return `${minuteDiff} minutes ago`;
-  }
-};
 
 const Post: FC<PostProps> = ({ post }) => {
   const { author, comments, creation_date, description, likes, pictures, key } =

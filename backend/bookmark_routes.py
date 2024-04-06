@@ -22,11 +22,13 @@ def toggle_bookmark(user_id):
         db = firestore.client()
 
         posts_collection = db.collection("posts")
-
         post_ids = [post.id for post in posts_collection.stream()]
+        
+        recipes_collection = db.collection("recipes")
+        recipe_ids = [recipe.id for recipe in recipes_collection.stream()]
 
-        if str(data["post"][len("posts/"): ]) not in post_ids:
-            return (jsonify({"error": f"Post, {data["post"]}, does not exist"}), 
+        if str(data["post"].split("/")[1]) not in post_ids and str(data["post"].split("/")[1]) not in recipe_ids:
+            return (jsonify({"error": f"Post or recipe, {data["post"]}, does not exist"}), 
                     status.HTTP_400_BAD_REQUEST)
 
         user_ref = db.collection("users").document(user_id)

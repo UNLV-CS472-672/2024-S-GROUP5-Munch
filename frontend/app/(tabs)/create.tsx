@@ -19,7 +19,7 @@ import {
   AlertDialogDescription,
   Image,
   ScrollView,
-  Form
+  Form,
 } from 'tamagui';
 import {
   ByteSchema,
@@ -156,78 +156,78 @@ export default function Create() {
               }}
             /> */}
               <Form.Trigger asChild>
-          <Button backgroundColor={'$red9'}>Post</Button>
-        </Form.Trigger>
-      </YStack>
+                <Button backgroundColor={'$red9'}>Post</Button>
+              </Form.Trigger>
+            </YStack>
           ) : null}
-    </Form>
-        {/* redipe form */ }
-  <Form
-    onSubmit={handleSubmitRecipe(createRecipe)}
-    gap={'$2'}
-    marginHorizontal={15}
-    px={'$2'}
-  >
-    {isEnabled ? (
-      <YStack>
-        <Controller
-          name='descr'
-          control={controlRecipe}
-          render={({ field }) => (
-            <UserInput
-              field={field}
-              labelID={'descr'}
-              placeholder={"Whatcha munchin' on?"}
-              key={'descr'}
-              sx={{ borderWidth: 1, size: '$5', width: '100%' }}
-            />
-          )}
-        />
-        {errorsRecipe.descr?.message && (
-          <Text color={'$red10'}>{errorsRecipe.descr.message}</Text>
-        )}
-        <Controller
-          name='ingredients'
-          control={controlRecipe}
-          render={({ field }) => (
-            <UserInput
-              field={field}
-              labelID={'ingredients'}
-              placeholder={"What's in your munch?"}
-              key={'ingredients'}
-              sx={{ borderWidth: 1, size: '$5', width: '100%' }}
-            />
-          )}
-        />
-        {errorsRecipe.ingredients?.message && (
-          <Text color={'$red10'}>{errorsRecipe.ingredients.message}</Text>
-        )}
-        {/* {errorsRecipe.description?.message && (
+        </Form>
+        {/* redipe form */}
+        <Form
+          onSubmit={handleSubmitRecipe(createRecipe)}
+          gap={'$2'}
+          marginHorizontal={15}
+          px={'$2'}
+        >
+          {isEnabled ? (
+            <YStack>
+              <Controller
+                name='descr'
+                control={controlRecipe}
+                render={({ field }) => (
+                  <UserInput
+                    field={field}
+                    labelID={'descr'}
+                    placeholder={"Whatcha munchin' on?"}
+                    key={'descr'}
+                    sx={{ borderWidth: 1, size: '$5', width: '100%' }}
+                  />
+                )}
+              />
+              {errorsRecipe.descr?.message && (
+                <Text color={'$red10'}>{errorsRecipe.descr.message}</Text>
+              )}
+              <Controller
+                name='ingredients'
+                control={controlRecipe}
+                render={({ field }) => (
+                  <UserInput
+                    field={field}
+                    labelID={'ingredients'}
+                    placeholder={"What's in your munch?"}
+                    key={'ingredients'}
+                    sx={{ borderWidth: 1, size: '$5', width: '100%' }}
+                  />
+                )}
+              />
+              {errorsRecipe.ingredients?.message && (
+                <Text color={'$red10'}>{errorsRecipe.ingredients.message}</Text>
+              )}
+              {/* {errorsRecipe.description?.message && (
               <Text color={'$red10'}>{errors.description.message}</Text>
             )} */}
-        <Controller
-          name='steps'
-          control={controlRecipe}
-          render={({ field }) => (
-            <UserInput
-              field={field}
-              labelID={'steps'}
-              placeholder={'How did you make your munch?'}
-              key={'steps'}
-              sx={{ borderWidth: 1, size: '$5', width: '100%' }}
-            />
-          )}
-        />
-        {errorsRecipe.steps?.message && (
-          <Text color={'$red10'}>{errorsRecipe.steps.message}</Text>
-        )}
-        <Form.Trigger asChild>
-          <Button backgroundColor={'$red9'}>Post</Button>
-        </Form.Trigger>
+              <Controller
+                name='steps'
+                control={controlRecipe}
+                render={({ field }) => (
+                  <UserInput
+                    field={field}
+                    labelID={'steps'}
+                    placeholder={'How did you make your munch?'}
+                    key={'steps'}
+                    sx={{ borderWidth: 1, size: '$5', width: '100%' }}
+                  />
+                )}
+              />
+              {errorsRecipe.steps?.message && (
+                <Text color={'$red10'}>{errorsRecipe.steps.message}</Text>
+              )}
+              <Form.Trigger asChild>
+                <Button backgroundColor={'$red9'}>Post</Button>
+              </Form.Trigger>
+            </YStack>
+          ) : null}
+        </Form>
       </YStack>
-    ) : null}
-  </Form>
-      </YStack >
-    </SafeAreaView >
+    </SafeAreaView>
   );
 }

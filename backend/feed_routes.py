@@ -46,10 +46,27 @@ def get_user_posts(user_id):
 
         # Iterate over the query results
         for post_doc in post_data:
+            posts_collection_and_value = post_doc.path.split("/")
+
+            post_ref = None
+
             # Get the post reference
-            post_ref = db.collection("posts").document(
-                post_doc.path[len("posts/") :]
-            )
+            if posts_collection_and_value[0] == "posts":
+                post_ref = db.collection("posts").document(
+                    # Extract the post ID from the path thats either "[posts/ID]" or "[recipes/ID]"
+                    post_doc.path.split("/")[1]
+                )
+            elif posts_collection_and_value[0] == "recipes":
+                post_ref = db.collection("recipes").document(
+                    # Extract the post ID from the path thats either "[posts/ID]" or "[recipes/ID]"
+                    post_doc.path.split("/")[1]
+                )
+            else:
+                return (
+                    jsonify({"error": "Invalid post type"}),
+                    status.HTTP_400_BAD_REQUEST,
+                )
+
             # Get the post data
             post_data = post_ref.get().to_dict()
 

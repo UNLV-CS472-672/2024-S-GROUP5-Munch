@@ -45,7 +45,9 @@ def follow_user(first_user, second_user):
         # Ensure the second user exists
         if not second_user_data:
             return (
-                jsonify({"error": "Trying to follow/unfollow non-existent user"}),
+                jsonify(
+                    {"error": "Trying to follow/unfollow non-existent user"}
+                ),
                 status.HTTP_404_NOT_FOUND,
             )
 

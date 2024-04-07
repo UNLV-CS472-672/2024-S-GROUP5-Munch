@@ -6,7 +6,9 @@ from helper_functions import try_connect_to_db
 follow_bp = Blueprint("follow", __name__)
 
 
-@follow_bp.route("/api/users/<first_user>/follow/<second_user>", methods=["PATCH"])
+@follow_bp.route(
+    "/api/users/<first_user>/follow/<second_user>", methods=["PATCH"]
+)
 def follow_user(first_user, second_user):
     """
     Toggle following a user.
@@ -43,7 +45,7 @@ def follow_user(first_user, second_user):
         # Ensure the second user exists
         if not second_user_data:
             return (
-                jsonify({"error": "Trying to follow non-existent user"}),
+                jsonify({"error": "Trying to follow/unfollow non-existent user"}),
                 status.HTTP_404_NOT_FOUND,
             )
 
@@ -52,7 +54,10 @@ def follow_user(first_user, second_user):
         second_user_followers = second_user_data.get("followers", [])
 
         # Check if the users are already following each other
-        if second_user_ref not in first_user_following and first_user_ref not in second_user_followers:
+        if (
+            second_user_ref not in first_user_following
+            and first_user_ref not in second_user_followers
+        ):
             # Update the following list
             first_user_following.append(second_user_ref)
             first_user_ref.update({"following": first_user_following})

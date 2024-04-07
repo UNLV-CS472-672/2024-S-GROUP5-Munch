@@ -140,6 +140,15 @@ function RootLayoutNav() {
             title: 'Register ',
           }}
         />
+        <Stack.Screen
+          name='(modals)/comments'
+          options={{
+            presentation: 'modal',
+            title: 'Comments',
+            animation: 'slide_from_bottom',
+            contentStyle: { height: '50%' },
+          }}
+        />
       </Stack>
       <Toast position='bottom' config={toastConfig} visibilityTime={2000} />
     </ThemeProvider>

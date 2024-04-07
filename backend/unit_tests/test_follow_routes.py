@@ -16,6 +16,7 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
+
 class TestFollowUserRoute(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
@@ -49,32 +50,41 @@ class TestFollowUserRoute(unittest.TestCase):
 
     def test_follow_user(self):
         # Test following a user
-        response = self.client.patch('/api/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO/follow/user_2dNr6COlTiUgw8m3mgb4ilbPDsF')
+        response = self.client.patch(
+            "/api/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO/follow/user_2dNr6COlTiUgw8m3mgb4ilbPDsF"
+        )
         data = response.get_json()
 
         # Check if the response contains the expected message
         self.assertEqual(response.status_code, 200)
-        self.assertIn('message', data)
-        self.assertEqual(data['message'], 'User followed successfully')
+        self.assertIn("message", data)
+        self.assertEqual(data["message"], "User followed successfully")
 
         # Test unfollowing the same user
-        response = self.client.patch('/api/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO/follow/user_2dNr6COlTiUgw8m3mgb4ilbPDsF')
+        response = self.client.patch(
+            "/api/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO/follow/user_2dNr6COlTiUgw8m3mgb4ilbPDsF"
+        )
         data = response.get_json()
 
         # Check if the response contains the expected message
         self.assertEqual(response.status_code, 200)
-        self.assertIn('message', data)
-        self.assertEqual(data['message'], 'User unfollowed successfully')
+        self.assertIn("message", data)
+        self.assertEqual(data["message"], "User unfollowed successfully")
 
     def test_user_not_found(self):
         # Test following a non-existent user
-        response = self.client.patch('/api/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO/follow/nonexistent_user')
+        response = self.client.patch(
+            "/api/users/user_2cwMgsX7SwXnnnYJ2piefltKxLO/follow/nonexistent_user"
+        )
         data = response.get_json()
 
         # Check if the response contains the expected error message
         self.assertEqual(response.status_code, 404)
-        self.assertIn('error', data)
-        self.assertEqual(data['error'], 'Trying to follow/unfollow non-existent user')
+        self.assertIn("error", data)
+        self.assertEqual(
+            data["error"], "Trying to follow/unfollow non-existent user"
+        )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     unittest.main()

@@ -26,6 +26,7 @@ import {
 } from '@/types/postInput';
 import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -54,25 +55,21 @@ export default function Create() {
     },
   });
   const createByte: SubmitHandler<ByteSchemaInputs> = (data) => {
-    console.log('dfljkfd');
     try {
-      console.log(data.description);
     } catch (err) {
       // error
     }
   };
   const createRecipe: SubmitHandler<RecipeSchemaInputs> = (data) => {
     try {
-      console.log(data.descr);
-      console.log(data.steps);
-      console.log(data.ingredients);
+     
     } catch (err) {
       //error
     }
   };
 
   return (
-    <View>
+    <SafeAreaView>
       <YStack>
         <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
         <XStack>
@@ -195,6 +192,6 @@ export default function Create() {
           ) : null}
         </Form>
       </YStack>
-    </View>
+    </SafeAreaView>
   );
 }

@@ -328,6 +328,175 @@ def user_validation(data):
     return None, status.HTTP_200_OK
 
 
+# Validate the recipe verifying it has the correct fields
+def recipe_validation(data):
+    """
+    Validate the JSON data for creating or updating a post.
+
+    Expects JSON data with the following format:
+    {
+        "author": "Reference to user ID here",
+        "comments": [
+            {
+                "author": "<string> Reference to user ID here",
+                "comment": "<string> Comments here",
+                "comment_id": "<string> Comment ID here",
+                "creation_date": "<string> Creation Date here",
+                "username": "<string> Authors username field here"
+            }
+        ],
+        "creation_date": "<string> Creation Date here",
+        "description": "<string> deciption here",
+        "ingredients": [
+            "<string> ingredient #1",
+            "<string> ingredient #2"
+        ],
+        "likes": "<int> likes here",
+        "pictures": [
+            "<string> Route to picture 1",
+            "<string> Route to picture 2"
+        ],
+        "steps": [
+            "<string> Step 1 here",
+            "<string> Step 2 here"
+        ],
+        "username": "<string> Authors username field"
+    }
+
+    Args:
+        data (dict): JSON data representing the recipe.
+
+    Returns:
+        tuple: A tuple containing a dictionary of errors (if any) and a status code.
+    """
+
+    # Check if data is provided
+    if not data:
+        return (
+            jsonify({"error": "No data provided"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    try:
+        connect_to_db()  # Connect to database
+    except Exception as e:
+        print("Error connecting to the database:", str(e))
+        return (
+            jsonify({"error": "Database connection error"}),
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
+        )
+
+    # Get Firestore client
+    db = firestore.client()
+    recipes_collection = db.collection("recipes")  # Access recipes collection
+
+    # get required fields from existing recipies in the collection
+    required_fields = set(
+        key
+        for recipe in recipes_collection.stream()
+        for key in recipe.to_dict().keys()
+    )
+
+    # Identify missing or extra fields in the input data
+    missing_fields = [field for field in required_fields if field not in data]
+    extra_fields = [field for field in data if field not in required_fields]
+
+    # Return error message for missing or extra fields
+    if missing_fields:
+        return field_error_message(
+            "Missing required field(s): ", missing_fields
+        )
+
+    if extra_fields:
+        return field_error_message("Input has extra field(s): ", extra_fields)
+
+    # Access 'users' collection to validate author and commenter IDs
+    users_collection = db.collection("users")
+    user_ids = [user.id for user in users_collection.stream()]
+
+    # Validate 'author' field
+    author_data = data.get("author", str)
+
+    if not isinstance(author_data, str):
+        return (
+            jsonify({"error": f"Invalid format for author"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    if invalid_author_check(author_data, user_ids):
+        return (
+            jsonify(
+                {"error": f"Author field in post is not a reference to a user"}
+            ),
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    # Validate 'comments' field
+    required_comment_fields = set(
+        key
+        for recipe in recipes_collection.stream()
+        for comment in recipe.to_dict().get("comments", {})
+        for key in comment.keys()
+    )
+    comments_data = data.get("comments", [])
+    for comment in comments_data:
+
+        # Get missing or extra comment fields if any
+        missing_comment_fields = [
+            field for field in required_comment_fields if field not in comment
+        ]
+        extra_comment_fields = [
+            field for field in comment if field not in required_comment_fields
+        ]
+
+        # Post error if any missing or extra fields
+        if missing_comment_fields:
+            return field_error_message(
+                "Missing required comment field(s): ", missing_comment_fields
+            )
+
+        if extra_comment_fields:
+            return field_error_message(
+                "Comment input has extra field(s): ", extra_comment_fields
+            )
+
+        # Make sure comment is proper type of dictionary
+        if (
+            not isinstance(comment, dict)
+            or not isinstance(comment["comment"], str)
+            or not isinstance(comment["creation_date"], str)
+        ):
+            return (
+                jsonify({"error": "Invalid format for comment"}),
+                status.HTTP_400_BAD_REQUEST,
+            )
+
+        # Make sure commenter is an actual user
+        if invalid_author_check(comment["author"], user_ids):
+            return (
+                jsonify(
+                    {
+                        "error": f"Author field in comment is not a reference to a user"
+                    }
+                ),
+                status.HTTP_400_BAD_REQUEST,
+            )
+
+    # Validate other fields
+    if (
+        not isinstance(data["creation_date"], str)
+        or not isinstance(data["description"], str)
+        or not isinstance(data["likes"], int)
+        or not isinstance(data["pictures"], list)
+    ):
+        return (
+            jsonify({"error": "Invalid data type for one or more fields"}),
+            status.HTTP_400_BAD_REQUEST,
+        )
+
+    return None, status.HTTP_200_OK
+
+
 def generate_unique_id():
     """
     Generate a new unique ID.

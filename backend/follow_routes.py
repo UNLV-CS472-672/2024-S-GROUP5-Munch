@@ -6,7 +6,9 @@ from helper_functions import try_connect_to_db
 follow_bp = Blueprint("follow", __name__)
 
 
-@follow_bp.route("/api/users/<first_user>/follow/<second_user>", methods=["PATCH"])
+@follow_bp.route(
+    "/api/users/<first_user>/follow/<second_user>", methods=["PATCH"]
+)
 def follow_user(first_user, second_user):
     """
     Follow a user.
@@ -52,7 +54,10 @@ def follow_user(first_user, second_user):
         second_user_followers = second_user_data.get("followers", [])
 
         # Check if the users are already following each other
-        if second_user_ref not in first_user_following and first_user_ref not in second_user_followers:
+        if (
+            second_user_ref not in first_user_following
+            and first_user_ref not in second_user_followers
+        ):
             # Update the following list
             first_user_following.append(second_user_ref)
             first_user_ref.update({"following": first_user_following})
@@ -78,7 +83,10 @@ def follow_user(first_user, second_user):
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-@follow_bp.route("/api/users/<first_user>/unfollow/<second_user>", methods=["PATCH"])
+
+@follow_bp.route(
+    "/api/users/<first_user>/unfollow/<second_user>", methods=["PATCH"]
+)
 def unfollow_user(first_user, second_user):
     """
     Unfollow a user.
@@ -124,7 +132,10 @@ def unfollow_user(first_user, second_user):
         second_user_followers = second_user_data.get("followers", [])
 
         # Check if the users are already following each other
-        if second_user_ref in first_user_following and first_user_ref in second_user_followers:
+        if (
+            second_user_ref in first_user_following
+            and first_user_ref in second_user_followers
+        ):
             # Update the following list
             first_user_following.remove(second_user_ref)
             first_user_ref.update({"following": first_user_following})

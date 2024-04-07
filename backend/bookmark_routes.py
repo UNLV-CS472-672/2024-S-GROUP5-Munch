@@ -42,7 +42,7 @@ def toggle_bookmark(user_id):
 
         # get post id from data, make sure it's an actual post or recipe, if not return error
         if str(data["post"].split("/")[1]) not in post_ids and str(data["post"].split("/")[1]) not in recipe_ids:
-            return (jsonify({"error": f"Post or recipe, {data["post"]}, does not exist"}), 
+            return (jsonify({"error": f"Post or recipe requested to bookmark does not exist"}), 
                     status.HTTP_400_BAD_REQUEST)
 
         # get user collection based on user id and convert to dict

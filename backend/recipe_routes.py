@@ -7,6 +7,7 @@ from helper_functions import try_connect_to_db, recipe_validation
 # Creating a Blueprint for handling recipe related endpoints
 recipe_bp = Blueprint("recipe", __name__)
 
+
 # Get a specific recipe by id
 @recipe_bp.route("/api/recipes/<recipe_id>", methods=["GET"])
 def get_recipe(recipe_id):
@@ -48,6 +49,7 @@ def get_recipe(recipe_id):
         comment["author"] = comment["author"].path
 
     return jsonify(recipe_data), status.HTTP_200_OK
+
 
 # Create a new recipe
 @recipe_bp.route("/api/recipes", methods=["POST"])
@@ -109,6 +111,7 @@ def create_recipe():
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
+
 # Update an existing recipe
 @recipe_bp.route("/api/recipes/<recipe_id>", methods=["PATCH"])
 def update_recipe(recipe_id):
@@ -159,6 +162,7 @@ def update_recipe(recipe_id):
             jsonify({"error": "Error updating recipe"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
 
 # Delete a recipe
 @recipe_bp.route("/api/recipes/<recipe_id>", methods=["DELETE"])

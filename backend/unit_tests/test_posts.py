@@ -80,7 +80,7 @@ class TestAPI(unittest.TestCase):
         }
 
         # Update post
-        update_response = self.client.put(
+        update_response = self.client.patch(
             f"api/posts/{post_id}", json=updated_post_mock_data
         )
         self.assertEqual(updated_post_mock_data, update_response.json)

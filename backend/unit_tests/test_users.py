@@ -52,7 +52,7 @@ class TestAPI(unittest.TestCase):
         }
 
         # Update user
-        update_response = self.client.put(
+        update_response = self.client.patch(
             f"/api/users/{testing_user_id}", json=updated_user_mock_data
         )
         self.assertEqual(updated_user_mock_data, update_response.json)

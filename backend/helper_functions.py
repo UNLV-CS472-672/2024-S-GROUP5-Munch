@@ -378,7 +378,7 @@ def recipe_validation(data):
         )
 
     try:
-        connect_to_db()         # Connect to database
+        connect_to_db()  # Connect to database
     except Exception as e:
         print("Error connecting to the database:", str(e))
         return (
@@ -388,7 +388,7 @@ def recipe_validation(data):
 
     # Get Firestore client
     db = firestore.client()
-    recipes_collection = db.collection("recipes")       # Access recipes collection
+    recipes_collection = db.collection("recipes")  # Access recipes collection
 
     # get required fields from existing recipies in the collection
     required_fields = set(

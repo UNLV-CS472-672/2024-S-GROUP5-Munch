@@ -7,10 +7,10 @@ from helper_functions import try_connect_to_db, recipe_validation
 # Creating a Blueprint for handling recipe related endpoints
 recipe_bp = Blueprint("recipe", __name__)
 
+
 # Create a new recipe
 @recipe_bp.route("/api/recipes", methods=["POST"])
 def create_recipe():
-
     """
     Endpoint to create a new recipe
     """
@@ -22,7 +22,7 @@ def create_recipe():
     validation_error, status_code = recipe_validation(res)
     if validation_error:
         return validation_error, status_code
-    
+
     # Creating a deep copy of the received data
     data = copy.deepcopy(res)
 
@@ -59,16 +59,16 @@ def create_recipe():
 
         # Returning success response with created recipe data
         return jsonify(res), status.HTTP_201_CREATED
-    
+
     except Exception as e:
         # Handling errors during recpe creation
         print("Error adding new recipe", str(e))
         return (
             jsonify({"error": "Error adding new recipe"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
 
-    
+
 # Delete a recipe
 @recipe_bp.route("/api/recipes/<recipe_id>", methods=["DELETE"])
 def delete_recipe(recipe_id):
@@ -102,12 +102,11 @@ def delete_recipe(recipe_id):
 
         # Returning success response
         return jsonify({"message": "Recipe Deleted"}), status.HTTP_200_OK
-    
+
     except Exception as e:
         # Handling errors during recipe deletion
         print("Error deleting recipe:", str(e))
         return (
             jsonify({"error": "Error deleting recipe"}),
-            status.HTTP_500_INTERNAL_SERVER_ERROR
+            status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
-    

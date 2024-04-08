@@ -20,6 +20,7 @@ import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useContext, useEffect, useState } from 'react';
 import { useColorScheme } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast, {
   BaseToast,
   ErrorToast,
@@ -85,7 +86,9 @@ export default function RootLayout() {
               user_loading: userContext.user_loading,
             }}
           >
-            <RootLayoutNav />
+            <GestureHandlerRootView style={{ flex: 1 }}>
+              <RootLayoutNav />
+            </GestureHandlerRootView>
             {/* <DevToolsBubble />  // uncomment for dev tools */}
           </UserContext.Provider>
         </QueryClientProvider>
@@ -149,6 +152,7 @@ function RootLayoutNav() {
         )
       ).data;
 
+      console.log(user.id);
       setUserProperties({
         token: token,
         user: user,

@@ -8,21 +8,48 @@
 
 import Post from '@/components/Post/Post';
 import { UserContext } from '@/contexts/UserContext';
+import { Byte, Recipe } from '@/types/post';
+import { useQueries } from '@tanstack/react-query';
+import axios from 'axios';
 import { useContext } from 'react';
-import { FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { FlatList, SafeAreaView } from 'react-native';
+import { View } from 'tamagui';
 
 export default function Index() {
-  const { user_id, token } = useContext(UserContext);
-  //the data should be fetched from the backend
+  const { token, user_data } = useContext(UserContext);
+
+  //current route is wrong should use yelp api
+  // const { isLoading, recommendedPosts } = useQueries({
+  //   queries: user_data?.posts
+  //     ? user_data.posts.map((post) => ({
+  //         queryKey: [post],
+  //         queryFn: async () => {
+  //           const res = await axios.get<Byte | Recipe>(
+  //             `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
+  //             {
+  //               headers: { Authorization: `Bearer ${token}` },
+  //             },
+  //           );
+  //           return res.data;
+  //         },
+  //       }))
+  //     : [],
+  //   combine: (data) => ({
+  //     isLoading: data.some((d) => d.isLoading),
+  //     followingPosts: data.map((d) => d.data),
+  //   }),
+  // });
+
   return (
     <SafeAreaView>
-      <FlatList
-        data={[]}
-        renderItem={({ item }) => <Post post={item} />}
-        showsVerticalScrollIndicator={false}
-        decelerationRate={'fast'}
-      />
+      {/* {!isLoading && (
+        <FlatList
+          data={[]}
+          renderItem={({ item }) => <Post post={item} />}
+          showsVerticalScrollIndicator={false}
+          decelerationRate={'fast'}
+        />
+      )} */}
     </SafeAreaView>
   );
 }

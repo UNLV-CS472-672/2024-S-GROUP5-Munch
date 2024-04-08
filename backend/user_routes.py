@@ -115,7 +115,7 @@ def create_user(user_id):
 
 
 # Update an existing user
-@user_bp.route("/api/users/<user_id>", methods=["PUT"])
+@user_bp.route("/api/users/<user_id>", methods=["PATCH"])
 def update_user(user_id):
     """
     Update an existing user.

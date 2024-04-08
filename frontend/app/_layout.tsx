@@ -99,15 +99,12 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
   const theme = useTheme();
   const { setUserProperties } = useContext(UserContext);
-  const { getToken } = useAuth();
+  const { getToken, isLoaded, isSignedIn } = useAuth();
   const { user } = useUser();
 
   //routes
   const segments = useSegments();
   const router = useRouter();
-
-  //auth
-  const { isLoaded, isSignedIn } = useAuth();
 
   const toastConfig = {
     success: (props: ToastConfigParams<any>) => (
@@ -143,22 +140,24 @@ function RootLayoutNav() {
     queryFn: async () => {
       if (!user) return {} as UserType;
       const token = await getToken();
-      const res = await axios.get<UserType>(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${user.id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
+      const res = (
+        await axios.get<UserType>(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${user.id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+      ).data;
 
       setUserProperties({
         token: token,
         user: user,
         user_id: user.id,
-        user_data: res.data,
+        user_data: res,
         user_loading: false,
       });
 
-      return res.data;
+      return res;
     },
   });
 

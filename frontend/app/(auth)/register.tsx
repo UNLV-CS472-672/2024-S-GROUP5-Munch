@@ -18,35 +18,39 @@ import Toast from 'react-native-toast-message';
 import { Button, Form, Separator, Text, View, XStack, YStack } from 'tamagui';
 
 const Register = () => {
-  const { isSignedIn, user } = useUser();
-  const { userId, getToken } = useAuth();
-  const { setUserProperties } = useContext(UserContext);
   const {
     signUp: { create },
     setActive,
   } = useSignUp();
 
-  const { mutate } = useMutation({
+  const { isSignedIn, userId, getToken } = useAuth();
+  const { user } = useUser();
+  const { setUserProperties } = useContext(UserContext);
+
+  //call the mutation
+  const { mutate, data } = useMutation({
     mutationKey: ['register'],
-    mutationFn: async () => {
-      await axios.get(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`,
-        {
-          headers: { Authorization: `Bearer: ${await getToken()}` },
-        },
-      );
-    },
+    mutationFn: async () =>
+      (
+        await axios.get(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`,
+          {
+            headers: { Authorization: `Bearer: ${await getToken()}` },
+          },
+        )
+      ).data,
   });
 
   useEffect(() => {
     if (isSignedIn) {
       (async () => {
+        mutate();
         setUserProperties({
           token: await getToken(),
           user: user,
           user_id: userId,
+          user_data: data,
         });
-        mutate();
       })();
     }
   }, [isSignedIn]);
@@ -64,7 +68,6 @@ const Register = () => {
       password: '',
     },
   });
-
   const registerUser: SubmitHandler<RegisterSchemaInputs> = async (data) => {
     try {
       const { createdSessionId, status } = await create({
@@ -191,7 +194,6 @@ const Register = () => {
         </Button>
         <Separator alignSelf='stretch' />
       </XStack>
-      {status && <>ERROR</>}
     </View>
   );
 };

@@ -68,3 +68,5 @@ backend/firestore-export
 backend/firebase-debug.log
 backend/firestore-debug.log
 backend/ui-debug.log
+# Model
+model/model.pkl.npz

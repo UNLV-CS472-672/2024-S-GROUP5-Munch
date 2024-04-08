@@ -115,7 +115,7 @@ def create_post():
 
 
 # Update an existing post
-@post_bp.route("/api/posts/<post_id>", methods=["PUT"])
+@post_bp.route("/api/posts/<post_id>", methods=["PATCH"])
 def update_post(post_id):
     """
     Update an existing post.

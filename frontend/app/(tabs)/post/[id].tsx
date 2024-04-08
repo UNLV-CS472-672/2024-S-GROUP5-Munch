@@ -1,20 +1,30 @@
 import Post from '@/components/Post/Post';
+import { UserContext } from '@/contexts/UserContext';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
-import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text, View } from 'tamagui';
+import React, { useContext } from 'react';
+import { SafeAreaView } from 'react-native';
+import { Spinner, Text, View } from 'tamagui';
 
 const PostSlug = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { token } = useContext(UserContext);
 
-  //use use query to get the post and render it
-  //for future use when getting the post from the user page
+  const { isLoading, data, error } = useQuery({
+    queryKey: [id],
+    queryFn: async () =>
+      (
+        await axios.get(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      ).data,
+  });
+
   return (
     <SafeAreaView>
-      <View>
-        {/* <Post post={{ pictures: [''] }} /> */}
-        <Text fontSize={15}>{id}</Text>
-      </View>
+      {isLoading && <Spinner />}
+      {!isLoading && <Post post={data} />}
     </SafeAreaView>
   );
 };

@@ -88,13 +88,14 @@ class TestAPI(unittest.TestCase):
 
         # Test getting a non-existing post
         bad_get_response = self.client.get(f"/api/posts/bad_id")
-        self.assertEqual(bad_get_response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(
+            bad_get_response.status_code, status.HTTP_404_NOT_FOUND
+        )
 
         # Get post
         get_response = self.client.get(f"/api/posts/{post_id}")
         self.assertEqual(updated_post_mock_data, get_response.json)
         self.assertEqual(get_response.status_code, status.HTTP_200_OK)
-
 
         # Data that will Error (mising a field)
         bad_data = {
@@ -119,11 +120,15 @@ class TestAPI(unittest.TestCase):
         try:
             response = self.client.post("/api/posts", json=bad_data)
         except:
-            self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
         # Updating a post invalidly
         try:
-            response = self.client.patch(f"/api/posts/invalid_data", json=bad_data)
+            response = self.client.patch(
+                f"/api/posts/invalid_data", json=bad_data
+            )
         except:
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

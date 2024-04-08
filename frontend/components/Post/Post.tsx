@@ -6,7 +6,7 @@ import React, { FC } from 'react';
 import { Dimensions, Linking, Platform } from 'react-native';
 import { Avatar, Image, Text, View, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
-import { getDateDifference } from '@/app/utils/getCurrentDateTime';
+import { getDateDifference } from '@/utils/getCurrentDateTime';
 
 interface PostProps {
   post: Byte | Recipe;

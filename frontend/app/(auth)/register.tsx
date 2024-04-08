@@ -1,40 +1,20 @@
 import UserInput from '@/components/UserInput';
-import { UserContext } from '@/contexts/UserContext';
 import { RegisterSchema, RegisterSchemaInputs } from '@/types/user';
-import {
-  isClerkAPIResponseError,
-  useAuth,
-  useSignUp,
-  useUser,
-} from '@clerk/clerk-expo';
+import { isClerkAPIResponseError, useSignUp } from '@clerk/clerk-expo';
 import { SignUpStatus } from '@clerk/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
-import { useContext, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
 import { Button, Form, Separator, Text, View, XStack, YStack } from 'tamagui';
 
 const Register = () => {
-  const { isSignedIn, user } = useUser();
-  const { userId, getToken } = useAuth();
-  const { setUserProperties } = useContext(UserContext);
   const {
     signUp: { create },
     setActive,
   } = useSignUp();
 
-  useEffect(() => {
-    if (isSignedIn) {
-      (async () => {
-        setUserProperties({
-          token: await getToken(),
-          user: user,
-          user_id: userId,
-        });
-      })();
-    }
-  }, [isSignedIn]);
   const router = useRouter();
   const [status, setStatus] = useState<SignUpStatus>();
   const {
@@ -174,7 +154,6 @@ const Register = () => {
         </Button>
         <Separator alignSelf='stretch' />
       </XStack>
-      {status && <>ERROR</>}
     </View>
   );
 };

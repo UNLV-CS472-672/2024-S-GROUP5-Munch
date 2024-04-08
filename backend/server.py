@@ -13,6 +13,7 @@ from recipe_routes import recipe_bp
 from like_routes import like_bp
 from comment_routes import comment_bp
 from bookmark_routes import bookmark_bp
+from follow_routes import follow_bp
 
 # Import functions needed for middleware
 from helper_functions import check_user_existence
@@ -31,6 +32,8 @@ app.register_blueprint(recipe_bp)
 app.register_blueprint(like_bp)
 app.register_blueprint(comment_bp)
 app.register_blueprint(bookmark_bp)
+app.register_blueprint(follow_bp)
+
 
 # Load environment variables from .env file
 load_dotenv()

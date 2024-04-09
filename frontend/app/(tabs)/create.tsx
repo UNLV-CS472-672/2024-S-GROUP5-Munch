@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import * as ImagePicker from 'expo-image-picker';
 import { zodResolver } from '@hookform/resolvers/zod';
 import {
   View,
@@ -7,15 +9,16 @@ import {
   H2,
   H4,
   YStack,
-  Image,
-  Separator,
-  SizableText,
-  Tabs,
-  XStack,
-  H5,
   Text,
   TextArea,
   Switch,
+  XStack,
+  AlertDialog,
+  AlertDialogTrigger,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  Image,
+  ScrollView,
   Form,
 } from 'tamagui';
 import {
@@ -26,10 +29,30 @@ import {
 } from '@/types/postInput';
 import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
+  const [file, setFile] = useState(null);
+  const [error, setError] = useState(null);
+
+  const pickImg = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (status !== 'granted') {
+      <AlertDialog>
+        <AlertDialogTitle>No Permission Granted</AlertDialogTitle>
+        <AlertDialogDescription>{error}</AlertDialogDescription>
+      </AlertDialog>;
+    } else {
+      const result = await ImagePicker.launchImageLibraryAsync();
+      var uri = '';
+      result.assets.map((asset) => (uri = asset.uri));
+      if (!result.canceled) {
+        setFile(uri);
+        setError(null);
+      }
+    }
+  };
 
   const {
     handleSubmit: handleSubmitByte,
@@ -83,6 +106,21 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
+        <Button onPress={pickImg} backgroundColor={'orange'} mx={'$4'}>
+          <Text color={'$black2'}>Upload Image</Text>
+        </Button>
+        <XStack>
+          {file ? (
+            <Image
+              source={{
+                uri: file,
+              }}
+              width={150}
+              aspectRatio={1}
+              height={150}
+            />
+          ) : null}
+        </XStack>
         {/* byte form */}
         <Form
           onSubmit={handleSubmitByte(createByte)}
@@ -112,9 +150,8 @@ export default function Create() {
               placeholder={'Upload IMG...'}
               multiline={true}
               style={{
-                height: 130,
-                borderRadius: 5,
-                paddingHorizontal: 10,
+                height: 150,
+                width: 260,
                 textAlignVertical: 'top',
               }}
             /> */}

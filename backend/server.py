@@ -14,7 +14,7 @@ from like_routes import like_bp
 from comment_routes import comment_bp
 from bookmark_routes import bookmark_bp
 from follow_routes import follow_bp
-from yelpAPI.fakeDataAPI import yelp_bp 
+from yelpAPI.fakeDataAPI import yelp_bp
 
 # Import functions needed for middleware
 from helper_functions import check_user_existence

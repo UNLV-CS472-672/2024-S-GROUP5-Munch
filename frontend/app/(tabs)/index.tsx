@@ -7,10 +7,13 @@
  */
 
 import Post from '@/components/Post/Post';
+import { UserContext } from '@/contexts/UserContext';
+import { useContext } from 'react';
 import { FlatList } from 'react-native';
 import { View } from 'tamagui';
 
 export default function Index() {
+  const { user_id, token } = useContext(UserContext);
   //the data should be fetched from the backend
   return (
     <View>

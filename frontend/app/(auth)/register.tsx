@@ -154,7 +154,6 @@ const Register = () => {
         </Button>
         <Separator alignSelf='stretch' />
       </XStack>
-      {status && <>ERROR</>}
     </View>
   );
 };

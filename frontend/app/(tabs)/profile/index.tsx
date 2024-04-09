@@ -1,31 +1,27 @@
-import { isClerkAPIResponseError, useAuth, useUser } from '@clerk/clerk-expo';
+import { UserContext } from '@/contexts/UserContext';
+import { isClerkAPIResponseError, useAuth } from '@clerk/clerk-expo';
 import { Feather } from '@expo/vector-icons';
-import { useRouter } from 'expo-router';
+import { MediaTypeOptions, launchImageLibraryAsync } from 'expo-image-picker';
+import { Link, useRouter } from 'expo-router';
+import { useContext } from 'react';
+import { TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Avatar,
   Button,
   Card,
-  H3,
+  H4,
+  Label,
   Paragraph,
-  XStack,
-  YStack,
   Text,
   View,
-  H4,
+  XStack,
+  YStack,
 } from 'tamagui';
-import {
-  MediaTypeOptions,
-  launchCameraAsync,
-  launchImageLibraryAsync,
-} from 'expo-image-picker';
-import { TouchableOpacity } from 'react-native';
-import { Label } from 'tamagui';
-import { Link } from 'expo-router';
 export default function Profile() {
   const { isSignedIn, signOut } = useAuth();
+  const { user } = useContext(UserContext);
 
-  const { user } = useUser();
   const router = useRouter();
 
   const handleUserProfileChange = async () => {

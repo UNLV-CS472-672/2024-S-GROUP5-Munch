@@ -19,12 +19,12 @@ headers = {"Authorization": f"Bearer {API_KEY}"}
 
 
 # route gets the default amount from yelp API (20 businesses in one request)
-@yelp_bp.route("/", methods=["GET"])
+@yelp_bp.route("/api/business", methods=["GET"])
 def get_business():
     # Grab a random state from states.py
     random_state = random.choice(yelpAPI.states.us_states)
     response = requests.get(
-        URL + "businesses/search?location=" + random_state, headers=headers
+        f"{URL}businesses/search?location={random_state}", headers=headers
     )
 
     if response.status_code == 200:
@@ -43,10 +43,11 @@ def get_business():
 def get_our_own_businesses(latitude, longitude):
     # Get a random integer for the offset
     random_int = str(random.randint(0, 500))
+    limit = 50
     # Use query filter to get 50 businesses from provided latitude and longitude, can change limit query to X amount
     # offset is from integer above, to get more random options
     response = requests.get(
-        URL + "businesses/search?latitude=" + latitude + "&longitude=" + longitude + "&limit=50" + "&offset=" + random_int,
+        f"{URL}businesses/search?latitude={latitude}&longitude={longitude}&limit={limit}&offset={random_int}",
         headers=headers,
     )
 

@@ -1,13 +1,13 @@
-import { isByte, isRecipe } from '@/utils/typeGuard';
 import { Subtitle } from '@/tamagui.config';
 import { Byte, Recipe } from '@/types/post';
+import { getDateDifference } from '@/utils/getCurrentDateTime';
+import { isByte, isRecipe } from '@/utils/typeGuard';
 import { Link, useRouter } from 'expo-router';
 import React, { FC } from 'react';
 import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
-import { Avatar, Image, Text, View, XStack, YStack } from 'tamagui';
-import ButtonIcon from './ButtonIcon';
-import { getDateDifference } from '@/utils/getCurrentDateTime';
 import Carousel from 'react-native-reanimated-carousel';
+import { Image, Text, XStack, YStack } from 'tamagui';
+import ButtonIcon from './ButtonIcon';
 
 interface PostProps {
   post: Byte | Recipe;
@@ -81,6 +81,7 @@ const Post: FC<PostProps> = ({ post }) => {
             <ButtonIcon iconName='location' onPress={openMaps} />
           )}
         </XStack>
+        {/*USER INFO*/}
         <YStack px={'$2.5'} gap={'$1'}>
           <XStack gap={'$2'} rowGap={'$5'}>
             <Link href={'/'}>

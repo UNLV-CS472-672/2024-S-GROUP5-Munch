@@ -9,47 +9,58 @@
 import Post from '@/components/Post/Post';
 import { UserContext } from '@/contexts/UserContext';
 import { Byte, Recipe } from '@/types/post';
-import { useQueries } from '@tanstack/react-query';
+import { useQueries, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useContext } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { FlatList, SafeAreaView } from 'react-native';
 import { View } from 'tamagui';
+import { getCurrentPositionAsync } from 'expo-location';
+import { YelpRecommendation } from '@/types/firebaseTypes';
+import YelpPost from '@/components/YelpPost';
 
 export default function Index() {
-  const { token, user_data } = useContext(UserContext);
+  const { token } = useContext(UserContext);
 
   //current route is wrong should use yelp api
-  // const { isLoading, recommendedPosts } = useQueries({
-  //   queries: user_data?.posts
-  //     ? user_data.posts.map((post) => ({
-  //         queryKey: [post],
-  //         queryFn: async () => {
-  //           const res = await axios.get<Byte | Recipe>(
-  //             `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
-  //             {
-  //               headers: { Authorization: `Bearer ${token}` },
-  //             },
-  //           );
-  //           return res.data;
-  //         },
-  //       }))
-  //     : [],
-  //   combine: (data) => ({
-  //     isLoading: data.some((d) => d.isLoading),
-  //     followingPosts: data.map((d) => d.data),
-  //   }),
-  // });
+  const { isLoading, data } = useQuery({
+    queryKey: ['recommendation'],
+    queryFn: async () => {
+      const {
+        coords: { longitude, latitude },
+      } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
+      console.log(longitude, latitude);
+      const recommendation = (
+        await axios.get<YelpRecommendation[]>(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${latitude}/${longitude}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+      ).data;
+
+      return recommendation;
+    },
+  });
+
+  const renderItem = useCallback(
+    ({ item, index }: { item: YelpRecommendation; index: number }) => {
+      return <YelpPost post={item} key={index} />;
+    },
+    [],
+  );
 
   return (
     <SafeAreaView>
-      {/* {!isLoading && (
+      {!isLoading && (
         <FlatList
-          data={[]}
-          renderItem={({ item }) => <Post post={item} />}
+          data={data}
+          renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           decelerationRate={'fast'}
+          initialNumToRender={5}
         />
-      )} */}
+      )}
     </SafeAreaView>
   );
 }

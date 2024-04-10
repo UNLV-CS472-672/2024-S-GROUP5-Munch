@@ -16,6 +16,10 @@ import {
 } from '@tanstack/react-query';
 import axios from 'axios';
 import { useFonts } from 'expo-font';
+import {
+  enableNetworkProviderAsync,
+  getCurrentPositionAsync,
+} from 'expo-location';
 import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useContext, useEffect, useState } from 'react';
@@ -152,7 +156,6 @@ function RootLayoutNav() {
         )
       ).data;
 
-      console.log(user.id);
       setUserProperties({
         token: token,
         user: user,
@@ -171,6 +174,8 @@ function RootLayoutNav() {
       const inTabGroup = segments[0] === '(auth)';
       //token is only retrieved when signed in
       if (isSignedIn && !isLoading) {
+        await enableNetworkProviderAsync();
+        console.log((await getCurrentPositionAsync()).coords);
         router.replace('/');
       } else if (!isSignedIn) {
         setUserProperties({

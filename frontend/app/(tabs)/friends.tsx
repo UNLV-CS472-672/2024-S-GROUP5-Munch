@@ -4,7 +4,7 @@ import { UserType } from '@/types/firebaseTypes';
 import { Byte, Recipe } from '@/types/post';
 import { useQueries } from '@tanstack/react-query';
 import axios from 'axios';
-import React, { useContext } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { FlatList, SafeAreaView } from 'react-native';
 
 const Friends = () => {
@@ -48,14 +48,23 @@ const Friends = () => {
     }),
   });
 
+  const renderItem = useCallback(
+    ({ item, index }: { item: Byte | Recipe; index: number }) => {
+      console.log('render item');
+      return <Post post={item} key={index} />;
+    },
+    [],
+  );
+
   return (
     <SafeAreaView>
       {!isLoading && (
         <FlatList
           data={posts}
-          renderItem={({ item }) => <Post post={item} />}
+          renderItem={renderItem}
           showsVerticalScrollIndicator={false}
           decelerationRate={'fast'}
+          initialNumToRender={5}
         />
       )}
     </SafeAreaView>

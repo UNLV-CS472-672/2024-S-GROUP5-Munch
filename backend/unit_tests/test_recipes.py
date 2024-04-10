@@ -53,7 +53,9 @@ class TestAPI(unittest.TestCase):
             f"/api/recipes", json=new_recipe_mock_data
         )
         self.assertEqual(new_recipe_mock_data, create_recipe_response.json)
-        self.assertEqual(create_recipe_response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(
+            create_recipe_response.status_code, status.HTTP_201_CREATED
+        )
 
         # Call to get user route to get list of recipes, this is to find recipe_id
         get_user_response = self.client.get(f"/api/users/{testing_user_id}")
@@ -91,13 +93,15 @@ class TestAPI(unittest.TestCase):
 
         # Test getting a non-existing recipe
         bad_get_response = self.client.get(f"/api/recipes/bad_id")
-        self.assertEqual(bad_get_response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(
+            bad_get_response.status_code, status.HTTP_404_NOT_FOUND
+        )
 
         # Get recipe
         get_response = self.client.get(f"/api/recipes/{recipe_id}")
         self.assertEqual(updated_recipe_mock_data, get_response.json)
         self.assertEqual(get_response.status_code, status.HTTP_200_OK)
-        
+
         # Data that will Error (missing a field)
         bad_data = {
             "author": f"users/{testing_user_id}",
@@ -122,11 +126,15 @@ class TestAPI(unittest.TestCase):
         try:
             response = self.client.post("/api/recipes", json=bad_data)
         except:
-            self.assertEqual(response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
+            self.assertEqual(
+                response.status_code, status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
         # Updating a recipe invalidly
         try:
-            response = self.client.patch(f"/api/recipes/invalid_data", json=bad_data)
+            response = self.client.patch(
+                f"/api/recipes/invalid_data", json=bad_data
+            )
         except:
             self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 

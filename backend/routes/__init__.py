@@ -14,4 +14,14 @@ from .follow_routes import follow_bp
 from .yelpAPI.fakeDataAPI import yelp_bp
 
 # List of Blueprints
-blueprints = [user_bp, post_bp, feed_bp, recipe_bp, like_bp, comment_bp, bookmark_bp, follow_bp, yelp_bp]
+blueprints = [
+    user_bp,
+    post_bp,
+    feed_bp,
+    recipe_bp,
+    like_bp,
+    comment_bp,
+    bookmark_bp,
+    follow_bp,
+    yelp_bp,
+]

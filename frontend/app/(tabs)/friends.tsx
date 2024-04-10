@@ -50,7 +50,6 @@ const Friends = () => {
 
   const renderItem = useCallback(
     ({ item, index }: { item: Byte | Recipe; index: number }) => {
-      console.log('render item');
       return <Post post={item} key={index} />;
     },
     [],

@@ -1,4 +1,3 @@
-import Post from '@/components/Post/Post';
 import { UserContext } from '@/contexts/UserContext';
 import { Byte, Recipe } from '@/types/post';
 import { isClerkAPIResponseError, useAuth } from '@clerk/clerk-expo';

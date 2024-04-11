@@ -86,7 +86,7 @@ class BookmarkTest(TestCase):
 
         # test exception
         with patch(
-            "bookmark_routes.firestore.client",
+            "routes.bookmark_routes.firestore.client",
             side_effect=Exception("Simulating an exception"),
         ):
             patch_bookmark = self.client.patch(

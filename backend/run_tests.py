@@ -12,6 +12,7 @@ def run_tests():
             "recipe_routes",
             "like_routes",
             "bookmark_routes",
+            "comment_routes",
         ]
     )
     cov.start()

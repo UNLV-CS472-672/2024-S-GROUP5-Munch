@@ -37,16 +37,24 @@ class FollowTest(TestCase):
         self.assertEqual(create_user_2.status_code, status.HTTP_201_CREATED)
 
         # Try following non-existent user
-        follow_non_existent_user = self.client.patch(f"/api/users/{user_1}/follow/non_existent_user")
+        follow_non_existent_user = self.client.patch(
+            f"/api/users/{user_1}/follow/non_existent_user"
+        )
 
         # Check if status code received is expected (404 User not found)
-        self.assertEqual(follow_non_existent_user.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(
+            follow_non_existent_user.status_code, status.HTTP_404_NOT_FOUND
+        )
 
         # Try following from non-existent user
-        follow_from_non_existent_user = self.client.patch(f"/api/users/non_existent_user/follow/{user_1}")
+        follow_from_non_existent_user = self.client.patch(
+            f"/api/users/non_existent_user/follow/{user_1}"
+        )
 
         # Check if status code received is expected (404 User not found)
-        self.assertEqual(follow_from_non_existent_user.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(
+            follow_from_non_existent_user.status_code, status.HTTP_404_NOT_FOUND
+        )
 
         # Check user_1 and user_2 followers and following are empty
         get_user_1_res = self.client.get(f"/api/users/{user_1}")
@@ -60,7 +68,9 @@ class FollowTest(TestCase):
         self.assertEqual(get_user_2_res.json["following"], [])
 
         # Test following user_2
-        follow_user_2 = self.client.patch(f"/api/users/{user_1}/follow/{user_2}")
+        follow_user_2 = self.client.patch(
+            f"/api/users/{user_1}/follow/{user_2}"
+        )
 
         # Get user_1 object after issuing follow
         get_user_1_res = self.client.get(f"/api/users/{user_1}")
@@ -77,11 +87,15 @@ class FollowTest(TestCase):
         self.assertEqual(get_user_2_res.json["following"], [])
 
         # Check that for proper json message and proper http response (200)
-        self.assertEqual(follow_user_2.json["message"], "User followed successfully")
+        self.assertEqual(
+            follow_user_2.json["message"], "User followed successfully"
+        )
         self.assertEqual(follow_user_2.status_code, status.HTTP_200_OK)
 
         # Test unfollowing user_2
-        unfollow_user_2 = self.client.patch(f"/api/users/{user_1}/follow/{user_2}")
+        unfollow_user_2 = self.client.patch(
+            f"/api/users/{user_1}/follow/{user_2}"
+        )
 
         # Get user_1 object after issuing follow
         get_user_1_res = self.client.get(f"/api/users/{user_1}")
@@ -98,7 +112,9 @@ class FollowTest(TestCase):
         self.assertEqual(get_user_2_res.json["following"], [])
 
         # Check that for proper json message and proper http response (200)
-        self.assertEqual(unfollow_user_2.json["message"], "User unfollowed successfully")
+        self.assertEqual(
+            unfollow_user_2.json["message"], "User unfollowed successfully"
+        )
         self.assertEqual(unfollow_user_2.status_code, status.HTTP_200_OK)
 
         # test exception

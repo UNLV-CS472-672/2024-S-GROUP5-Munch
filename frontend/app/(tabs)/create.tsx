@@ -2,23 +2,19 @@ import React, { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { useAuth } from '@clerk/clerk-react';
 import {
-  View,
   Button,
-  H1,
-  H2,
   H4,
   YStack,
   Text,
-  TextArea,
   Switch,
   XStack,
   AlertDialog,
-  AlertDialogTrigger,
   AlertDialogTitle,
   AlertDialogDescription,
   Image,
-  ScrollView,
   Form,
 } from 'tamagui';
 import {
@@ -29,6 +25,8 @@ import {
 } from '@/types/postInput';
 import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
+import { useMutation } from '@tanstack/react-query';
+
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -77,8 +75,57 @@ export default function Create() {
       steps: '',
     },
   });
-  const createByte: SubmitHandler<ByteSchemaInputs> = (data) => {
+  
+  const { getToken, userId } = useAuth();
+  /*
+   const { token } = useContext(UserContext);
+
+  const { isLoading, data } = useQuery({
+    queryKey: [id],
+    queryFn: async () =>
+      (
+        await axios.get(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${id}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        })
+      ).data,
+  });
+  
+  */
+
+  // //call the mutation
+  // const { mutate, data } = useMutation({
+  //   mutationKey: ['post'],
+  //   mutationFn: async () =>
+  //     (
+  //       await axios.get(
+  //         `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/`,
+  //         {
+  //           headers: { Authorization: `Bearer: ${await getToken()}` },
+  //         },
+  //       )
+  //     ).data,
+  // });
+
+  const createByte: SubmitHandler<ByteSchemaInputs> = async (postData) => {
     try {
+      const token = await getToken();
+      const response = await axios.post(
+        `http://${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
+        postData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      if (response.status === 201) {
+        return response.data;
+      } else {
+        throw new Error(
+          `Request failed with status ${response.status} and token ${token}`,
+        );
+      }
+      
     } catch (err) {
       // error
     }

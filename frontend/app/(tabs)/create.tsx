@@ -29,8 +29,6 @@ import UserInput from '@/components/UserInput';
 import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
 
-
-
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
   const [file, setFile] = useState(null);
@@ -83,27 +81,28 @@ export default function Create() {
   const { mutate, error } = useMutation({
     mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
     mutationFn: () => {
-      if(!isEnabled){ // for byte
-      return axios.post(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-        postData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-    }else{ // for recipe
-      return axios.post(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
-        recipeData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-    }
+      if (!isEnabled) {
+        // for byte
+        return axios.post(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
+          postData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+      } else {
+        // for recipe
+        return axios.post(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
+          recipeData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+      }
     }, // Function that defines how to fetch data for this mutation
   });
 
-  
   const {
     handleSubmit: handleSubmitByte,
     control: controlByte,
@@ -127,7 +126,6 @@ export default function Create() {
       steps: '',
     },
   });
-  
 
   const createByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
     try {

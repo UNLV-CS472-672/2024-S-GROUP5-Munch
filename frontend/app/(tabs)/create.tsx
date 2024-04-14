@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import * as ImagePicker from 'expo-image-picker';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -25,13 +25,16 @@ import {
 } from '@/types/postInput';
 import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
+//import { getCurrentDateTime } from '../utils/getCurrentDateTime';
+import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
+
 
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
   const [file, setFile] = useState(null);
-  const [error, setError] = useState(null);
+  const [errorUpload, setError] = useState(null);
 
   const pickImg = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -52,6 +55,55 @@ export default function Create() {
     }
   };
 
+  const { token } = useContext(UserContext);
+  const { getToken, userId } = useAuth();
+
+  const postData = {
+    author: `users/${userId}`,
+    comments: [],
+    //creation_date: getCurrentDateTime(),
+    description: '',
+    likes: 0,
+    location: '',
+    pictures: [file],
+  };
+
+  const recipeData = {
+    author: `users/${userId}`,
+    comments: [],
+    //creation_date: getCurrentDateTime(),
+    description: '',
+    likes: 0,
+    location: '',
+    ingredients: '',
+    steps: '',
+    pictures: [file],
+  };
+
+  const { mutate, error } = useMutation({
+    mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
+    mutationFn: () => {
+      if(!isEnabled){ // for byte
+      return axios.post(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
+        postData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+    }else{ // for recipe
+      return axios.post(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
+        recipeData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+    }
+    }, // Function that defines how to fetch data for this mutation
+  });
+
+  
   const {
     handleSubmit: handleSubmitByte,
     control: controlByte,
@@ -76,64 +128,25 @@ export default function Create() {
     },
   });
   
-  const { getToken, userId } = useAuth();
-  /*
-   const { token } = useContext(UserContext);
 
-  const { isLoading, data } = useQuery({
-    queryKey: [id],
-    queryFn: async () =>
-      (
-        await axios.get(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-      ).data,
-  });
-  
-  */
-
-  // //call the mutation
-  // const { mutate, data } = useMutation({
-  //   mutationKey: ['post'],
-  //   mutationFn: async () =>
-  //     (
-  //       await axios.get(
-  //         `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/`,
-  //         {
-  //           headers: { Authorization: `Bearer: ${await getToken()}` },
-  //         },
-  //       )
-  //     ).data,
-  // });
-
-  const createByte: SubmitHandler<ByteSchemaInputs> = async (postData) => {
+  const createByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
     try {
-      const token = await getToken();
-      const response = await axios.post(
-        `http://${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-        postData,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      );
-      if (response.status === 201) {
-        return response.data;
-      } else {
-        throw new Error(
-          `Request failed with status ${response.status} and token ${token}`,
-        );
-      }
-      
+      postData.description = data.description;
+      mutate();
     } catch (err) {
       // error
+      throw new Error(error.message);
     }
   };
   const createRecipe: SubmitHandler<RecipeSchemaInputs> = (data) => {
     try {
+      recipeData.description = data.descr;
+      recipeData.steps = data.steps;
+      recipeData.ingredients = data.ingredients;
+      mutate();
     } catch (err) {
       //error
+      throw new Error(error.message);
     }
   };
 
@@ -193,15 +206,6 @@ export default function Create() {
               {errorsByte.description?.message && (
                 <Text color={'$red10'}>{errorsByte.description.message}</Text>
               )}
-              {/* <TextArea
-              placeholder={'Upload IMG...'}
-              multiline={true}
-              style={{
-                height: 150,
-                width: 260,
-                textAlignVertical: 'top',
-              }}
-            /> */}
               <Form.Trigger asChild>
                 <Button backgroundColor={'$red9'}>Post</Button>
               </Form.Trigger>
@@ -249,9 +253,6 @@ export default function Create() {
               {errorsRecipe.ingredients?.message && (
                 <Text color={'$red10'}>{errorsRecipe.ingredients.message}</Text>
               )}
-              {/* {errorsRecipe.description?.message && (
-              <Text color={'$red10'}>{errors.description.message}</Text>
-            )} */}
               <Controller
                 name='steps'
                 control={controlRecipe}

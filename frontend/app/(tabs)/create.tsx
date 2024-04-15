@@ -29,6 +29,10 @@ import {
 } from '@/types/postInput';
 import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
+//import { getCurrentDateTime } from '../utils/getCurrentDateTime';
+import { UserContext } from '@/contexts/UserContext';
+import { useMutation } from '@tanstack/react-query';
+import { EditPostDialog } from '../edit/editPost';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -92,6 +96,7 @@ export default function Create() {
 
   return (
     <SafeAreaView>
+    <EditPostDialog />
       <YStack>
         <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
         <XStack>

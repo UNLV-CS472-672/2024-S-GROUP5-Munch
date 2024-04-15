@@ -21,7 +21,7 @@ function EditPost() {
   return (
     <Dialog modal>
       <Dialog.Trigger asChild>
-        <Button>Show Dialog</Button>
+        <Button>Edit</Button>
       </Dialog.Trigger>
 
       <Adapt when="sm" platform="touch">

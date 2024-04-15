@@ -96,7 +96,7 @@ export default function Create() {
 
   return (
     <SafeAreaView>
-    <EditPostDialog />
+      <EditPostDialog />
       <YStack>
         <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
         <XStack>

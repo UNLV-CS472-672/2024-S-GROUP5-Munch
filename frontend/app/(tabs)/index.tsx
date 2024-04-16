@@ -6,23 +6,58 @@
  *   Posts come with a background image, recipe title, and description
  */
 
-import Post from '@/components/Post/Post';
+import YelpPost from '@/components/YelpPost';
 import { UserContext } from '@/contexts/UserContext';
-import { useContext } from 'react';
-import { FlatList } from 'react-native';
-import { View } from 'tamagui';
+import { YelpRecommendation } from '@/types/firebaseTypes';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { getCurrentPositionAsync } from 'expo-location';
+import { useCallback, useContext } from 'react';
+import { FlatList, SafeAreaView } from 'react-native';
 
 export default function Index() {
-  const { user_id, token } = useContext(UserContext);
-  //the data should be fetched from the backend
+  const { token } = useContext(UserContext);
+
+  //current route is wrong should use yelp api
+  const { isLoading, data } = useQuery({
+    queryKey: ['recommendation'],
+    queryFn: async () => {
+      const {
+        coords: { longitude, latitude },
+      } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
+      console.log(longitude, latitude);
+      const recommendation = (
+        await axios.get<YelpRecommendation[]>(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${latitude}/${longitude}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+      ).data;
+
+      return recommendation;
+    },
+  });
+
+  const renderItem = useCallback(
+    ({ item, index }: { item: YelpRecommendation; index: number }) => {
+      return <YelpPost post={item} key={index} />;
+    },
+    [],
+  );
+
   return (
-    <View>
-      <FlatList
-        data={[]}
-        renderItem={({ item }) => <Post post={item} />}
-        showsVerticalScrollIndicator={false}
-        decelerationRate={'fast'}
-      />
-    </View>
+    <SafeAreaView>
+      {!isLoading && (
+        <FlatList
+          data={data}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          decelerationRate={'fast'}
+          initialNumToRender={5}
+        />
+      )}
+    </SafeAreaView>
   );
 }

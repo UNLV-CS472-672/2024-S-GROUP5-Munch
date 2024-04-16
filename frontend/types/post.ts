@@ -5,6 +5,7 @@ type PostBase = {
   description: string;
   likes: number;
   pictures: string[];
+  username: string;
 };
 
 export type Byte = PostBase & {

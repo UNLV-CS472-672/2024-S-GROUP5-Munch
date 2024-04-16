@@ -11,7 +11,6 @@ def run_tests():
     # Start code coverage measurement
     cov = coverage.Coverage(
         source=[os.path.join(os.path.dirname(__file__), "routes")],
-        omit=exclude_patterns,
     )
     cov.start()
 

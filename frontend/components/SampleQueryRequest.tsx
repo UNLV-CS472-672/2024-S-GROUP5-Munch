@@ -14,7 +14,7 @@ export default function SampleQueryRequest() {
   const getPosts = async () => {
     try {
       const response = await axios.get(
-        `http://${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/3xUM3gtEQMlaYJjNA0qY`,
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/5cSbSLKmhBktYCgJQpz1`,
         {
           headers: { Authorization: `Bearer ${await getToken()}` },
         },
@@ -54,10 +54,10 @@ export default function SampleQueryRequest() {
     <Card>
       <Card.Header />
       <Text> Test query </Text>
-      <Text> Results of query request: {JSON.stringify(result)} </Text>
       <Text> Results of query request: {JSON.stringify(result.data)} </Text>
+      {/* <Text> Results of query request: {JSON.stringify(result.data)} </Text> */}
       <Button onPress={handleSubmit}>Submit</Button>
-      <Button onPress={clearQueryCache}>Clear Query Cache</Button>
+      {/* <Button onPress={clearQueryCache}>Clear Query Cache</Button> */}
       <Card.Footer />
 
       <Card.Background />

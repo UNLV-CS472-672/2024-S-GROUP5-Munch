@@ -9,9 +9,11 @@ def run_tests():
         source=[
             "user_routes",
             "post_routes",
-            "feed_routes",
             "recipe_routes",
             "like_routes",
+            "bookmark_routes",
+            "comment_routes",
+            "follow_routes",
         ]
     )
     cov.start()

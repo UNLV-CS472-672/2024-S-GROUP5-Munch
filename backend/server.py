@@ -8,7 +8,6 @@ import jwt
 # Import Flask Blueprints
 from user_routes import user_bp
 from post_routes import post_bp
-from feed_routes import feed_bp
 from recipe_routes import recipe_bp
 from like_routes import like_bp
 from comment_routes import comment_bp
@@ -28,7 +27,6 @@ app = Flask(__name__)
 # Register Flask Blueprints under app
 app.register_blueprint(user_bp)
 app.register_blueprint(post_bp)
-app.register_blueprint(feed_bp)
 app.register_blueprint(recipe_bp)
 app.register_blueprint(like_bp)
 app.register_blueprint(comment_bp)

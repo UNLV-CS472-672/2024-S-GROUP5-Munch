@@ -40,7 +40,7 @@ export default function Create() {
     if (status !== 'granted') {
       <AlertDialog>
         <AlertDialogTitle>No Permission Granted</AlertDialogTitle>
-        <AlertDialogDescription>{error}</AlertDialogDescription>
+        <AlertDialogDescription>{errorUpload}</AlertDialogDescription>
       </AlertDialog>;
     } else {
       const result = await ImagePicker.launchImageLibraryAsync();
@@ -59,29 +59,32 @@ export default function Create() {
   const postData = {
     author: `users/${userId}`,
     comments: [],
-    //creation_date: getCurrentDateTime(),
+    creation_date: '',
     description: '',
     likes: 0,
     location: '',
     pictures: [file],
+    username: ''
   };
 
   const recipeData = {
     author: `users/${userId}`,
     comments: [],
-    //creation_date: getCurrentDateTime(),
+    creation_date: '',
     description: '',
     likes: 0,
     location: '',
     ingredients: '',
     steps: '',
     pictures: [file],
+    username: ''
   };
 
   const { mutate, error } = useMutation({
     mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
     mutationFn: () => {
       if (!isEnabled) {
+        console.log("dlfjdlskf")
         // for byte
         return axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
@@ -136,15 +139,22 @@ export default function Create() {
       throw new Error(error.message);
     }
   };
-  const createRecipe: SubmitHandler<RecipeSchemaInputs> = (data) => {
+  const createRecipe: SubmitHandler<RecipeSchemaInputs> = async (data) => {
     try {
       recipeData.description = data.descr;
       recipeData.steps = data.steps;
       recipeData.ingredients = data.ingredients;
-      mutate();
+       mutate();
+      // if (response.status === 201) {
+      //   return response.data;
+      // } else {
+      //   throw new Error(
+      //     `Request failed with status ${response.status} and token ${token}`,
+      //   );
+      // }
     } catch (err) {
       //error
-      throw new Error(error.message);
+      throw new Error(err.message);
     }
   };
 

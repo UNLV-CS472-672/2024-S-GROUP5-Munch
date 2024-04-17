@@ -64,7 +64,7 @@ export default function Create() {
     likes: 0,
     location: '',
     pictures: [file],
-    username: ''
+    username: '',
   };
 
   const recipeData = {
@@ -77,14 +77,14 @@ export default function Create() {
     ingredients: '',
     steps: '',
     pictures: [file],
-    username: ''
+    username: '',
   };
 
   const { mutate, error } = useMutation({
     mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
     mutationFn: () => {
       if (!isEnabled) {
-        console.log("dlfjdlskf")
+        console.log('dlfjdlskf');
         // for byte
         return axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
@@ -144,7 +144,7 @@ export default function Create() {
       recipeData.description = data.descr;
       recipeData.steps = data.steps;
       recipeData.ingredients = data.ingredients;
-       mutate();
+      mutate();
       // if (response.status === 201) {
       //   return response.data;
       // } else {

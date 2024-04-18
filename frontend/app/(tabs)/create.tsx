@@ -53,7 +53,10 @@ export default function Create() {
     }
   };
 
-  const { token, user_data: {username}} = useContext(UserContext);
+  const {
+    token,
+    user_data: { username },
+  } = useContext(UserContext);
   const { getToken, userId } = useAuth();
 
   const postData = {

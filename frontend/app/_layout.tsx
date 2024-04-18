@@ -197,7 +197,7 @@ function RootLayoutNav() {
         router.replace('/login');
       }
     })();
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, isLoading]);
 
   if (!isLoaded) {
     return <Slot />;

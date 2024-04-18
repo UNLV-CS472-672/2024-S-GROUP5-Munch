@@ -53,7 +53,7 @@ export default function Create() {
     }
   };
 
-  const { token } = useContext(UserContext);
+  const { token, user_data: {username}} = useContext(UserContext);
   const { getToken, userId } = useAuth();
 
   const postData = {
@@ -64,7 +64,7 @@ export default function Create() {
     likes: 0,
     location: '',
     pictures: [file],
-    username: '',
+    username: username,
   };
 
   const recipeData = {
@@ -77,14 +77,13 @@ export default function Create() {
     ingredients: '',
     steps: '',
     pictures: [file],
-    username: '',
+    username: username,
   };
 
   const { mutate, error } = useMutation({
     mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
     mutationFn: () => {
       if (!isEnabled) {
-        console.log('dlfjdlskf');
         // for byte
         return axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
@@ -133,6 +132,8 @@ export default function Create() {
   const createByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
     try {
       postData.description = data.description;
+      console.log(`users/${userId}`);
+      console.log(username);
       mutate();
     } catch (err) {
       // error

@@ -149,13 +149,6 @@ export default function Create() {
       recipeData.steps = data.steps;
       recipeData.ingredients = data.ingredients;
       mutate();
-      // if (response.status === 201) {
-      //   return response.data;
-      // } else {
-      //   throw new Error(
-      //     `Request failed with status ${response.status} and token ${token}`,
-      //   );
-      // }
     } catch (err) {
       //error
       throw new Error(err.message);

@@ -102,7 +102,7 @@ export default function CommentPage() {
     });
   };
 
-  //check if user has any of their own comments on the page 
+  //check if user has any of their own comments on the page
   const checkForOwnComments = () => {
     for (const comment in comments) {
       if (comments[comment]['author'] === `users/${user_id}`) {

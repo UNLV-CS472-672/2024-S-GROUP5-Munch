@@ -71,7 +71,8 @@ def comment_post(user_id, post_id):
     post_data["comments"] = post_comments
     post_ref.set(post_data)
 
-    return jsonify(request.json), status.HTTP_200_OK
+    comment_json["author"] = comment_json["author"].path
+    return jsonify(comment_json), status.HTTP_200_OK
 
 
 @comment_bp.route(
@@ -127,4 +128,4 @@ def delete_comment_post(user_id, post_id, comment_id):
     post_data["comments"] = post_comments
     post_ref.update(post_data)
 
-    return jsonify(request.json), status.HTTP_200_OK
+    return jsonify({"message": "deleted"}), status.HTTP_200_OK

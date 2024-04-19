@@ -47,7 +47,7 @@ def get_our_own_businesses(latitude, longitude):
     # Use query filter to get 50 businesses from provided latitude and longitude, can change limit query to X amount
     # offset is from integer above, to get more random options
     response = requests.get(
-        f"{URL}businesses/search?latitude={latitude}&longitude={longitude}&limit={limit}&offset={random_int}",
+        f"{URL}businesses/search?latitude={latitude}&longitude={longitude}&term=restaurants&limit={limit}&offset={random_int}",
         headers=headers,
     )
 

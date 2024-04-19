@@ -33,17 +33,17 @@ export default function Profile() {
   const { isLoading, posts } = useQueries({
     queries: user_data?.posts
       ? user_data.posts.map((post) => ({
-          queryKey: [post],
-          queryFn: async () => {
-            const res = await axios.get<Byte | Recipe>(
-              `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              },
-            );
-            return res.data;
-          },
-        }))
+        queryKey: [post],
+        queryFn: async () => {
+          const res = await axios.get<Byte | Recipe>(
+            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          return res.data;
+        },
+      }))
       : [],
     combine: (data) => ({
       isLoading: data.some((d) => d.isLoading),
@@ -86,19 +86,19 @@ export default function Profile() {
                   justifyContent='space-between'
                   alignItems='center'
                 >
+                </Card.Header>
+                <XStack>
                   <TouchableOpacity onPress={handleUserProfileChange}>
-                    <Avatar circular size={'$5'}>
+                    <Avatar circular size={'$5'} marginRight={17} marginLeft={-50} marginTop={7}>
                       <Avatar.Image src={user.imageUrl ?? ' '} />
                     </Avatar>
                   </TouchableOpacity>
                   <YStack gap={'$2'}>
                     <H4>{user?.username}</H4>
-                    <Paragraph>{`${user?.firstName} ${
-                      user?.lastName ?? ''
-                    }`}</Paragraph>
-                    <Paragraph>{`${user_data.bio}`}</Paragraph>
+                    <Paragraph>{`${user?.firstName} ${user?.lastName ?? ''
+                      }`}</Paragraph>
                   </YStack>
-                </Card.Header>
+                </XStack>
                 <XStack gap={'$3'}>
                   <YStack display='flex' alignItems='center'>
                     <Label fontSize={'$2'}>Followers</Label>

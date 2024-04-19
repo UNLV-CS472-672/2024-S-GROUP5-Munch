@@ -36,7 +36,6 @@ const Post: FC<PostProps> = ({ post }) => {
     const androidLink = `geo:0,0?q=${byte?.location}`;
     Linking.openURL(Platform.OS === 'ios' ? iosLink : androidLink);
   };
-
   const handleLike = async () => {};
   const handleBookmark = async () => {};
   const carouselConfig = {
@@ -84,7 +83,7 @@ const Post: FC<PostProps> = ({ post }) => {
         {/*USER INFO*/}
         <YStack px={'$2.5'} gap={'$1'}>
           <XStack gap={'$2'} rowGap={'$5'}>
-            <Link href={'/'}>
+            <Link href={`/user/${author.split('/')[1]}`} asChild>
               <Text fontWeight={'800'}>{username}</Text>
             </Link>
             <Text>{description}</Text>

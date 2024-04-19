@@ -19,7 +19,7 @@ import { YelpRecommendation } from '@/types/firebaseTypes';
 import YelpPost from '@/components/YelpPost';
 
 export default function Index() {
-  const { token } = useContext(UserContext);
+  const { token, user_id } = useContext(UserContext);
 
   //current route is wrong should use yelp api
   const { isLoading, data } = useQuery({
@@ -28,7 +28,6 @@ export default function Index() {
       const {
         coords: { longitude, latitude },
       } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
-
       console.log(longitude, latitude);
       const recommendation = (
         await axios.get<YelpRecommendation[]>(

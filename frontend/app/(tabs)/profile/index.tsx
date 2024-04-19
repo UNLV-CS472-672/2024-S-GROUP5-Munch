@@ -1,3 +1,4 @@
+import Author from '@/components/Author';
 import Post from '@/components/Post/Post';
 import { UserContext } from '@/contexts/UserContext';
 import { Byte, Recipe } from '@/types/post';
@@ -77,76 +78,14 @@ export default function Profile() {
     <SafeAreaView>
       {isSignedIn && (
         <View height={'100%'} display='flex' justifyContent='space-between'>
-          <YStack>
-            <Card elevate size={'$3'} bordered unstyled>
-              <XStack justifyContent='space-between'>
-                <Card.Header
-                  display='flex'
-                  flexDirection='row'
-                  gap={'$3'}
-                  justifyContent='space-between'
-                  alignItems='center'
-                >
-                  <TouchableOpacity onPress={handleUserProfileChange}>
-                    <Avatar circular size={'$5'}>
-                      <Avatar.Image src={user.imageUrl ?? ' '} />
-                    </Avatar>
-                  </TouchableOpacity>
-                  <YStack gap={'$2'}>
-                    <H4>{user?.username}</H4>
-                    <Paragraph>{`${user?.firstName} ${
-                      user?.lastName ?? ''
-                    }`}</Paragraph>
-                    <Paragraph>{`${user_data.bio}`}</Paragraph>
-                  </YStack>
-                </Card.Header>
-                <XStack gap={'$3'}>
-                  <YStack display='flex' alignItems='center'>
-                    <Label fontSize={'$2'}>Followers</Label>
-                    <Text>{user_data.followers.length ?? 0}</Text>
-                  </YStack>
-
-                  <YStack display='flex' alignItems='center'>
-                    <Label fontSize={'$2'}>Following</Label>
-                    <Text>{user_data.following.length ?? 0}</Text>
-                  </YStack>
-                </XStack>
-                <Link href='/profile/profileEditModal' asChild>
-                  <Button
-                    iconAfter={<Feather name={'edit'} size={20} />}
-                    unstyled
-                    p={'$2'}
-                  />
-                </Link>
-              </XStack>
-            </Card>
-            {!isLoading && posts.length > 0 && (
-              <View py={'$3'} rowGap={'$1'}>
-                <Separator />
-                <FlatList
-                  data={posts}
-                  renderItem={({ item, index }) => (
-                    <Card size={'$2'} mx={'$1.5'} bordered elevate>
-                      <Link
-                        href={`/post/${user_data.posts[index].split('/')[1]}`}
-                        asChild
-                      >
-                        <Image
-                          source={{
-                            uri: item.pictures[0],
-                            height: 125,
-                            width: 125,
-                          }}
-                        />
-                      </Link>
-                    </Card>
-                  )}
-                  numColumns={3}
-                  scrollEnabled={false}
-                />
-              </View>
-            )}
-          </YStack>
+          {!isLoading && (
+            <Author
+              isCurrentUser={true}
+              user={user}
+              user_data={{ ...user_data, posts_data: posts }}
+              profilePicChange={handleUserProfileChange}
+            />
+          )}
           <Button onPress={() => signOut()} backgroundColor={'$red9'} mx={'$4'}>
             Sign out
           </Button>

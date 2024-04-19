@@ -175,7 +175,6 @@ function RootLayoutNav() {
       //token is only retrieved when signed in
       if (isSignedIn && !isLoading) {
         await enableNetworkProviderAsync();
-        console.log((await getCurrentPositionAsync()).coords);
         router.replace('/');
       } else if (!isSignedIn) {
         setUserProperties({
@@ -188,7 +187,7 @@ function RootLayoutNav() {
         router.replace('/login');
       }
     })();
-  }, [isLoaded, isSignedIn]);
+  }, [isLoaded, isSignedIn, isLoading]);
 
   if (!isLoaded) {
     return <Slot />;

@@ -34,7 +34,6 @@ import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
 import { EditPostDialog } from '../edit/editPost';
 
-
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
   const [file, setFile] = useState(null);

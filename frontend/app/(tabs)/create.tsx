@@ -33,7 +33,6 @@ import UserInput from '@/components/UserInput';
 import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
 
-
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
   const [file, setFile] = useState(null);

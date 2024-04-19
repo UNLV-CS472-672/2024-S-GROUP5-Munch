@@ -230,7 +230,11 @@ function RootLayoutNav() {
               title: '',
               animation: 'none',
               headerShown: false,
-              contentStyle: {height: '100%', backgroundColor: 'black', opacity: 0.5}
+              contentStyle: {
+                height: '100%',
+                backgroundColor: 'black',
+                opacity: 0.5,
+              },
             }}
           />
         </Stack>

@@ -29,13 +29,13 @@ const Friends = () => {
               follower_data.posts.map(async (post) => {
                 const postResponse = await axios.get<Byte | Recipe>(
                   `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
-                  { headers: { Authorization: `Bearer ${token}` } }
+                  { headers: { Authorization: `Bearer ${token}` } },
                 );
-                return {key: post, ...postResponse.data}
-              })
+                return { key: post, ...postResponse.data };
+              }),
             );
-            
-            return postData;         
+
+            return postData;
           },
         }))
       : [],

@@ -71,7 +71,13 @@ const Post: FC<PostProps> = ({ post }) => {
           <ButtonIcon
             iconName='comment'
             onPress={() => {
-              router.push({ pathname: '/(modals)/comments', params: { comments: JSON.stringify(comments), post_id: JSON.stringify(key) } });
+              router.push({
+                pathname: '/(modals)/comments',
+                params: {
+                  comments: JSON.stringify(comments),
+                  post_id: JSON.stringify(key),
+                },
+              });
             }}
           />
           {/*Bookmark*/}

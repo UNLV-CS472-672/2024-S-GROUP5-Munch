@@ -208,16 +208,18 @@ export default function CommentPage() {
           borderTopEndRadius={25}
         >
           <PanGestureHandler>
-            <View
+            <Button
+              unstyled
               flexDirection='row'
               backgroundColor='transparent'
               pressStyle={{ opacity: 0.5 }}
               width={'$25'}
               justifyContent='center'
               paddingBottom={0}
+              onPress={router.back}
             >
               <Octicons name='horizontal-rule' size={30} color='gray' />
-            </View>
+            </Button>
           </PanGestureHandler>
           <Text textAlign='center' fontSize={16} paddingBottom={'$2'}>
             Comments

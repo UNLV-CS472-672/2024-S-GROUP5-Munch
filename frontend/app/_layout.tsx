@@ -223,6 +223,7 @@ function RootLayoutNav() {
               title: 'Register ',
             }}
           />
+          {/* stack.screen for modal, transparent to allow for modal that doesn't take up entire screen */}
           <Stack.Screen
             name='(modals)/comments'
             options={{

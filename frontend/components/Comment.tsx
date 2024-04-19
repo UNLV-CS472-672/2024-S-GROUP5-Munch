@@ -21,6 +21,7 @@ export default function CommentComponent({
 }) {
   const width = Dimensions.get('window').width - 75;
   return (
+    // view to hold one comment
     <View
       width={width}
       height={'auto'}
@@ -30,7 +31,9 @@ export default function CommentComponent({
       marginLeft='$3'
       marginBottom='$3'
     >
+      {/* view to hold username, text, and time */}
       <View marginLeft={'$4'} flex={1}>
+        {/* hodl username and time */}
         <Text marginBottom={'$1.5'}>
           <Text fontWeight={'bold'} fontSize={14}>
             {name}
@@ -40,8 +43,10 @@ export default function CommentComponent({
             {getDateDifference(creation_date)}
           </Text>
         </Text>
+        {/* hold actual comment message */}
         <Text>{text}</Text>
       </View>
+      {/* child for potential delete button if user owns the comment */}
       {children}
     </View>
   );

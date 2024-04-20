@@ -1,10 +1,14 @@
+import { UserContext } from '@/contexts/UserContext';
 import { UserType } from '@/types/firebaseTypes';
 import { Byte, Recipe } from '@/types/post';
 import { UserResource } from '@clerk/types';
 import { Feather } from '@expo/vector-icons';
+import { useMutation } from '@tanstack/react-query';
+import axios from 'axios';
 import { Link } from 'expo-router';
-import { FC } from 'react';
+import { FC, useContext } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 import {
   Avatar,
   Button,
@@ -32,11 +36,33 @@ const Author: FC<AuthorProps> = ({
   profilePicChange,
   user_data,
 }) => {
+  const { user_id, token } = useContext(UserContext);
+  const isFollowing = user_data.following.includes(user_id);
+
+  const { mutate, error } = useMutation({
+    mutationKey: [isFollowing],
+    mutationFn: async () =>
+      (
+        await axios.patch<{ message: string }>(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${user_data.clerk_user_id}/follow/${user_id}`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } },
+        )
+      ).data,
+  });
+
+  if (error) {
+    Toast.show({
+      text1: `Error unfollowing user ${user_data.username}`,
+      type: 'error',
+    });
+  }
   return (
-    <View display='flex' justifyContent='space-between'>
+    <View display='flex' justifyContent='space-around'>
       <YStack>
         <Card elevate size={'$3'} bordered unstyled>
-          <XStack justifyContent='space-between'>
+          <XStack justifyContent='space-around'>
+            {/*PROFILE PIC IF AVAILABLE*/}
             <Card.Header
               display='flex'
               flexDirection='row'
@@ -44,19 +70,41 @@ const Author: FC<AuthorProps> = ({
               justifyContent='space-between'
               alignItems='center'
             >
-              {isCurrentUser && (
-                <TouchableOpacity onPress={profilePicChange}>
-                  <Avatar circular size={'$5'}>
-                    <Avatar.Image src={user.imageUrl ?? ' '} />
-                  </Avatar>
-                </TouchableOpacity>
-              )}
+              <TouchableOpacity
+                onPress={() => {
+                  if (!isCurrentUser) return;
+                  profilePicChange();
+                }}
+              >
+                <Avatar circular size={'$5'}>
+                  <Avatar.Image
+                    src={
+                      user?.imageUrl ??
+                      require('../assets/images/munch_logos.png')
+                    }
+                  />
+                </Avatar>
+              </TouchableOpacity>
               <YStack gap={'$2'}>
-                <H4>{user?.username}</H4>
-                <Paragraph>{`${user?.firstName} ${
-                  user?.lastName ?? ''
-                }`}</Paragraph>
-                <Paragraph>{`${user_data.bio}`}</Paragraph>
+                <XStack gap={'$1'}>
+                  <H4>{user?.username ?? user_data.username}</H4>
+                  {!isCurrentUser && (
+                    <Button
+                      size={'$2'}
+                      variant='outlined'
+                      backgroundColor={!isFollowing ? '$white0' : '$blue1'}
+                      alignSelf='center'
+                      onPress={() => mutate()}
+                      unstyled
+                    >
+                      {isFollowing ? 'Follow' : 'Unfollow'}
+                    </Button>
+                  )}
+                </XStack>
+                {(user?.firstName || user?.lastName) && (
+                  <Paragraph>{`${user.firstName} ${user.lastName}`}</Paragraph>
+                )}
+                <Paragraph>{`${user_data.bio ?? ''}`}</Paragraph>
               </YStack>
             </Card.Header>
             <XStack gap={'$3'}>
@@ -64,7 +112,6 @@ const Author: FC<AuthorProps> = ({
                 <Label fontSize={'$2'}>Followers</Label>
                 <Text>{user_data.followers.length ?? 0}</Text>
               </YStack>
-
               <YStack display='flex' alignItems='center'>
                 <Label fontSize={'$2'}>Following</Label>
                 <Text>{user_data.following.length ?? 0}</Text>
@@ -87,7 +134,7 @@ const Author: FC<AuthorProps> = ({
             <FlatList
               data={user_data.posts_data}
               renderItem={({ item, index }) => (
-                <Card size={'$2'} mx={'$1.5'} bordered elevate>
+                <Card size={'$2'} mx={'$1'} bordered elevate>
                   <Link
                     href={`/post/${user_data.posts[index].split('/')[1]}`}
                     asChild

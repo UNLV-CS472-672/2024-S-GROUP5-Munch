@@ -2,7 +2,6 @@ import { YelpRecommendation } from '@/types/firebaseTypes';
 import { EvilIcons } from '@expo/vector-icons';
 import { FC } from 'react';
 import { Dimensions, Linking, Platform } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { Button, Image, Text, View, XStack, YStack } from 'tamagui';
 
 interface YelpPostProps {

@@ -1,6 +1,6 @@
 import { EvilIcons } from '@expo/vector-icons';
 import { FC } from 'react';
-import { Button, Paragraph, Text, Tooltip } from 'tamagui';
+import { Button, Paragraph, Tooltip } from 'tamagui';
 import { IconNames } from './icons';
 
 interface ButtonProps {

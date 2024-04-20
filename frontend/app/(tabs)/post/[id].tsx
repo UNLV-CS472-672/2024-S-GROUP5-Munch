@@ -5,13 +5,13 @@ import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
 import React, { useContext } from 'react';
 import { SafeAreaView } from 'react-native';
-import { Spinner, Text, View } from 'tamagui';
+import { Spinner } from 'tamagui';
 
 const PostSlug = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { token } = useContext(UserContext);
 
-  const { isLoading, data, error } = useQuery({
+  const { isLoading, data } = useQuery({
     queryKey: [id],
     queryFn: async () =>
       (

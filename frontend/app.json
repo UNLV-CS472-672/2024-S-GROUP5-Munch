@@ -44,7 +44,8 @@
       [
         "expo-location",
         {
-          "locationWhenInUsePermission": "Allow Munch to access your location while you are using the app"
+          "locationAlwaysAndWhenInUsePermission": "Allow Munch to access your location while you are using the app",
+          "isAndroidForegroundServiceEnabled": true
         }
       ]
     ],

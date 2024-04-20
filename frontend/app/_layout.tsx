@@ -19,6 +19,7 @@ import { useFonts } from 'expo-font';
 import {
   enableNetworkProviderAsync,
   getCurrentPositionAsync,
+  requestForegroundPermissionsAsync,
 } from 'expo-location';
 import { Slot, Stack, useRouter, useSegments } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -174,6 +175,15 @@ function RootLayoutNav() {
       const inTabGroup = segments[0] === '(auth)';
       //token is only retrieved when signed in
       if (isSignedIn && !isLoading) {
+        const { status } = await requestForegroundPermissionsAsync();
+
+        if (status !== 'granted') {
+          Toast.show({
+            text1: 'You must enable location to get recommendations.',
+          });
+          return;
+        }
+
         await enableNetworkProviderAsync();
         router.replace('/');
       } else if (!isSignedIn) {

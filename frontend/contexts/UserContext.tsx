@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction, createContext } from 'react';
 import { UserResource } from '@clerk/types';
+import { Dispatch, SetStateAction, createContext } from 'react';
 import { UserType } from '../types/firebaseTypes';
 
 export type UserContextType = {

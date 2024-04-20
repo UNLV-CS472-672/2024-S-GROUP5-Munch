@@ -59,6 +59,7 @@ def get_user(user_id):
     ]
     user_data["likes"] = [ref.path for ref in user_data.get("likes", [])]
     user_data["posts"] = [ref.path for ref in user_data.get("posts", [])]
+    user_data["clerk_user_id"] = str(user_data["clerk_user_id"])
 
     # Return the user ID as Dictionary
     return user_data
@@ -98,6 +99,7 @@ def create_user(user_id):
             "following": [],
             "likes": [],
             "posts": [],
+            "clerk_user_id": user_id,
         }
 
         # Set the user data

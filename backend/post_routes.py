@@ -216,3 +216,27 @@ def delete_post(post_id):
             jsonify({"error": "Error deleting post"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
+
+@post_bp.route("/api/posts/<user_id>/nonfollowing", methods=["GET"])
+def get_non_following_posts(user_id):
+    try_connect_to_db()
+
+    # Get the database
+    db = firestore.client()
+
+    # Get the post by ID
+    post_ref = db.collection("posts")
+    post_doc = post_ref.get()
+
+    post_data = {}
+    filtered_post_data = []
+    for doc in post_doc:
+        post_data[doc.id] = doc.to_dict()
+        post_data[doc.id]["author"] = post_data[doc.id]["author"].path
+        if user_id != post_data[doc.id]["author"].split("/")[1]:
+            filtered_post_data.append(post_data[doc.id])
+        for comment in post_data[doc.id]["comments"]:
+            comment["author"] = comment["author"].path
+
+    return jsonify(filtered_post_data), status.HTTP_200_OK

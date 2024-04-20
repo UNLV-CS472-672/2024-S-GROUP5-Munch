@@ -146,6 +146,7 @@ function RootLayoutNav() {
   const { isLoading } = useQuery({
     queryKey: ['userData', user],
     queryFn: async () => {
+      console.log('refetch in layout');
       if (!user) return {} as UserType;
       const token = await getToken();
       const res = (
@@ -172,7 +173,6 @@ function RootLayoutNav() {
   useEffect(() => {
     (async () => {
       if (!isLoaded) return;
-      const inTabGroup = segments[0] === '(auth)';
       //token is only retrieved when signed in
       if (isSignedIn && !isLoading) {
         const { status } = await requestForegroundPermissionsAsync();

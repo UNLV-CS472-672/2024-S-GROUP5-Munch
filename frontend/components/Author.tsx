@@ -3,7 +3,7 @@ import { UserType } from '@/types/firebaseTypes';
 import { Byte, Recipe } from '@/types/post';
 import { UserResource } from '@clerk/types';
 import { Feather } from '@expo/vector-icons';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link } from 'expo-router';
 import { FC, useContext } from 'react';
@@ -38,25 +38,31 @@ const Author: FC<AuthorProps> = ({
 }) => {
   const { user_id, token } = useContext(UserContext);
   const isFollowing = user_data.following.includes(user_id);
+  const queryClient = useQueryClient();
 
-  const { mutate, error } = useMutation({
-    mutationKey: [isFollowing],
+  const { mutate } = useMutation({
+    mutationKey: [],
     mutationFn: async () =>
       (
         await axios.patch<{ message: string }>(
-          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${user_data.clerk_user_id}/follow/${user_id}`,
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${user_id}/follow/${user_data.clerk_user_id}`,
           {},
           { headers: { Authorization: `Bearer ${token}` } },
         )
       ).data,
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ['userData', user_data.clerk_user_id],
+      });
+    },
+    onError: () => {
+      Toast.show({
+        text1: `Error unfollowing user ${user_data.username}`,
+        type: 'error',
+      });
+    },
   });
 
-  if (error) {
-    Toast.show({
-      text1: `Error unfollowing user ${user_data.username}`,
-      type: 'error',
-    });
-  }
   return (
     <View display='flex' justifyContent='space-around'>
       <YStack>

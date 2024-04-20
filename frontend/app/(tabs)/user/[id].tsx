@@ -14,8 +14,9 @@ const UserSlug = () => {
   const isCurrentUser = id === user_id;
 
   const { data: id_user_data, isLoading } = useQuery({
-    queryKey: ['user'],
+    queryKey: [id],
     queryFn: async () => {
+      console.log('refetch slug');
       const data = (
         await axios.get<UserType>(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${id}`,

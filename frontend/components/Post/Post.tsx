@@ -43,7 +43,7 @@ const Post: FC<PostProps> = ({ post }) => {
 
   // Used to query and mutate
   const queryClient = useQueryClient();
-  const { token } = useContext(UserContext)
+  const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
 
   // Like button state
@@ -52,65 +52,76 @@ const Post: FC<PostProps> = ({ post }) => {
   // Data passed to like/unlike API
   const likeData = {
     user_id: userId,
-    post_id: key
-  }
+    post_id: key,
+  };
 
   // Get number of likes
   const getLikes = async () => {
     const response = await axios.get(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${key}`,
-        {
-            headers: { Authorization: `Bearer ${token}` }
-        },
+      `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${key}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
     );
     return response.data.likes;
-  }
+  };
 
-  const {data: likesCount, error: likesError, isLoading: likesLoading} = useQuery({
-      queryKey: ["likes"],
-      queryFn: getLikes,
+  const {
+    data: likesCount,
+    error: likesError,
+    isLoading: likesLoading,
+  } = useQuery({
+    queryKey: ['likes'],
+    queryFn: getLikes,
   });
 
   // Like/Unlike a post
-  const {mutateAsync: changeLikes, isPending, data, error } = useMutation({
+  const {
+    mutateAsync: changeLikes,
+    isPending,
+    data,
+    error,
+  } = useMutation({
     mutationFn: async () => {
-        // Determine whether to like or unlike the post
-        const likeAction = liked ? 'like' : 'unlike'
+      // Determine whether to like or unlike the post
+      const likeAction = liked ? 'like' : 'unlike';
 
-        // Status message to show the API call
-        console.log(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${key}`)
+      // Status message to show the API call
+      console.log(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${key}`,
+      );
 
-        // Do the API call
-        const response = await axios.patch(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${key}`,
-            likeData,
-            {
-                headers: {Authorization: `Bearer: ${await getToken()}`},
-            },
-        );
-        return response.data
+      // Do the API call
+      const response = await axios.patch(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${key}`,
+        likeData,
+        {
+          headers: { Authorization: `Bearer: ${await getToken()}` },
+        },
+      );
+      return response.data;
     },
     // Update the like count
     onSuccess: () => {
-        queryClient.invalidateQueries({queryKey:["likes"]});
+      queryClient.invalidateQueries({ queryKey: ['likes'] });
     },
     // Show error message in console
     onError: () => {
-        console.log("error:", error.message)
+      console.log('error:', error.message);
     },
   });
 
   // Handle user liking the post
   const handleLike = async () => {
     // Invert the like state
-    setLiked(!liked)
+    setLiked(!liked);
 
     // Status message
-    liked ? console.log("Liking the post!") : console.log("Unliking the post!")
+    liked ? console.log('Liking the post!') : console.log('Unliking the post!');
 
     // Like or unlike the post based on liked state
-    await changeLikes()
-  }
+    await changeLikes();
+  };
   const handleBookmark = async () => {};
   const carouselConfig = {
     width: width,
@@ -140,14 +151,14 @@ const Post: FC<PostProps> = ({ post }) => {
         <XStack display='flex' justifyContent='center'>
           <XStack alignItems='center'>
             {/*Like*/}
-            <ButtonIcon iconName={'heart'} onPress={handleLike}/>
+            <ButtonIcon iconName={'heart'} onPress={handleLike} />
             {/*Display number of likes*/}
-            {likesLoading? (
-                <Text>Loading</Text>
-            ) : likesError? (
-                <Text>-1</Text>
+            {likesLoading ? (
+              <Text>Loading</Text>
+            ) : likesError ? (
+              <Text>-1</Text>
             ) : (
-                <Text>{likesCount}</Text>
+              <Text>{likesCount}</Text>
             )}
           </XStack>
           {/*Comment*/}

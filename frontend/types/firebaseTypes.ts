@@ -6,6 +6,7 @@ export type UserType = {
   likes: string[];
   posts: string[];
   username: string;
+  clerk_user_id: string;
 };
 
 export type YelpRecommendation = {

@@ -56,7 +56,7 @@ const Friends = () => {
     },
     [],
   );
-  
+
   return (
     <SafeAreaView>
       {!isLoading && (

@@ -26,9 +26,9 @@ const Post: FC<PostProps> = ({ post }) => {
     likes,
     pictures,
     username,
-    key
+    key,
   } = post;
-  
+
   const byte = isByte(post) ? post : null;
   const recipe = isRecipe(post) ? post : null;
   const router = useRouter();
@@ -44,7 +44,7 @@ const Post: FC<PostProps> = ({ post }) => {
   const queryClient = useQueryClient();
   const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
-  const postId = key.split('/')[1]
+  const postId = key.split('/')[1];
   //const postId = "eh07WeBEtSR2OIILJuj5"
   // Like button state
   const [liked, setLiked] = useState(true);
@@ -52,15 +52,15 @@ const Post: FC<PostProps> = ({ post }) => {
   // Data that will be passed in order to change the post's likes
   const likeData = {
     user_id: userId,
-    post_id: postId
-}
+    post_id: postId,
+  };
   // Get number of likes
   const getLikes = async () => {
     const response = await axios.get(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
-        {
-            headers: { Authorization: `Bearer ${token}` }
-        },
+      `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
     );
     return response.data.likes;
   };
@@ -85,18 +85,20 @@ const Post: FC<PostProps> = ({ post }) => {
       // Determine whether to like or unlike the post
       const likeAction = liked ? 'like' : 'unlike';
 
-        // Status message to show the API call
-        console.log(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`)
+      // Status message to show the API call
+      console.log(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
+      );
 
-        // Do the API call
-        const response = await axios.patch(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
-            likeData,
-            {
-                headers: {Authorization: `Bearer: ${await getToken()}`},
-            },
-        );
-        return response.data
+      // Do the API call
+      const response = await axios.patch(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
+        likeData,
+        {
+          headers: { Authorization: `Bearer: ${await getToken()}` },
+        },
+      );
+      return response.data;
     },
     // Update the like count
     onSuccess: () => {

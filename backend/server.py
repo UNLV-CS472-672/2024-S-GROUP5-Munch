@@ -6,18 +6,10 @@ from dotenv import load_dotenv
 import jwt
 
 # Import Flask Blueprints
-from user_routes import user_bp
-from post_routes import post_bp
-from recipe_routes import recipe_bp
-from like_routes import like_bp
-from comment_routes import comment_bp
-from bookmark_routes import bookmark_bp
-from follow_routes import follow_bp
-from yelpAPI.fakeDataAPI import yelp_bp
+from routes import blueprints, user_routes
 
 # Import functions needed for middleware
 from helper_functions import check_user_existence
-from user_routes import get_user, create_user
 
 
 # Create the app
@@ -25,14 +17,8 @@ app = Flask(__name__)
 
 
 # Register Flask Blueprints under app
-app.register_blueprint(user_bp)
-app.register_blueprint(post_bp)
-app.register_blueprint(recipe_bp)
-app.register_blueprint(like_bp)
-app.register_blueprint(comment_bp)
-app.register_blueprint(bookmark_bp)
-app.register_blueprint(follow_bp)
-app.register_blueprint(yelp_bp)
+for bp in blueprints:
+    app.register_blueprint(bp)
 
 
 # Load environment variables from .env file
@@ -92,9 +78,9 @@ def middleware():
 
         # Create the user if not already existing
         if not check_user_existence(user_id):
-            create_user(user_id)
+            user_routes.create_user(user_id)
 
-        result = get_user(user_id)
+        result = user_routes.get_user(user_id)
 
         # Authorization logic based on request method and resource type
         if request.method == "GET":

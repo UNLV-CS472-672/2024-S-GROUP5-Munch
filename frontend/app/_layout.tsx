@@ -223,13 +223,19 @@ function RootLayoutNav() {
               title: 'Register ',
             }}
           />
+          {/* stack.screen for modal, transparent to allow for modal that doesn't take up entire screen */}
           <Stack.Screen
             name='(modals)/comments'
             options={{
-              presentation: 'modal',
-              title: 'Comments',
-              animation: 'slide_from_bottom',
-              contentStyle: { height: '50%' },
+              presentation: 'transparentModal',
+              title: '',
+              animation: 'none',
+              headerShown: false,
+              contentStyle: {
+                height: '100%',
+                backgroundColor: 'black',
+                opacity: 0.5,
+              },
             }}
           />
         </Stack>

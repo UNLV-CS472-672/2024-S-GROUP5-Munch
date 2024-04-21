@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
+import { Feather } from '@expo/vector-icons';
 import {
   Button,
   H4,
@@ -135,8 +136,6 @@ export default function Create() {
   const createByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
     try {
       postData.description = data.description;
-      console.log(`users/${userId}`);
-      console.log(username);
       mutate();
     } catch (err) {
       // error
@@ -171,8 +170,10 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
-        <Button onPress={pickImg} backgroundColor={'orange'} mx={'$4'}>
-          <Text color={'$black2'}>Upload Image</Text>
+        <Button onPress={pickImg} mx={'$19'}
+         icon={<Feather name='image' size={30} />}
+        >
+         
         </Button>
         <XStack>
           {file ? (
@@ -180,7 +181,7 @@ export default function Create() {
               source={{
                 uri: file,
               }}
-              width={150}
+              width={412}
               aspectRatio={1}
               height={150}
             />

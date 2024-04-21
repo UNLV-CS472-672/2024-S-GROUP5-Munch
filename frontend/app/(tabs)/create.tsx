@@ -24,12 +24,12 @@ import {
   RecipeSchema,
   RecipeSchemaInputs,
 } from '@/types/postInput';
-import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
-//import { getCurrentDateTime } from '../utils/getCurrentDateTime';
 import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
 import { getCurrentPositionAsync } from 'expo-location';
+import { getCurrentDateTime } from '@/utils/getCurrentDateTime';
 
 
 export default function Create() {
@@ -67,7 +67,7 @@ export default function Create() {
   const postData = {
     author: `users/${userId}`,
     comments: [],
-    creation_date: '',
+    creation_date: getCurrentDateTime(),
     description: '',
     likes: 0,
     location: '',
@@ -78,7 +78,7 @@ export default function Create() {
   const recipeData = {
     author: `users/${userId}`,
     comments: [],
-    creation_date: '',
+    creation_date: getCurrentDateTime(),
     description: '',
     likes: 0,
     location: '',
@@ -147,7 +147,7 @@ export default function Create() {
       if (allowLocation) {
         postData.location = longitude + ',' + latitude;
       }
-      console.log(postData.location);
+      console.log(postData.creation_date);
       mutate();
     } catch (err) {
       // error

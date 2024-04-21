@@ -57,11 +57,18 @@ def follow_user(first_user, second_user):
         second_user_followers = second_user_data.get("followers", [])
 
         # Check if the users are already following each other
-        first_user_following_ids = [user_map.get("user") for user_map in first_user_following]
-        second_user_followers_ids = [user_map.get("user") for user_map in second_user_followers]
+        first_user_following_ids = [
+            user_map.get("user") for user_map in first_user_following
+        ]
+        second_user_followers_ids = [
+            user_map.get("user") for user_map in second_user_followers
+        ]
 
         # If users are already following each other, unfollow them
-        if second_user_ref in first_user_following_ids and first_user_ref in second_user_followers_ids:
+        if (
+            second_user_ref in first_user_following_ids
+            and first_user_ref in second_user_followers_ids
+        ):
             # Update the following list
             for following in first_user_following:
                 if following.get("user") == second_user_ref:
@@ -84,14 +91,20 @@ def follow_user(first_user, second_user):
             # Get current UTC time
             current_time = datetime.datetime.utcnow()
             # Format the datetime object
-            formatted_time = current_time.strftime('%Y-%m-%d %H:%M:%S.%f') + '+00:00'
-            
+            formatted_time = (
+                current_time.strftime("%Y-%m-%d %H:%M:%S.%f") + "+00:00"
+            )
+
             # Update the following list
-            first_user_following.append({"user": second_user_ref, "timestamp": formatted_time})
+            first_user_following.append(
+                {"user": second_user_ref, "timestamp": formatted_time}
+            )
             first_user_ref.update({"following": first_user_following})
 
             # Update the followers list
-            second_user_followers.append({"user": first_user_ref, "timestamp": formatted_time})
+            second_user_followers.append(
+                {"user": first_user_ref, "timestamp": formatted_time}
+            )
             second_user_ref.update({"followers": second_user_followers})
 
             return (

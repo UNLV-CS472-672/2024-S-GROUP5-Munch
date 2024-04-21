@@ -49,13 +49,16 @@ def get_recipe(recipe_id):
         comment["author"] = comment["author"].path
 
     # if there is nothing in the array then just skip over it, otherwise get all the like info
-    if  len(recipe_data["likes"]) != 0:
+    if len(recipe_data["likes"]) != 0:
         recipe_data["likes"] = [
-            {"user": ref.get("user", {}).path, "timestamp": ref.get("timestamp", "")} for ref in recipe_data["likes"] 
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in recipe_data["likes"]
         ]
     else:
         recipe_data["likes"] = []
-
 
     return jsonify(recipe_data), status.HTTP_200_OK
 
@@ -90,7 +93,8 @@ def create_recipe():
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
         data["likes"] = [
-             {"user": db.document(like["user"]), "timestamp": like["timestamp"]} for like in data["likes"] 
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
         ]
 
         # Setting the recipe data in the Firestore document
@@ -151,7 +155,8 @@ def update_recipe(recipe_id):
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
         data["likes"] = [
-             {"user": db.document(like["user"]), "timestamp": like["timestamp"]} for like in data["likes"] 
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
         ]
         recipe_ref.update(data)
 

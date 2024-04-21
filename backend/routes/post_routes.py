@@ -49,9 +49,13 @@ def get_post(post_id):
         comment["author"] = comment["author"].path
 
     # if there is nothing in the array then just skip over it, otherwise get all the like info
-    if  len(post_data["likes"]) != 0:
+    if len(post_data["likes"]) != 0:
         post_data["likes"] = [
-            {"user": ref.get("user", {}).path, "timestamp": ref.get("timestamp", "")} for ref in post_data["likes"] 
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in post_data["likes"]
         ]
     else:
         post_data["likes"] = []
@@ -87,7 +91,8 @@ def create_post():
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
         data["likes"] = [
-             {"user": db.document(like["user"]), "timestamp": like["timestamp"]} for like in data["likes"] 
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
         ]
         new_post_ref.set(data)
 
@@ -146,7 +151,8 @@ def update_post(post_id):
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
         data["likes"] = [
-             {"user": db.document(like["user"]), "timestamp": like["timestamp"]} for like in data["likes"] 
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
         ]
         post_ref.update(data)
 

@@ -81,11 +81,17 @@ class FollowTest(TestCase):
         # Check if user_1 object is now following user_2
         timestamp = str(get_user_1_res.json["following"])[16:48]
         self.assertEqual(get_user_1_res.json["followers"], [])
-        self.assertEqual(get_user_1_res.json["following"], [{"timestamp": timestamp,"user": "users/user_2"}])
+        self.assertEqual(
+            get_user_1_res.json["following"],
+            [{"timestamp": timestamp, "user": "users/user_2"}],
+        )
 
         # Check if user_1 object is now being followed by user_1
         timestamp = str(get_user_2_res.json["followers"])[16:48]
-        self.assertEqual(get_user_2_res.json["followers"], [{"timestamp": timestamp,"user": "users/user_1"}])
+        self.assertEqual(
+            get_user_2_res.json["followers"],
+            [{"timestamp": timestamp, "user": "users/user_1"}],
+        )
         self.assertEqual(get_user_2_res.json["following"], [])
 
         # Check that for proper json message and proper http response (200)

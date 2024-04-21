@@ -55,14 +55,22 @@ def get_user(user_id):
     # if there is nothing in the array then just skip over it, otherwise get all the follow info
     if len(user_data["followers"]) != 0:
         user_data["followers"] = [
-            {"user": ref.get("user", {}).path, "timestamp": ref.get("timestamp", "")} for ref in user_data["followers"] 
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in user_data["followers"]
         ]
     else:
         user_data["followers"] = []
 
     if len(user_data["following"]) != 0:
         user_data["following"] = [
-            {"user": ref.get("user", {}).path, "timestamp": ref.get("timestamp", "")} for ref in user_data["following"] 
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in user_data["following"]
         ]
     else:
         user_data["following"] = []
@@ -101,13 +109,13 @@ def create_user(user_id):
         new_user_ref = db.collection("users").document(user_id)
 
         data = {
-            "bio":       "",
-            "username":  "",
+            "bio": "",
+            "username": "",
             "bookmarks": [],
             "followers": [],
             "following": [],
-            "likes":     [],
-            "posts":     [],
+            "likes": [],
+            "posts": [],
         }
 
         # Set the user data
@@ -161,12 +169,20 @@ def update_user(user_id):
 
         # Convert the followers list to a list of document references
         new_user_data["followers"] = [
-            {"user": db.document(follower["user"]), "timestamp": follower["timestamp"]} for follower in data["followers"] 
+            {
+                "user": db.document(follower["user"]),
+                "timestamp": follower["timestamp"],
+            }
+            for follower in data["followers"]
         ]
 
         # Convert the following list to a list of document references
         new_user_data["following"] = [
-            {"user": db.document(follow["user"]), "timestamp": follow["timestamp"]} for follow in data["following"] 
+            {
+                "user": db.document(follow["user"]),
+                "timestamp": follow["timestamp"],
+            }
+            for follow in data["following"]
         ]
 
         # Convert the likes list to a list of document references

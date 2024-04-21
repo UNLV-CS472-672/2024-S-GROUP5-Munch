@@ -50,7 +50,7 @@ def like_post(user_id, post_id):
         post_ref = db.collection("recipes").document(post_id)
         post_data = post_ref.get().to_dict()
 
-        if not post_data: 
+        if not post_data:
             return (
                 jsonify({"error": "Post not found"}),
                 status.HTTP_404_NOT_FOUND,
@@ -64,14 +64,21 @@ def like_post(user_id, post_id):
         # Get current UTC time
         current_time = datetime.datetime.utcnow()
         # Format the datetime object
-        formatted_time = current_time.strftime('%Y-%m-%d %H:%M:%S.%f') + '+00:00'
+        formatted_time = (
+            current_time.strftime("%Y-%m-%d %H:%M:%S.%f") + "+00:00"
+        )
 
         user_likes.append(post_reference)
         user_ref.update({"likes": user_likes})
 
         # Increment likes count in the post document
         post_likes = post_data.get("likes", [])
-        post_likes.append({"user": db.document(f"users/{user_id}"), "timestamp": formatted_time})
+        post_likes.append(
+            {
+                "user": db.document(f"users/{user_id}"),
+                "timestamp": formatted_time,
+            }
+        )
         post_ref.update({"likes": post_likes})
 
     return (
@@ -104,7 +111,7 @@ def unlike_post(user_id, post_id):
     # Fetch user document from Firestore
     user_ref = db.collection("users").document(user_id)
     user_data = user_ref.get().to_dict()
-    
+
     # Ensure the user exists
     if not user_data:
         return (
@@ -121,7 +128,7 @@ def unlike_post(user_id, post_id):
     if not post_data:
         post_ref = db.collection("recipes").document(post_id)
         post_data = post_ref.get().to_dict()
-        if not post_data: 
+        if not post_data:
             return (
                 jsonify({"error": "Post not found"}),
                 status.HTTP_404_NOT_FOUND,
@@ -135,7 +142,7 @@ def unlike_post(user_id, post_id):
         # Decrement likes count in the post document
         post_likes = post_data.get("likes", [])
         for like in post_likes:
-            if like.get("user").path== f"users/{user_id}":
+            if like.get("user").path == f"users/{user_id}":
                 post_likes.remove(like)
                 post_ref.update({"likes": post_likes})
                 break

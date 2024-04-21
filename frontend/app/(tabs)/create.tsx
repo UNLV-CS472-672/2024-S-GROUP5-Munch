@@ -31,13 +31,11 @@ import { useMutation } from '@tanstack/react-query';
 import { getCurrentPositionAsync } from 'expo-location';
 import { getCurrentDateTime } from '@/utils/getCurrentDateTime';
 
-
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
   const [allowLocation, setAllowLocation] = useState(false);
   const [file, setFile] = useState(null);
   const [errorUpload, setError] = useState(null);
-
 
   const pickImg = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -188,11 +186,11 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
-        <Button onPress={pickImg} mx={'$19'}
+        <Button
+          onPress={pickImg}
+          mx={'$19'}
           icon={<Feather name='image' size={30} />}
-        >
-
-        </Button>
+        ></Button>
         <XStack>
           {file ? (
             <Image

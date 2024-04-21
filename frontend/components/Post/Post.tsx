@@ -26,12 +26,11 @@ const Post: FC<PostProps> = ({ post }) => {
     likes,
     pictures,
     username,
-    key,
+    key
   } = post;
-
+  
   const byte = isByte(post) ? post : null;
   const recipe = isRecipe(post) ? post : null;
-
   const router = useRouter();
   const { height, width } = Dimensions.get('screen');
 
@@ -45,20 +44,20 @@ const Post: FC<PostProps> = ({ post }) => {
   const queryClient = useQueryClient();
   const { token } = useContext(UserContext)
   const { getToken, userId } = useAuth();
-
+  const postId = key.split('/')[1]
+  //const postId = "eh07WeBEtSR2OIILJuj5"
   // Like button state
-  const [liked, setLiked] = useState(false);
+  const [liked, setLiked] = useState(true);
 
-  // Data passed to like/unlike API
+  // Data that will be passed in order to change the post's likes
   const likeData = {
     user_id: userId,
-    post_id: key
-  }
-
+    post_id: postId
+}
   // Get number of likes
   const getLikes = async () => {
     const response = await axios.get(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${key}`,
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
         {
             headers: { Authorization: `Bearer ${token}` }
         },
@@ -78,11 +77,11 @@ const Post: FC<PostProps> = ({ post }) => {
         const likeAction = liked ? 'like' : 'unlike'
 
         // Status message to show the API call
-        console.log(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${key}`)
+        console.log(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`)
 
         // Do the API call
         const response = await axios.patch(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${key}`,
+            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
             likeData,
             {
                 headers: {Authorization: `Bearer: ${await getToken()}`},
@@ -111,7 +110,7 @@ const Post: FC<PostProps> = ({ post }) => {
     // Like or unlike the post based on liked state
     await changeLikes()
   }
-  const handleBookmark = async () => {};
+  const handleBookmark = async () => {console.log("key is: ", postId)};
   const carouselConfig = {
     width: width,
     height: height / 1.5,

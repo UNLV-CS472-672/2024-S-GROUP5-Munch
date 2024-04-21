@@ -147,7 +147,6 @@ export default function Create() {
       if (allowLocation) {
         postData.location = longitude + ',' + latitude;
       }
-      console.log(postData.creation_date);
       mutate();
     } catch (err) {
       // error
@@ -166,7 +165,6 @@ export default function Create() {
       if (allowLocation) {
         recipeData.location = longitude + ',' + latitude;
       }
-      console.log(recipeData.location);
       mutate();
     } catch (err) {
       //error

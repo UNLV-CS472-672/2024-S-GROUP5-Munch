@@ -29,11 +29,15 @@ import UserInput from '@/components/UserInput';
 //import { getCurrentDateTime } from '../utils/getCurrentDateTime';
 import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
+import { getCurrentPositionAsync } from 'expo-location';
+
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
+  const [allowLocation, setAllowLocation] = useState(false);
   const [file, setFile] = useState(null);
   const [errorUpload, setError] = useState(null);
+
 
   const pickImg = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -134,8 +138,16 @@ export default function Create() {
   });
 
   const createByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
+    const {
+      coords: { longitude, latitude },
+    } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
     try {
       postData.description = data.description;
+      if (allowLocation) {
+        postData.location = longitude + ',' + latitude;
+      }
+      console.log(postData.location);
       mutate();
     } catch (err) {
       // error
@@ -143,10 +155,18 @@ export default function Create() {
     }
   };
   const createRecipe: SubmitHandler<RecipeSchemaInputs> = async (data) => {
+    const {
+      coords: { longitude, latitude },
+    } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
     try {
       recipeData.description = data.descr;
       recipeData.steps = data.steps;
       recipeData.ingredients = data.ingredients;
+      if (allowLocation) {
+        recipeData.location = longitude + ',' + latitude;
+      }
+      console.log(recipeData.location);
       mutate();
     } catch (err) {
       //error
@@ -171,9 +191,9 @@ export default function Create() {
           </Switch>
         </XStack>
         <Button onPress={pickImg} mx={'$19'}
-         icon={<Feather name='image' size={30} />}
+          icon={<Feather name='image' size={30} />}
         >
-         
+
         </Button>
         <XStack>
           {file ? (
@@ -186,6 +206,18 @@ export default function Create() {
               height={150}
             />
           ) : null}
+        </XStack>
+        <XStack>
+          <Text fontSize='$5' paddingStart='$5'>
+            Include Location?
+          </Text>
+          <Switch
+            marginLeft='$2'
+            size='$3'
+            onCheckedChange={() => setAllowLocation(!allowLocation)}
+          >
+            <Switch.Thumb animation='bouncy' />
+          </Switch>
         </XStack>
         {/* byte form */}
         <Form
@@ -275,6 +307,7 @@ export default function Create() {
               {errorsRecipe.steps?.message && (
                 <Text color={'$red10'}>{errorsRecipe.steps.message}</Text>
               )}
+
               <Form.Trigger asChild>
                 <Button backgroundColor={'$red9'}>Post</Button>
               </Form.Trigger>

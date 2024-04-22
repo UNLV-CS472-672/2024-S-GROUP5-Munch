@@ -25,18 +25,17 @@ const Friends = () => {
 
             //then get all the posts of the user
             //since we are mapping promises, we await all of the promises to be settled before we return
-            const data = await Promise.all(
-              follower_data.posts.map((post) =>
-                (async () =>
-                  (
-                    await axios.get<Byte | Recipe>(
-                      `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
-                      { headers: { Authorization: `Bearer ${token}` } },
-                    )
-                  ).data)(),
-              ),
+            const postData = await Promise.all(
+              follower_data.posts.map(async (post) => {
+                const postResponse = await axios.get<Byte | Recipe>(
+                  `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
+                  { headers: { Authorization: `Bearer ${token}` } },
+                );
+                return { key: post, ...postResponse.data };
+              }),
             );
-            return data;
+
+            return postData;
           },
         }))
       : [],

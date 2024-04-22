@@ -1,21 +1,20 @@
 import CommentComponent from '@/components/Comment';
-import {
-  Octicons,
-  MaterialCommunityIcons,
-  Feather,
-  AntDesign,
-} from '@expo/vector-icons';
-import { useLocalSearchParams, useRouter } from 'expo-router';
-import { Dimensions, KeyboardAvoidingView, Modal } from 'react-native';
-import { Button, ScrollView, View, XStack, Form, Input, Text } from 'tamagui';
-import { CommentSchema, CommentSchemaInputs } from '@/types/commentInput';
-import axios, { all } from 'axios';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { useContext, useEffect, useState } from 'react';
 import { UserContext } from '@/contexts/UserContext';
-import { useColorScheme } from 'react-native';
+import { CommentSchema, CommentSchemaInputs } from '@/types/commentInput';
+import {
+  AntDesign,
+  Feather,
+  MaterialCommunityIcons,
+  Octicons,
+} from '@expo/vector-icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import axios from 'axios';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { useContext, useEffect, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
+import { Dimensions, KeyboardAvoidingView, Modal, useColorScheme } from 'react-native';
 import GestureRecognizer from 'react-native-swipe-gestures';
+import { Button, Form, Input, ScrollView, Text, View } from 'tamagui';
 
 export default function CommentPage() {
   //get user information

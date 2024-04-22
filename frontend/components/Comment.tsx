@@ -1,13 +1,6 @@
-import { Link } from 'expo-router';
-import { TouchableHighlight, Dimensions } from 'react-native';
-import { Button, XStack, YStack, Image, Avatar, Text, View } from 'tamagui';
-import { Title, Subtitle } from '../tamagui.config.ts';
-import { useContext, useState } from 'react';
 import { getDateDifference } from '@/utils/getCurrentDateTime';
-import { AntDesign, FontAwesome } from '@expo/vector-icons';
-import axios from 'axios';
-import { UserContext } from '@/contexts/UserContext';
-import firebase from 'firebase/firestore';
+import { Dimensions } from 'react-native';
+import { Text, View } from 'tamagui';
 
 export default function CommentComponent({
   id, // id,

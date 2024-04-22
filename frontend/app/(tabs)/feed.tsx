@@ -45,7 +45,7 @@ const Feed = () => {
 
   const userPosts = posts || [];
 
-  console.log(userPosts)
+  console.log(userPosts);
 
   const renderItem = useCallback(
     ({ item, index }: { item: Byte | Recipe; index: number }) => {

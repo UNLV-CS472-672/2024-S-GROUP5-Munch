@@ -8,6 +8,7 @@ import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
+import { EditPost } from '@/app/edit/editPost';
 
 interface PostProps {
   post: Byte | Recipe;
@@ -64,6 +65,7 @@ const Post: FC<PostProps> = ({ post }) => {
         )}
       />
       <YStack display='flex' rowGap={'$1'} marginBottom={'$10'}>
+        <EditPost post={post} />
         <XStack display='flex' justifyContent='center'>
           {/*Like*/}
           <ButtonIcon iconName={'heart'} onPress={handleLike} />

@@ -33,7 +33,7 @@ export default function Profile() {
   const { isLoading, posts } = useQueries({
     queries: user_data?.posts
       ? user_data.posts.map((post) => ({
-          queryKey: [post],
+          queryKey: ['post'],
           queryFn: async () => {
             const res = await axios.get<Byte | Recipe>(
               `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,

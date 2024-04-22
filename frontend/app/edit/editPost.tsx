@@ -36,33 +36,32 @@ interface PostProps {
 }
 
 export function EditPost({ post }: FC<PostProps>) {
-
   const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
   let updatedPostData = post;
 
   const { mutate, error } = useMutation({
-      mutationFn: (postData) => {
-        if (isByte(post)) {
-          return axios.post(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-            postData,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
-        } else {
-          return axios.post(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
-            postData,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
-        }
-      },
-    });
+    mutationFn: (postData) => {
+      if (isByte(post)) {
+        return axios.post(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
+          postData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+      } else {
+        return axios.post(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
+          postData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+      }
+    },
+  });
 
   const {
     handleSubmit,
@@ -71,7 +70,7 @@ export function EditPost({ post }: FC<PostProps>) {
   } = useForm<ByteSchemaInputs>({
     resolver: zodResolver(ByteSchema),
     defaultValues: {
-      ...post
+      ...post,
     },
   });
 
@@ -92,93 +91,93 @@ export function EditPost({ post }: FC<PostProps>) {
     }
   };
   return (
-  <>
-    <Dialog modal>
-      <Dialog.Trigger asChild>
-        <Button>Edit</Button>
-      </Dialog.Trigger>
+    <>
+      <Dialog modal>
+        <Dialog.Trigger asChild>
+          <Button>Edit</Button>
+        </Dialog.Trigger>
 
-      <Adapt when='sm' platform='touch'>
-        <Sheet animation='medium' zIndex={200000} modal dismissOnSnapToBottom>
-          <Sheet.Frame padding='$4' gap='$4'>
-            <Adapt.Contents />
-          </Sheet.Frame>
-          <Sheet.Overlay
-            animation='lazy'
+        <Adapt when='sm' platform='touch'>
+          <Sheet animation='medium' zIndex={200000} modal dismissOnSnapToBottom>
+            <Sheet.Frame padding='$4' gap='$4'>
+              <Adapt.Contents />
+            </Sheet.Frame>
+            <Sheet.Overlay
+              animation='lazy'
+              enterStyle={{ opacity: 0 }}
+              exitStyle={{ opacity: 0 }}
+            />
+          </Sheet>
+        </Adapt>
+
+        <Dialog.Portal>
+          <Dialog.Overlay
+            key='overlay'
+            animation='slow'
+            opacity={0.5}
             enterStyle={{ opacity: 0 }}
             exitStyle={{ opacity: 0 }}
           />
-        </Sheet>
-      </Adapt>
 
-      <Dialog.Portal>
-        <Dialog.Overlay
-          key='overlay'
-          animation='slow'
-          opacity={0.5}
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
-
-        <Dialog.Content
-          bordered
-          elevate
-          key='content'
-          animateOnly={['transform', 'opacity']}
-          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
-          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
-          gap='$4'
-        >
-        <Form onSubmit={handleSubmit(updateByte)}>
-          <Dialog.Title>Edit Post</Dialog.Title>
-          <Dialog.Description>
-            Make changes to your post here. Click save when you're done.
-          </Dialog.Description>
-            <Controller
-              name={'description'}
-              control={control}
-              render={({ field }) => (
+          <Dialog.Content
+            bordered
+            elevate
+            key='content'
+            animateOnly={['transform', 'opacity']}
+            enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
+            exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
+            gap='$4'
+          >
+            <Form onSubmit={handleSubmit(updateByte)}>
+              <Dialog.Title>Edit Post</Dialog.Title>
+              <Dialog.Description>
+                Make changes to your post here. Click save when you're done.
+              </Dialog.Description>
+              <Controller
+                name={'description'}
+                control={control}
+                render={({ field }) => (
                   <UserInput
                     field={field}
                     useLabel
                     labelID='Description'
                     placeholder={post.description ?? 'description'}
                   />
-              )}
-            />
-          <Separator />
-            <Label width={160} justifyContent='flex-end' htmlFor='username'>
-              {/* <TooltipSimple label="Pick your favorite" placement="bottom-start">
+                )}
+              />
+              <Separator />
+              <Label width={160} justifyContent='flex-end' htmlFor='username'>
+                {/* <TooltipSimple label="Pick your favorite" placement="bottom-start">
                 <Paragraph>Food</Paragraph>
               </TooltipSimple> */}
-            </Label>
+              </Label>
 
-          <XStack alignSelf='flex-end' gap='$4'>
-            <Dialog.Close displayWhenAdapted asChild>
-            <Form.Trigger asChild>
-             <Button theme='active' aria-label='Close' type='submit'>
-                Save changes
-              </Button>
-            </Form.Trigger>
-            </Dialog.Close>
-          </XStack>
+              <XStack alignSelf='flex-end' gap='$4'>
+                <Dialog.Close displayWhenAdapted asChild>
+                  <Form.Trigger asChild>
+                    <Button theme='active' aria-label='Close' type='submit'>
+                      Save changes
+                    </Button>
+                  </Form.Trigger>
+                </Dialog.Close>
+              </XStack>
 
-          <Unspaced>
-            <Dialog.Close asChild>
-              <Button
-                position='absolute'
-                top='$3'
-                right='$3'
-                size='$2'
-                circular
-                icon={<Feather name='x-circle' size={16} color='#007AFF' />}
-              />
-            </Dialog.Close>
-          </Unspaced>
-          </Form>
-        </Dialog.Content>
-      </Dialog.Portal>
-    </Dialog>
-   </>
+              <Unspaced>
+                <Dialog.Close asChild>
+                  <Button
+                    position='absolute'
+                    top='$3'
+                    right='$3'
+                    size='$2'
+                    circular
+                    icon={<Feather name='x-circle' size={16} color='#007AFF' />}
+                  />
+                </Dialog.Close>
+              </Unspaced>
+            </Form>
+          </Dialog.Content>
+        </Dialog.Portal>
+      </Dialog>
+    </>
   );
 }

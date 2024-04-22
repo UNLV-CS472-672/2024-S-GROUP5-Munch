@@ -30,6 +30,7 @@ import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
 import { getCurrentPositionAsync } from 'expo-location';
 import { getCurrentDateTime } from '@/utils/getCurrentDateTime';
+import Toast from 'react-native-toast-message';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
@@ -62,7 +63,7 @@ export default function Create() {
   } = useContext(UserContext);
   const { getToken, userId } = useAuth();
 
-  const postData = {
+  let postData = {
     author: `users/${userId}`,
     comments: [],
     creation_date: getCurrentDateTime(),
@@ -73,7 +74,7 @@ export default function Create() {
     username: username,
   };
 
-  const recipeData = {
+  let recipeData = {
     author: `users/${userId}`,
     comments: [],
     creation_date: getCurrentDateTime(),
@@ -87,27 +88,57 @@ export default function Create() {
   };
 
   const { mutate, error } = useMutation({
-    mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
-    mutationFn: () => {
+   // mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
+    mutationFn: (newData: any) => {
       if (!isEnabled) {
-        // for byte
-        return axios.post(
+        // for byte               
+        const post = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-          postData,
+          newData,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
+
+        post.then((response) => {
+          if (response.status != 200) {
+            Toast.show({
+              text1: 'Did not post. Try again!',
+            });
+          }else{
+            Toast.show({
+              text1: 'Post successfully created!',
+            });
+          }
+        }
+        );
+
+        return post;
       } else {
         // for recipe
-        return axios.post(
+        const post = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
-          recipeData,
+          newData,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
-      }
+
+        post.then((response) => {
+          if (response.status != 200) {
+            Toast.show({
+              text1: 'Did not post. Try again!',
+            });
+          }else{
+            Toast.show({
+              text1: 'Post successfully created!',
+            });
+          }
+        }
+        );
+
+        return post;
+      }     
     }, // Function that defines how to fetch data for this mutation
   });
 
@@ -145,12 +176,13 @@ export default function Create() {
       if (allowLocation) {
         postData.location = longitude + ',' + latitude;
       }
-      mutate();
+      mutate(postData);
     } catch (err) {
       // error
       throw new Error(error.message);
     }
   };
+
   const createRecipe: SubmitHandler<RecipeSchemaInputs> = async (data) => {
     const {
       coords: { longitude, latitude },
@@ -163,7 +195,7 @@ export default function Create() {
       if (allowLocation) {
         recipeData.location = longitude + ',' + latitude;
       }
-      mutate();
+      mutate(recipeData);
     } catch (err) {
       //error
       throw new Error(err.message);
@@ -233,7 +265,7 @@ export default function Create() {
                     labelID={'description'}
                     placeholder={"Whatcha munchin' on?"}
                     key={'description'}
-                    sx={{ borderWidth: 1, size: '$5', width: '100%' }}
+                    sx={{ borderWidth: 1, size: '$5', width: '100%' }}                    
                   />
                 )}
               />

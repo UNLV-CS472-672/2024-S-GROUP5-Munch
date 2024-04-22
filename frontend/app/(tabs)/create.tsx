@@ -88,10 +88,10 @@ export default function Create() {
   };
 
   const { mutate, error } = useMutation({
-   // mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
+    // mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
     mutationFn: (newData: any) => {
       if (!isEnabled) {
-        // for byte               
+        // for byte
         const post = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
           newData,
@@ -105,13 +105,12 @@ export default function Create() {
             Toast.show({
               text1: 'Did not post. Try again!',
             });
-          }else{
+          } else {
             Toast.show({
               text1: 'Post successfully created!',
             });
           }
-        }
-        );
+        });
 
         return post;
       } else {
@@ -129,16 +128,15 @@ export default function Create() {
             Toast.show({
               text1: 'Did not post. Try again!',
             });
-          }else{
+          } else {
             Toast.show({
               text1: 'Post successfully created!',
             });
           }
-        }
-        );
+        });
 
         return post;
-      }     
+      }
     }, // Function that defines how to fetch data for this mutation
   });
 
@@ -265,7 +263,7 @@ export default function Create() {
                     labelID={'description'}
                     placeholder={"Whatcha munchin' on?"}
                     key={'description'}
-                    sx={{ borderWidth: 1, size: '$5', width: '100%' }}                    
+                    sx={{ borderWidth: 1, size: '$5', width: '100%' }}
                   />
                 )}
               />

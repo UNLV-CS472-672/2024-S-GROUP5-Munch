@@ -1,20 +1,16 @@
 import unittest
 import os
+from io import StringIO
 import coverage
 
 
 def run_tests():
+    # Define the patterns for exclusion
+    exclude_patterns = ["__init__.py"]
+
     # Start code coverage measurement
     cov = coverage.Coverage(
-        source=[
-            "user_routes",
-            "post_routes",
-            "recipe_routes",
-            "like_routes",
-            "bookmark_routes",
-            "comment_routes",
-            "follow_routes",
-        ]
+        source=[os.path.join(os.path.dirname(__file__), "routes")],
     )
     cov.start()
 
@@ -28,7 +24,20 @@ def run_tests():
     # Stop code coverage measurement
     cov.stop()
 
-    cov.report(show_missing=True)
+    report_output = StringIO()
+    cov.report(file=report_output, show_missing=True)
+    report_output.seek(0)  # Reset the stream position to the beginning
+
+    # Modify the report output to remove "routes\" prefix and ".py" postfix
+    modified_report = ""
+    for line in report_output:
+        modified_line = line.replace("routes\\", "").replace(
+            ".py", "{:>10}".format("")
+        )
+        modified_report += modified_line
+
+    # Print or save the modified report
+    print(modified_report)
 
     # Return the overall test result
     return result

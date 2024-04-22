@@ -119,7 +119,7 @@ class FollowTest(TestCase):
 
         # test exception
         with patch(
-            "follow_routes.firestore.client",
+            "routes.follow_routes.firestore.client",
             side_effect=Exception("Simulating an exception"),
         ):
             patch_follow = self.client.patch(

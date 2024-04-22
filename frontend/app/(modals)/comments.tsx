@@ -12,7 +12,12 @@ import axios from 'axios';
 import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useContext, useEffect, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
-import { Dimensions, KeyboardAvoidingView, Modal, useColorScheme } from 'react-native';
+import {
+  Dimensions,
+  KeyboardAvoidingView,
+  Modal,
+  useColorScheme,
+} from 'react-native';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import { Button, Form, Input, ScrollView, Text, View } from 'tamagui';
 

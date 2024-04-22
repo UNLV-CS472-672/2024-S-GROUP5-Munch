@@ -1,5 +1,6 @@
 import Post from '@/components/Post/Post';
 import { UserContext } from '@/contexts/UserContext';
+import { Byte, Recipe } from '@/types/post';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
@@ -13,12 +14,18 @@ const PostSlug = () => {
 
   const { isLoading, data } = useQuery({
     queryKey: [id],
-    queryFn: async () =>
-      (
-        await axios.get(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${id}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-      ).data,
+    queryFn: async () => {
+      const data = (
+        await axios.get<Byte | Recipe>(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        )
+      ).data;
+
+      return { ...data, key: `posts/${id}` };
+    },
   });
 
   return (

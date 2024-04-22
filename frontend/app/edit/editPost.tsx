@@ -30,37 +30,38 @@ import { useAuth } from '@clerk/clerk-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import UserInput from '@/components/UserInput';
+import { router, usePathname } from 'expo-router';
 
 interface PostProps {
   post: Byte | Recipe;
 }
 
 export function EditPost({ post }: FC<PostProps>) {
-
   const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
   let updatedPostData = post;
+  const postLocation = usePathname();
+  const postId = postLocation.split("/").pop();
 
   const { mutate, error } = useMutation({
       mutationFn: (postData) => {
-        if (isByte(post)) {
-          return axios.post(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-            postData,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
-        } else {
-          return axios.post(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
-            postData,
-            {
-              headers: { Authorization: `Bearer ${token}` },
-            },
-          );
-        }
+        const response = axios.patch(
+          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
+          postData,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        return response.data;
+      },
+      // Update the post with the edit
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['post'] });
+      },
+      // Show error message in console
+      onError: () => {
+        console.log('error:', error.message);
       },
     });
 
@@ -78,16 +79,9 @@ export function EditPost({ post }: FC<PostProps>) {
   const updateByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
     try {
       updatedPostData.description = data.description;
-      console.log('updatedPost' + updatedPost);
-      console.log(`users/${userId}`);
-      console.log(username);
-      console.log('data' + data);
-      await mutate(updatedPost);
-
-      // Invalidate cache and trigger refetch
-      queryClient.invalidateQueries('posts');
+      await mutate(updatedPostData);
+      router.replace(postLocation); //reload page for newest updates on frontend
     } catch (err) {
-      // error
       throw new Error(err.message);
     }
   };
@@ -147,13 +141,8 @@ export function EditPost({ post }: FC<PostProps>) {
               )}
             />
           <Separator />
-            <Label width={160} justifyContent='flex-end' htmlFor='username'>
-              {/* <TooltipSimple label="Pick your favorite" placement="bottom-start">
-                <Paragraph>Food</Paragraph>
-              </TooltipSimple> */}
-            </Label>
 
-          <XStack alignSelf='flex-end' gap='$4'>
+          <XStack alignSelf='flex-end' gap='$4' margin='$4'>
             <Dialog.Close displayWhenAdapted asChild>
             <Form.Trigger asChild>
              <Button theme='active' aria-label='Close' type='submit'>

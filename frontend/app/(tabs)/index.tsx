@@ -26,7 +26,6 @@ export default function Index() {
         coords: { longitude, latitude },
       } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
 
-      console.log(longitude, latitude);
       const recommendation = (
         await axios.get<YelpRecommendation[]>(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${latitude}/${longitude}`,

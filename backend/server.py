@@ -58,13 +58,13 @@ def middleware():
 
     try:
         # Get token from auth header
-        if (len(auth_header.split(" ")) > 1):
+        if len(auth_header.split(" ")) > 1:
             token = auth_header.split(" ")[1]
         else:
             print("\nInvalid Authorization Header\n")
             return (
-            jsonify({"error": "Invalid Auth Header"}),
-            status.HTTP_400_BAD_REQUEST,
+                jsonify({"error": "Invalid Auth Header"}),
+                status.HTTP_400_BAD_REQUEST,
             )
 
         # Verify and decode JWT token

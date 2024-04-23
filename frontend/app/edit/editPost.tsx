@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useContext } from 'react';
+import { LogBox } from 'react-native';
 import { useAuth } from '@clerk/clerk-react';
 import { router, usePathname } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
@@ -39,6 +40,8 @@ interface PostProps {
 }
 
 export function EditPost({ post }: FC<PostProps>) {
+  LogBox.ignoreLogs(['??']);
+
   const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
@@ -72,6 +75,7 @@ export function EditPost({ post }: FC<PostProps>) {
     },
   });
 
+  // validator
   const {
     handleSubmit,
     control,
@@ -83,6 +87,7 @@ export function EditPost({ post }: FC<PostProps>) {
     },
   });
 
+  // run when submitted
   const updateByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
     try {
       updatedPostData.description = data.description;
@@ -92,6 +97,7 @@ export function EditPost({ post }: FC<PostProps>) {
       throw new Error(err.message);
     }
   };
+
   return (
     <>
       <Dialog modal>
@@ -132,7 +138,7 @@ export function EditPost({ post }: FC<PostProps>) {
           >
             <Form onSubmit={handleSubmit(updateByte)}>
               <Dialog.Title>Edit Post</Dialog.Title>
-              <Dialog.Description>
+              <Dialog.Description >
                 Make changes to your post here. Click save when you're done.
               </Dialog.Description>
               <Controller
@@ -143,34 +149,23 @@ export function EditPost({ post }: FC<PostProps>) {
                     field={field}
                     useLabel
                     labelID='Description'
-                    placeholder={post.description ?? 'description'}
+                    key={'description'}
+                    placeholder={post.description || ''}
+                    sx={{ borderWidth: 1, size: '$5', width: '95%' }}
                   />
                 )}
               />
-              <Separator />
 
               <XStack alignSelf='flex-end' gap='$4' margin='$4'>
                 <Dialog.Close displayWhenAdapted asChild>
                   <Form.Trigger asChild>
-                    <Button theme='active' aria-label='Close' type='submit'>
+                    <Button backgroundColor={'$red9'} aria-label='Close' type='submit'>
                       Save changes
                     </Button>
                   </Form.Trigger>
                 </Dialog.Close>
               </XStack>
 
-              <Unspaced>
-                <Dialog.Close asChild>
-                  <Button
-                    position='absolute'
-                    top='$3'
-                    right='$3'
-                    size='$2'
-                    circular
-                    icon={<Feather name='x-circle' size={16} color='#007AFF' />}
-                  />
-                </Dialog.Close>
-              </Unspaced>
             </Form>
           </Dialog.Content>
         </Dialog.Portal>

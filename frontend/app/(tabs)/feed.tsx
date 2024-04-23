@@ -17,6 +17,6 @@ export default function TabTwoScreen() {
       )}
     </SafeAreaView>
   );
-};
+}
 
 export default Feed;

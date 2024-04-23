@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
+import { Feather } from '@expo/vector-icons';
 import {
   Button,
   H4,
@@ -23,16 +24,28 @@ import {
   RecipeSchema,
   RecipeSchemaInputs,
 } from '@/types/postInput';
-import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
-//import { getCurrentDateTime } from '../utils/getCurrentDateTime';
 import { UserContext } from '@/contexts/UserContext';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { getCurrentPositionAsync } from 'expo-location';
+import { getCurrentDateTime } from '@/utils/getCurrentDateTime';
+import Toast from 'react-native-toast-message';
 
 export default function Create() {
+  const { userId } = useAuth();
+
+  const {
+    token,
+    user_data: { username, posts },
+  } = useContext(UserContext);
+
   const [isEnabled, setEnabledElements] = useState(false);
+  const [allowLocation, setAllowLocation] = useState(false);
   const [file, setFile] = useState(null);
   const [errorUpload, setError] = useState(null);
+  const [base64Image, setBase64Image] = useState(null);
+  const queryClient = useQueryClient();
 
   const pickImg = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -43,30 +56,34 @@ export default function Create() {
         <AlertDialogDescription>{errorUpload}</AlertDialogDescription>
       </AlertDialog>;
     } else {
-      const result = await ImagePicker.launchImageLibraryAsync();
-      var uri = '';
-      result.assets.map((asset) => (uri = asset.uri));
+      const result = await ImagePicker.launchImageLibraryAsync({
+        base64: true,
+      });
+
+      let uriStr = '';
+      let base64Str = '';
+
+      result.assets.map(({ uri, base64 }) => {
+        uriStr = uri;
+        base64Str = base64;
+      });
+
       if (!result.canceled) {
-        setFile(uri);
+        setFile(uriStr);
+        setBase64Image(base64Str);
         setError(null);
       }
     }
   };
-
-  const {
-    token,
-    user_data: { username },
-  } = useContext(UserContext);
-  const { getToken, userId } = useAuth();
 
   const postData = {
     author: `users/${userId}`,
     comments: [],
     creation_date: '',
     description: '',
-    likes: 0,
+    likes: [],
     location: '',
-    pictures: [file],
+    pictures: [],
     username: username,
   };
 
@@ -75,37 +92,43 @@ export default function Create() {
     comments: [],
     creation_date: '',
     description: '',
-    likes: 0,
+    likes: [],
     location: '',
     ingredients: '',
     steps: '',
-    pictures: [file],
+    pictures: [],
     username: username,
   };
 
   const { mutate, error } = useMutation({
-    mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
-    mutationFn: () => {
-      if (!isEnabled) {
-        // for byte
-        return axios.post(
-          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-          postData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-      } else {
-        // for recipe
-        return axios.post(
-          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
-          recipeData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-      }
+    // mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
+    mutationFn: async (newData: any) => {
+      // for byte
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${!isEnabled ? 'posts' : 'recipes'}`,
+        newData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      return response.data;
     }, // Function that defines how to fetch data for this mutation
+    onSuccess: () => {
+      // Invalidate cache for all post queries
+      posts.forEach((post) => {
+        queryClient.invalidateQueries([post]);
+      });
+
+      Toast.show({ text1: 'Post created!' });
+    },
+    // Show error message
+    onError: (error) => {
+      Toast.show({
+        text1: 'Error, post not created. Please submit a bug report. :)',
+      });
+      console.log('error:', error.message);
+    },
   });
 
   const {
@@ -133,22 +156,39 @@ export default function Create() {
   });
 
   const createByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
+    const {
+      coords: { longitude, latitude },
+    } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
     try {
       postData.description = data.description;
-      console.log(`users/${userId}`);
-      console.log(username);
-      mutate();
+      if (allowLocation) {
+        postData.location = longitude + ',' + latitude;
+      }
+      postData.pictures = [base64Image];
+      postData.creation_date = getCurrentDateTime();
+      mutate(postData);
     } catch (err) {
       // error
       throw new Error(error.message);
     }
   };
+
   const createRecipe: SubmitHandler<RecipeSchemaInputs> = async (data) => {
+    const {
+      coords: { longitude, latitude },
+    } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
     try {
       recipeData.description = data.descr;
       recipeData.steps = data.steps;
       recipeData.ingredients = data.ingredients;
-      mutate();
+      if (allowLocation) {
+        recipeData.location = longitude + ',' + latitude;
+      }
+      recipeData.pictures = [base64Image];
+      recipeData.creation_date = getCurrentDateTime();
+      mutate(recipeData);
     } catch (err) {
       //error
       throw new Error(err.message);
@@ -171,20 +211,34 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
-        <Button onPress={pickImg} backgroundColor={'orange'} mx={'$4'}>
-          <Text color={'$black2'}>Upload Image</Text>
-        </Button>
+        <Button
+          onPress={pickImg}
+          mx={'$19'}
+          icon={<Feather name='image' size={30} />}
+        ></Button>
         <XStack>
           {file ? (
             <Image
               source={{
                 uri: file,
               }}
-              width={150}
+              width={412}
               aspectRatio={1}
               height={150}
             />
           ) : null}
+        </XStack>
+        <XStack>
+          <Text fontSize='$5' paddingStart='$5'>
+            Include Location?
+          </Text>
+          <Switch
+            marginLeft='$2'
+            size='$3'
+            onCheckedChange={() => setAllowLocation(!allowLocation)}
+          >
+            <Switch.Thumb animation='bouncy' />
+          </Switch>
         </XStack>
         {/* byte form */}
         <Form
@@ -274,6 +328,7 @@ export default function Create() {
               {errorsRecipe.steps?.message && (
                 <Text color={'$red10'}>{errorsRecipe.steps.message}</Text>
               )}
+
               <Form.Trigger asChild>
                 <Button backgroundColor={'$red9'}>Post</Button>
               </Form.Trigger>

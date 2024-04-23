@@ -25,7 +25,7 @@ const ProfileEditModal = () => {
       password: user?.passwordEnabled ? 'password' : '',
     },
   });
-  const { token, user_data, user_id:userId } = useContext(UserContext);
+  const { token, user_data, user_id: userId } = useContext(UserContext);
 
   const updateUserData: SubmitHandler<UserState> = async (data) => {
     try {
@@ -44,15 +44,17 @@ const ProfileEditModal = () => {
         const userData = {
           ...user_data,
           bio: data.bio,
-          username: data.username
-        }
-        
-        await axios.patch(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`,     // API route
-                            userData,                                                   // userData to update
-                            { headers: { Authorization: `Bearer: ${token}` },},         // auth header
-                          )
-                      .then(() => user?.update({username: data.username}))              // update user username
-                      .catch(error => console.log('error:',error.message))              // console log any errors
+          username: data.username,
+        };
+
+        await axios
+          .patch(
+            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`, // API route
+            userData, // userData to update
+            { headers: { Authorization: `Bearer: ${token}` } }, // auth header
+          )
+          .then(() => user?.update({ username: data.username })) // update user username
+          .catch((error) => console.log('error:', error.message)); // console log any errors
       }
       if (isDirty) {
         Toast.show({ text1: 'Profile Updated', type: 'success' });

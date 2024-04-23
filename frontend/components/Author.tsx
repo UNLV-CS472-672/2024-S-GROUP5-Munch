@@ -5,7 +5,7 @@ import { UserResource } from '@clerk/types';
 import { Feather } from '@expo/vector-icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
-import { Link } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { FC, useContext } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
@@ -39,6 +39,7 @@ const Author: FC<AuthorProps> = ({
   const { user_id, token } = useContext(UserContext);
   const isFollowing = user_data.following.includes(user_id);
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   const { mutate } = useMutation({
     mutationKey: [],
@@ -103,7 +104,7 @@ const Author: FC<AuthorProps> = ({
                       onPress={() => mutate()}
                       unstyled
                     >
-                      {isFollowing ? 'Follow' : 'Unfollow'}
+                      {!isFollowing ? 'Follow' : 'Unfollow'}
                     </Button>
                   )}
                 </XStack>
@@ -142,7 +143,10 @@ const Author: FC<AuthorProps> = ({
               renderItem={({ item, index }) => (
                 <Card size={'$2'} mx={'$1'} bordered elevate>
                   <Link
-                    href={`/post/${user_data.posts[index].split('/')[1]}`}
+                    href={{
+                      pathname: `/post/${user_data.posts[index].split('/')[1]}`,
+                      params: { prev: 'Author' },
+                    }}
                     asChild
                   >
                     <Image

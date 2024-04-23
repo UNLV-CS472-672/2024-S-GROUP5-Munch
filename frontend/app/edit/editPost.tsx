@@ -40,12 +40,14 @@ export function EditPost({ post }: FC<PostProps>) {
   const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
-  let updatedPostData = post;
+  let updatedPostData = {... post};
+  delete updatedPostData.key;
   const postLocation = usePathname();
   const postId = postLocation.split('/').pop();
 
   const { mutate, error } = useMutation({
     mutationFn: (postData) => {
+
       const response = axios.patch(
         `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
         postData,

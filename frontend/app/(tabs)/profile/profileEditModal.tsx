@@ -1,8 +1,11 @@
 import UserInput from '@/components/UserInput';
+import { UserContext } from '@/contexts/UserContext';
 import { UserState } from '@/types/user';
 import { isClerkAPIResponseError, useUser } from '@clerk/clerk-expo';
+import axios from 'axios';
 import { MediaTypeOptions, launchImageLibraryAsync } from 'expo-image-picker';
 import { Stack } from 'expo-router';
+import { useContext } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { TouchableOpacity } from 'react-native';
 import Toast from 'react-native-toast-message';
@@ -22,6 +25,7 @@ const ProfileEditModal = () => {
       password: user?.passwordEnabled ? 'password' : '',
     },
   });
+  const { token, user_data, user_id:userId } = useContext(UserContext);
 
   const updateUserData: SubmitHandler<UserState> = async (data) => {
     try {
@@ -35,11 +39,21 @@ const ProfileEditModal = () => {
           lastName: data.lastName,
         });
       }
-
       if (isNotDirtyClerk) {
-        //api call to update
+        // create userData to pass to backend
+        const userData = {
+          ...user_data,
+          bio: data.bio,
+          username: data.username
+        }
+        
+        await axios.patch(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`,     // API route
+                            userData,                                                   // userData to update
+                            { headers: { Authorization: `Bearer: ${token}` },},         // auth header
+                          )
+                      .then(() => user?.update({username: data.username}))              // update user username
+                      .catch(error => console.log('error:',error.message))              // console log any errors
       }
-
       if (isDirty) {
         Toast.show({ text1: 'Profile Updated', type: 'success' });
       }
@@ -144,7 +158,7 @@ const ProfileEditModal = () => {
                   field={field}
                   useLabel
                   labelID='Bio'
-                  placeholder={user?.bio ?? 'Bio'}
+                  placeholder={user_data.bio}
                 />
               </XStack>
             )}

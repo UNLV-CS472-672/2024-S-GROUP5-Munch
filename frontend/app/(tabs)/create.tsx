@@ -4,6 +4,7 @@ import * as ImagePicker from 'expo-image-picker';
 import { zodResolver } from '@hookform/resolvers/zod';
 import axios from 'axios';
 import { useAuth } from '@clerk/clerk-react';
+import { Feather } from '@expo/vector-icons';
 import {
   Button,
   H4,
@@ -23,14 +24,17 @@ import {
   RecipeSchema,
   RecipeSchemaInputs,
 } from '@/types/postInput';
-import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
-//import { getCurrentDateTime } from '../utils/getCurrentDateTime';
 import { UserContext } from '@/contexts/UserContext';
 import { useMutation } from '@tanstack/react-query';
+import { getCurrentPositionAsync } from 'expo-location';
+import { getCurrentDateTime } from '@/utils/getCurrentDateTime';
+import Toast from 'react-native-toast-message';
 
 export default function Create() {
   const [isEnabled, setEnabledElements] = useState(false);
+  const [allowLocation, setAllowLocation] = useState(false);
   const [file, setFile] = useState(null);
   const [errorUpload, setError] = useState(null);
 
@@ -59,10 +63,10 @@ export default function Create() {
   } = useContext(UserContext);
   const { getToken, userId } = useAuth();
 
-  const postData = {
+  let postData = {
     author: `users/${userId}`,
     comments: [],
-    creation_date: '',
+    creation_date: getCurrentDateTime(),
     description: '',
     likes: 0,
     location: '',
@@ -70,10 +74,10 @@ export default function Create() {
     username: username,
   };
 
-  const recipeData = {
+  let recipeData = {
     author: `users/${userId}`,
     comments: [],
-    creation_date: '',
+    creation_date: getCurrentDateTime(),
     description: '',
     likes: 0,
     location: '',
@@ -84,26 +88,54 @@ export default function Create() {
   };
 
   const { mutate, error } = useMutation({
-    mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
-    mutationFn: () => {
+    // mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
+    mutationFn: (newData: any) => {
       if (!isEnabled) {
         // for byte
-        return axios.post(
+        const post = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-          postData,
+          newData,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
+
+        post.then((response) => {
+          if (response.status != 200) {
+            Toast.show({
+              text1: 'Did not post. Try again!',
+            });
+          } else {
+            Toast.show({
+              text1: 'Post successfully created!',
+            });
+          }
+        });
+
+        return post;
       } else {
         // for recipe
-        return axios.post(
+        const post = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
-          recipeData,
+          newData,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
+
+        post.then((response) => {
+          if (response.status != 200) {
+            Toast.show({
+              text1: 'Did not post. Try again!',
+            });
+          } else {
+            Toast.show({
+              text1: 'Post successfully created!',
+            });
+          }
+        });
+
+        return post;
       }
     }, // Function that defines how to fetch data for this mutation
   });
@@ -133,22 +165,35 @@ export default function Create() {
   });
 
   const createByte: SubmitHandler<ByteSchemaInputs> = async (data) => {
+    const {
+      coords: { longitude, latitude },
+    } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
     try {
       postData.description = data.description;
-      console.log(`users/${userId}`);
-      console.log(username);
-      mutate();
+      if (allowLocation) {
+        postData.location = longitude + ',' + latitude;
+      }
+      mutate(postData);
     } catch (err) {
       // error
       throw new Error(error.message);
     }
   };
+
   const createRecipe: SubmitHandler<RecipeSchemaInputs> = async (data) => {
+    const {
+      coords: { longitude, latitude },
+    } = await getCurrentPositionAsync({ mayShowUserSettingsDialog: true });
+
     try {
       recipeData.description = data.descr;
       recipeData.steps = data.steps;
       recipeData.ingredients = data.ingredients;
-      mutate();
+      if (allowLocation) {
+        recipeData.location = longitude + ',' + latitude;
+      }
+      mutate(recipeData);
     } catch (err) {
       //error
       throw new Error(err.message);
@@ -171,20 +216,34 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
-        <Button onPress={pickImg} backgroundColor={'orange'} mx={'$4'}>
-          <Text color={'$black2'}>Upload Image</Text>
-        </Button>
+        <Button
+          onPress={pickImg}
+          mx={'$19'}
+          icon={<Feather name='image' size={30} />}
+        ></Button>
         <XStack>
           {file ? (
             <Image
               source={{
                 uri: file,
               }}
-              width={150}
+              width={412}
               aspectRatio={1}
               height={150}
             />
           ) : null}
+        </XStack>
+        <XStack>
+          <Text fontSize='$5' paddingStart='$5'>
+            Include Location?
+          </Text>
+          <Switch
+            marginLeft='$2'
+            size='$3'
+            onCheckedChange={() => setAllowLocation(!allowLocation)}
+          >
+            <Switch.Thumb animation='bouncy' />
+          </Switch>
         </XStack>
         {/* byte form */}
         <Form
@@ -274,6 +333,7 @@ export default function Create() {
               {errorsRecipe.steps?.message && (
                 <Text color={'$red10'}>{errorsRecipe.steps.message}</Text>
               )}
+
               <Form.Trigger asChild>
                 <Button backgroundColor={'$red9'}>Post</Button>
               </Form.Trigger>

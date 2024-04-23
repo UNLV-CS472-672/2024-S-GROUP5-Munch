@@ -13,7 +13,7 @@ const Friends = () => {
   const { isLoading, posts } = useQueries({
     queries: user_data.following
       ? user_data?.following.map((follower) => ({
-          queryKey: [follower],
+          queryKey: ['follower'],
           queryFn: async () => {
             //first get all the users info
             const follower_data = (
@@ -27,16 +27,19 @@ const Friends = () => {
             //since we are mapping promises, we await all of the promises to be settled before we return
             const data = await Promise.all(
               follower_data.posts.map((post) =>
-                (async () =>
-                  (
+                (async () => {
+                  const res = (
                     await axios.get<Byte | Recipe>(
                       `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
                       { headers: { Authorization: `Bearer ${token}` } },
                     )
-                  ).data)(),
+                  ).data;
+                  return { ...res, key: post };
+                })(),
               ),
             );
-            return data;
+
+            return postData;
           },
         }))
       : [],
@@ -50,7 +53,7 @@ const Friends = () => {
 
   const renderItem = useCallback(
     ({ item, index }: { item: Byte | Recipe; index: number }) => {
-      return <Post post={item} key={index} />;
+      return <Post post={item} />;
     },
     [],
   );

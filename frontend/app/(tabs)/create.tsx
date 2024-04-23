@@ -60,7 +60,8 @@ export default function Create() {
 
   const {
     token,
-    user_data: { username },
+    user_data: { username, posts },
+
   } = useContext(UserContext);
   const { getToken, userId } = useAuth();
 
@@ -93,6 +94,7 @@ export default function Create() {
     mutationFn: (newData: any) => {
       if (!isEnabled) {
         // for byte
+        console.log(newData);
         const response = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
           newData,
@@ -115,8 +117,12 @@ export default function Create() {
     },
      // Create New Post and Update Profile Page To Display It
         onSuccess: () => {
+          // Invalidate cache for all post queries
+          posts.forEach((post) => {
+            queryClient.invalidateQueries([post]);
+          });
+
           Toast.show({ text1: 'Post created!' });
-          queryClient.invalidateQueries({ queryKey: ['allPosts'] });
         },
         // Show error message
         onError: (error) => {

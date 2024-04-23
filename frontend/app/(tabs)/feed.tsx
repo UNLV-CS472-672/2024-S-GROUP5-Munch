@@ -57,17 +57,13 @@ const Feed = () => {
   return (
     <SafeAreaView>
       {!isLoading && (
-        // <FlatList
-        //   data={posts}
-        //   renderItem={renderItem}
-        //   showsVerticalScrollIndicator={false}
-        //   decelerationRate={'fast'}
-        //   initialNumToRender={5}
-        // />
-        <View>
-          <Text>Feed view</Text>
-          <LikeButton />
-        </View>
+        <FlatList
+          data={posts}
+          renderItem={renderItem}
+          showsVerticalScrollIndicator={false}
+          decelerationRate={'fast'}
+          initialNumToRender={5}
+        />
       )}
     </SafeAreaView>
   );

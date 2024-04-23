@@ -150,4 +150,3 @@ export default function LikeButton() {
     </XStack>
   );
 }
-

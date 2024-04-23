@@ -1,4 +1,11 @@
+import axios from 'axios';
 import { useContext } from 'react';
+import { useAuth } from '@clerk/clerk-react';
+import { router, usePathname } from 'expo-router';
+import { Feather } from '@expo/vector-icons';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
+import Toast from 'react-native-toast-message';
 import {
   Adapt,
   Button,
@@ -14,23 +21,18 @@ import {
   Form,
   Separator,
 } from 'tamagui';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+import UserInput from '@/components/UserInput';
+import { UserContext } from '@/contexts/UserContext';
+import { Byte, Recipe } from '@/types/post';
 import {
   ByteSchema,
   ByteSchemaInputs,
   RecipeSchema,
   RecipeSchemaInputs,
 } from '@/types/postInput';
-import { Feather } from '@expo/vector-icons';
 import { isByte } from '@/utils/typeGuard';
-import { Byte, Recipe } from '@/types/post';
-import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { UserContext } from '@/contexts/UserContext';
-import { useAuth } from '@clerk/clerk-react';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import axios from 'axios';
-import UserInput from '@/components/UserInput';
-import { router, usePathname } from 'expo-router';
 
 interface PostProps {
   post: Byte | Recipe;
@@ -59,10 +61,12 @@ export function EditPost({ post }: FC<PostProps>) {
     },
     // Update the post with the edit
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['post'] });
+      Toast.show({text1: 'Post edited!',});
+      queryClient.invalidateQueries({ queryKey: [postId] });
     },
     // Show error message in console
     onError: () => {
+      Toast.show({text1: 'Error, post not edited. Please submit a bug report.',});
       console.log('error:', error.message);
     },
   });

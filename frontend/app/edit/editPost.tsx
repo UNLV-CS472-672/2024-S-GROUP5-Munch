@@ -75,7 +75,7 @@ export function EditPost({ post }: FC<PostProps>) {
     },
   });
 
-  // validator
+  // validators
   const {
     handleSubmit,
     control,

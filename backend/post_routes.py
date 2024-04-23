@@ -229,12 +229,22 @@ def get_non_following_posts(user_id):
     post_ref = db.collection("posts")
     post_doc = post_ref.get()
 
+    user_ref = db.collection("users").document(user_id)
+    user_doc = user_ref.get()
+    user_data = user_doc.to_dict()
+
+    following = [user.path for user in user_data["following"]]
+
     post_data = {}
     filtered_post_data = []
     for doc in post_doc:
         post_data[doc.id] = doc.to_dict()
+        post_data[doc.id]["key"] = doc.id
         post_data[doc.id]["author"] = post_data[doc.id]["author"].path
-        if user_id != post_data[doc.id]["author"].split("/")[1]:
+        if (
+            user_id != post_data[doc.id]["author"].split("/")[1]
+            and post_data[doc.id]["author"] not in following
+        ):
             filtered_post_data.append(post_data[doc.id])
         for comment in post_data[doc.id]["comments"]:
             comment["author"] = comment["author"].path

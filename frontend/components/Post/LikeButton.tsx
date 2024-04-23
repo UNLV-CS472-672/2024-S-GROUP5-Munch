@@ -14,14 +14,15 @@ export default function LikeButton() {
   const { getToken, userId } = useAuth();
   const postId = '5cSbSLKmhBktYCgJQpz1';
 
-  const isFirstRender = useRef(false) 
+  const isFirstRender = useRef(false);
 
   // Default state should be false (known logic error: default state should be whatever the user has it liked as)
-  const [liked, setLiked] = useState(user_data.likes.includes('posts/5cSbSLKmhBktYCgJQpz1'));
+  const [liked, setLiked] = useState(
+    user_data.likes.includes('posts/5cSbSLKmhBktYCgJQpz1'),
+  );
 
   // Only update the like count locally to reduce API calls
-  const [localLikes, setLocalLikes] = useState(0)  // Default state is number of likes
-
+  const [localLikes, setLocalLikes] = useState(0); // Default state is number of likes
 
   // // Get user's likes
   // let likedPosts = user_data.likes
@@ -29,7 +30,7 @@ export default function LikeButton() {
 
   // Get number of likes
   const getLikes = async () => {
-    console.log("getting like count")
+    console.log('getting like count');
     const response = await axios.get(
       `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
       {
@@ -54,15 +55,11 @@ export default function LikeButton() {
     setLocalLikes(likesCount);
   }, []);
 
-  
-
   // Data that will be passed in order to change the post's likes
   const likeData = {
     user_id: userId,
     post_id: postId,
   };
-
-  
 
   // Like/Unlike API call
   const {
@@ -72,7 +69,7 @@ export default function LikeButton() {
     error,
   } = useMutation({
     mutationFn: async () => {
-      console.log("in the mutation: it is ", liked)
+      console.log('in the mutation: it is ', liked);
       // Determine whether to like or unlike the post
       const likeAction = liked ? 'like' : 'unlike';
 
@@ -93,7 +90,7 @@ export default function LikeButton() {
     },
     // Update the local like count
     onSuccess: () => {
-      setLocalLikes((liked ? (localLikes + 1) : (localLikes - 1)))
+      setLocalLikes(liked ? localLikes + 1 : localLikes - 1);
       // queryClient.invalidateQueries({ queryKey: ['likes'] });
     },
     // Show error message in console
@@ -103,24 +100,21 @@ export default function LikeButton() {
   });
 
   useEffect(() => {
-    if (isFirstRender.current){
+    if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-    console.log("just inverted the like state is, ", liked);
+    console.log('just inverted the like state is, ', liked);
     // Status message
     liked ? console.log('Liking the post!') : console.log('Unliking the post!');
     changeLikes();
-    
   }, [liked]);
 
   // Handle user liking the post
   const handleLike = () => {
-    console.log("just entered the like state is, ", liked);
+    console.log('just entered the like state is, ', liked);
     // Invert the like state
-    setLiked(liked => !liked);
-    
-    
+    setLiked((liked) => !liked);
 
     // Like or unlike the post based on liked state
     //await changeLikes();
@@ -133,16 +127,17 @@ export default function LikeButton() {
       <Button
         animation={'bouncy'}
         animateOnly={['transform']}
-        icon={<AntDesign 
-                size={22} 
-                name={liked? 'heart' : 'hearto'}
-                color={liked? 'red' : 'black'}
-              />}
+        icon={
+          <AntDesign
+            size={22}
+            name={liked ? 'heart' : 'hearto'}
+            color={liked ? 'red' : 'black'}
+          />
+        }
         onPress={handleLike}
-        pressStyle={{scale:0.4}}
+        pressStyle={{ scale: 0.4 }}
         unstyled
       />
-      
 
       {/*Display number of likes*/}
       {likesLoading ? (

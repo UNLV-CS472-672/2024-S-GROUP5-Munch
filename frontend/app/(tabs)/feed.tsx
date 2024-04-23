@@ -7,7 +7,7 @@ export default function TabTwoScreen() {
     <SafeAreaView>
       <View>
         <Text>Feed view</Text>
-        <LikeButton/>
+        <LikeButton />
       </View>
     </SafeAreaView>
   );

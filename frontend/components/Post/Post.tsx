@@ -27,9 +27,9 @@ const Post: FC<PostProps> = ({ post }) => {
     likes,
     pictures,
     username,
-    key
+    key,
   } = post;
-  
+
   const byte = isByte(post) ? post : null;
   const recipe = isRecipe(post) ? post : null;
   const router = useRouter();
@@ -45,10 +45,10 @@ const Post: FC<PostProps> = ({ post }) => {
   const queryClient = useQueryClient();
   const { token, user_data } = useContext(UserContext);
   const { getToken, userId } = useAuth();
-  const postId = key.split('/')[1]
-  
+  const postId = key.split('/')[1];
+
   // Used to skip events on the first render
-  const isFirstRender = useRef(false) 
+  const isFirstRender = useRef(false);
   useEffect(() => {
     isFirstRender.current = true;
   }, []);
@@ -56,20 +56,20 @@ const Post: FC<PostProps> = ({ post }) => {
   // Like button state
   const [liked, setLiked] = useState(user_data.likes.includes(key));
   // Only update the like count locally to reduce API calls
-  const [localLikes, setLocalLikes] = useState(likes) 
+  const [localLikes, setLocalLikes] = useState(likes);
 
   // Data that will be passed in order to change the post's likes
   const likeData = {
     user_id: userId,
-    post_id: postId
-}
+    post_id: postId,
+  };
   // Get number of likes
   const getLikes = async () => {
     const response = await axios.get(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
-        {
-            headers: { Authorization: `Bearer ${token}` }
-        },
+      `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      },
     );
     return response.data.likes;
   };
@@ -93,22 +93,24 @@ const Post: FC<PostProps> = ({ post }) => {
       // Determine whether to like or unlike the post
       const likeAction = liked ? 'like' : 'unlike';
 
-        // Status message to show the API call
-        console.log(`${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`)
+      // Status message to show the API call
+      console.log(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
+      );
 
-        // Do the API call
-        const response = await axios.patch(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
-            likeData,
-            {
-                headers: {Authorization: `Bearer: ${await getToken()}`},
-            },
-        );
-        return response.data
+      // Do the API call
+      const response = await axios.patch(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
+        likeData,
+        {
+          headers: { Authorization: `Bearer: ${await getToken()}` },
+        },
+      );
+      return response.data;
     },
     onSuccess: () => {
       // Update the local like count
-      setLocalLikes((liked ? (localLikes + 1) : (localLikes - 1)))
+      setLocalLikes(liked ? localLikes + 1 : localLikes - 1);
       // Update the like count
       //queryClient.invalidateQueries({ queryKey: ['likes'] });
     },
@@ -119,16 +121,20 @@ const Post: FC<PostProps> = ({ post }) => {
   });
 
   // Helper to handle a like interaction
-  useEffect(() => {
-    // Do not run on the first render
-    if (isFirstRender.current){
-      isFirstRender.current = false;
-      return;
-    }
-    // Status message
-    liked ? console.log('Liking the post!') : console.log('Unliking the post!');
-    changeLikes();
-    }, [liked]      // effect only activates when liked is updated
+  useEffect(
+    () => {
+      // Do not run on the first render
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        return;
+      }
+      // Status message
+      liked
+        ? console.log('Liking the post!')
+        : console.log('Unliking the post!');
+      changeLikes();
+    },
+    [liked], // effect only activates when liked is updated
   );
 
   // Handle user liking the post
@@ -171,20 +177,24 @@ const Post: FC<PostProps> = ({ post }) => {
               circular
               animation={'bouncy'}
               animateOnly={['transform']}
-              icon={<AntDesign 
-                      size={22} 
-                      name={liked? 'heart' : 'hearto'}
-                      color={liked? 'red' : 'black'}
-                    />}
+              icon={
+                <AntDesign
+                  size={22}
+                  name={liked ? 'heart' : 'hearto'}
+                  color={liked ? 'red' : 'black'}
+                />
+              }
               justifyContent='center'
               alignItems='center'
               onPress={handleLike}
-              pressStyle={{scale:0.4}}
+              pressStyle={{ scale: 0.4 }}
               padding={10}
               unstyled
             />
             {/*Display number of likes*/}
-            <Text>{likesLoading ? 'Loading' : likesError? '-1' : (localLikes)}</Text>
+            <Text>
+              {likesLoading ? 'Loading' : likesError ? '-1' : localLikes}
+            </Text>
           </XStack>
           {/*Comment*/}
           <ButtonIcon
@@ -196,9 +206,7 @@ const Post: FC<PostProps> = ({ post }) => {
           {/*Bookmark*/}
           <ButtonIcon iconName='bookmark-o' onPress={handleBookmark} />
           {/*Location*/}
-          {byte?.location && (
-            <ButtonIcon iconName='map-o' onPress={openMaps} />
-          )}
+          {byte?.location && <ButtonIcon iconName='map-o' onPress={openMaps} />}
         </XStack>
         {/*USER INFO*/}
         <YStack px={'$2.5'} gap={'$1'}>

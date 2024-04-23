@@ -27,7 +27,7 @@ import {
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import UserInput from '@/components/UserInput';
 import { UserContext } from '@/contexts/UserContext';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getCurrentPositionAsync } from 'expo-location';
 import { getCurrentDateTime } from '@/utils/getCurrentDateTime';
 import Toast from 'react-native-toast-message';
@@ -37,6 +37,7 @@ export default function Create() {
   const [allowLocation, setAllowLocation] = useState(false);
   const [file, setFile] = useState(null);
   const [errorUpload, setError] = useState(null);
+  const queryClient = useQueryClient();
 
   const pickImg = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -92,52 +93,38 @@ export default function Create() {
     mutationFn: (newData: any) => {
       if (!isEnabled) {
         // for byte
-        const post = axios.post(
+        const response = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
           newData,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
-
-        post.then((response) => {
-          if (response.status != 200) {
-            Toast.show({
-              text1: 'Did not post. Try again!',
-            });
-          } else {
-            Toast.show({
-              text1: 'Post successfully created!',
-            });
-          }
-        });
-
-        return post;
+        return response.data;
       } else {
         // for recipe
-        const post = axios.post(
+        const response = axios.post(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
           newData,
           {
             headers: { Authorization: `Bearer ${token}` },
           },
         );
-
-        post.then((response) => {
-          if (response.status != 200) {
-            Toast.show({
-              text1: 'Did not post. Try again!',
-            });
-          } else {
-            Toast.show({
-              text1: 'Post successfully created!',
-            });
-          }
-        });
-
-        return post;
+        return response.data;
       }
-    }, // Function that defines how to fetch data for this mutation
+    },
+     // Create New Post and Update Profile Page To Display It
+        onSuccess: () => {
+          Toast.show({ text1: 'Post created!' });
+          queryClient.invalidateQueries({ queryKey: ['allPosts'] });
+        },
+        // Show error message
+        onError: (error) => {
+          Toast.show({
+            text1: 'Error, post not created. Please submit a bug report. :)',
+          });
+          console.log('error:', error.message);
+        },
   });
 
   const {

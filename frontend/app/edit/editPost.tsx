@@ -42,14 +42,13 @@ export function EditPost({ post }: FC<PostProps>) {
   const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
-  let updatedPostData = {... post};
+  let updatedPostData = { ...post };
   delete updatedPostData.key;
   const postLocation = usePathname();
   const postId = postLocation.split('/').pop();
 
   const { mutate, error } = useMutation({
     mutationFn: (postData) => {
-
       const response = axios.patch(
         `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
         postData,
@@ -61,12 +60,14 @@ export function EditPost({ post }: FC<PostProps>) {
     },
     // Update the post with the edit
     onSuccess: () => {
-      Toast.show({text1: 'Post edited!',});
+      Toast.show({ text1: 'Post edited!' });
       queryClient.invalidateQueries({ queryKey: [postId] });
     },
     // Show error message in console
     onError: () => {
-      Toast.show({text1: 'Error, post not edited. Please submit a bug report.',});
+      Toast.show({
+        text1: 'Error, post not edited. Please submit a bug report.',
+      });
       console.log('error:', error.message);
     },
   });

@@ -9,7 +9,7 @@ import { SafeAreaView } from 'react-native';
 import { Spinner } from 'tamagui';
 
 const PostSlug = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, prev } = useLocalSearchParams<{ id: string; prev: string }>();
   const { token } = useContext(UserContext);
 
   const { isLoading, data } = useQuery({

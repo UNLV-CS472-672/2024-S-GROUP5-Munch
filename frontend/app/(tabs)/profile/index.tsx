@@ -30,7 +30,7 @@ export default function Profile() {
   const router = useRouter();
 
   //use query to get all posts from user_data
-  const { isLoading, posts } = useQueries({
+  let { isLoading, posts } = useQueries({
     queries: user_data?.posts
       ? user_data.posts.map((post) => ({
           queryKey: [post],

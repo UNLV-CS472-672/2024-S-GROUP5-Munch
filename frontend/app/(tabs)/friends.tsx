@@ -38,7 +38,8 @@ const Friends = () => {
                 })(),
               ),
             );
-            return data;
+
+            return postData;
           },
         }))
       : [],

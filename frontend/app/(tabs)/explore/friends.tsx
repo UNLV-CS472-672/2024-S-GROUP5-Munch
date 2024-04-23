@@ -50,12 +50,9 @@ const Friends = () => {
     }),
   });
 
-  const renderItem = useCallback(
-    ({ item, index }: { item: Byte | Recipe; index: number }) => {
-      return <Post post={item} />;
-    },
-    [],
-  );
+  const renderItem = useCallback(({ item }: { item: Byte | Recipe }) => {
+    return <Post post={item} />;
+  }, []);
 
   return (
     <SafeAreaView>

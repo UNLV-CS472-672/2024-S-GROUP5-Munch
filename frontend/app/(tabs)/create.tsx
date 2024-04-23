@@ -61,7 +61,6 @@ export default function Create() {
   const {
     token,
     user_data: { username, posts },
-
   } = useContext(UserContext);
   const { getToken, userId } = useAuth();
 
@@ -115,22 +114,22 @@ export default function Create() {
         return response.data;
       }
     },
-     // Create New Post and Update Profile Page To Display It
-        onSuccess: () => {
-          // Invalidate cache for all post queries
-          posts.forEach((post) => {
-            queryClient.invalidateQueries([post]);
-          });
+    // Create New Post and Update Profile Page To Display It
+    onSuccess: () => {
+      // Invalidate cache for all post queries
+      posts.forEach((post) => {
+        queryClient.invalidateQueries([post]);
+      });
 
-          Toast.show({ text1: 'Post created!' });
-        },
-        // Show error message
-        onError: (error) => {
-          Toast.show({
-            text1: 'Error, post not created. Please submit a bug report. :)',
-          });
-          console.log('error:', error.message);
-        },
+      Toast.show({ text1: 'Post created!' });
+    },
+    // Show error message
+    onError: (error) => {
+      Toast.show({
+        text1: 'Error, post not created. Please submit a bug report. :)',
+      });
+      console.log('error:', error.message);
+    },
   });
 
   const {

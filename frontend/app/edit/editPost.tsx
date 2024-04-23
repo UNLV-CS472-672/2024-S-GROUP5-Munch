@@ -138,7 +138,7 @@ export function EditPost({ post }: FC<PostProps>) {
           >
             <Form onSubmit={handleSubmit(updateByte)}>
               <Dialog.Title>Edit Post</Dialog.Title>
-              <Dialog.Description >
+              <Dialog.Description>
                 Make changes to your post here. Click save when you're done.
               </Dialog.Description>
               <Controller
@@ -159,13 +159,16 @@ export function EditPost({ post }: FC<PostProps>) {
               <XStack alignSelf='flex-end' gap='$4' margin='$4'>
                 <Dialog.Close displayWhenAdapted asChild>
                   <Form.Trigger asChild>
-                    <Button backgroundColor={'$red9'} aria-label='Close' type='submit'>
+                    <Button
+                      backgroundColor={'$red9'}
+                      aria-label='Close'
+                      type='submit'
+                    >
                       Save changes
                     </Button>
                   </Form.Trigger>
                 </Dialog.Close>
               </XStack>
-
             </Form>
           </Dialog.Content>
         </Dialog.Portal>

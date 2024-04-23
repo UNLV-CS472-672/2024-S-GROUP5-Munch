@@ -20,7 +20,7 @@ const ButtonIcon: FC<ButtonProps> = ({ iconName, onPress }) => {
           justifyContent='center'
           alignItems='center'
           onPress={onPress}
-          pressStyle={{scale:0.4}}
+          pressStyle={{ scale: 0.4 }}
           unstyled
         />
       </Tooltip.Trigger>

@@ -33,10 +33,18 @@ import { getCurrentDateTime } from '@/utils/getCurrentDateTime';
 import Toast from 'react-native-toast-message';
 
 export default function Create() {
+  const { userId } = useAuth();
+
+  const {
+    token,
+    user_data: { username, posts },
+  } = useContext(UserContext);
+
   const [isEnabled, setEnabledElements] = useState(false);
   const [allowLocation, setAllowLocation] = useState(false);
   const [file, setFile] = useState(null);
   const [errorUpload, setError] = useState(null);
+  const [base64Image, setBase64Image] = useState(null);
   const queryClient = useQueryClient();
 
   const pickImg = async () => {
@@ -48,73 +56,64 @@ export default function Create() {
         <AlertDialogDescription>{errorUpload}</AlertDialogDescription>
       </AlertDialog>;
     } else {
-      const result = await ImagePicker.launchImageLibraryAsync();
-      var uri = '';
-      result.assets.map((asset) => (uri = asset.uri));
+      const result = await ImagePicker.launchImageLibraryAsync({
+        base64: true,
+      });
+
+      let uriStr = '';
+      let base64Str = '';
+
+      result.assets.map(({ uri, base64 }) => {
+        uriStr = uri;
+        base64Str = base64;
+      });
+
       if (!result.canceled) {
-        setFile(uri);
+        setFile(uriStr);
+        setBase64Image(base64Str);
         setError(null);
       }
     }
   };
 
-  const {
-    token,
-    user_data: { username, posts },
-  } = useContext(UserContext);
-  const { getToken, userId } = useAuth();
-
-  let postData = {
+  const postData = {
     author: `users/${userId}`,
     comments: [],
-    creation_date: getCurrentDateTime(),
+    creation_date: '',
     description: '',
-    likes: 0,
+    likes: [],
     location: '',
-    pictures: [file],
+    pictures: [],
     username: username,
   };
 
-  let recipeData = {
+  const recipeData = {
     author: `users/${userId}`,
     comments: [],
-    creation_date: getCurrentDateTime(),
+    creation_date: '',
     description: '',
-    likes: 0,
+    likes: [],
     location: '',
     ingredients: '',
     steps: '',
-    pictures: [file],
+    pictures: [],
     username: username,
   };
 
   const { mutate, error } = useMutation({
     // mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
-    mutationFn: (newData: any) => {
-      if (!isEnabled) {
-        // for byte
-        console.log(newData);
-        const response = axios.post(
-          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts`,
-          newData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        return response.data;
-      } else {
-        // for recipe
-        const response = axios.post(
-          `${process.env.EXPO_PUBLIC_IP_ADDR}/api/recipes`,
-          newData,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          },
-        );
-        return response.data;
-      }
-    },
-    // Create New Post and Update Profile Page To Display It
+    mutationFn: async (newData: any) => {
+      // for byte
+      const response = await axios.post(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${!isEnabled ? 'posts' : 'recipes'}`,
+        newData,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+
+      return response.data;
+    }, // Function that defines how to fetch data for this mutation
     onSuccess: () => {
       // Invalidate cache for all post queries
       posts.forEach((post) => {
@@ -166,6 +165,8 @@ export default function Create() {
       if (allowLocation) {
         postData.location = longitude + ',' + latitude;
       }
+      postData.pictures = [base64Image];
+      postData.creation_date = getCurrentDateTime();
       mutate(postData);
     } catch (err) {
       // error
@@ -185,6 +186,8 @@ export default function Create() {
       if (allowLocation) {
         recipeData.location = longitude + ',' + latitude;
       }
+      recipeData.pictures = [base64Image];
+      recipeData.creation_date = getCurrentDateTime();
       mutate(recipeData);
     } catch (err) {
       //error

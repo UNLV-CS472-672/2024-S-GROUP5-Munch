@@ -35,7 +35,10 @@ import Toast from 'react-native-toast-message';
 export default function Create() {
   const { userId } = useAuth();
 
-  const { token, user_data: { username, posts } } = useContext(UserContext);
+  const {
+    token,
+    user_data: { username, posts },
+  } = useContext(UserContext);
 
   const [isEnabled, setEnabledElements] = useState(false);
   const [allowLocation, setAllowLocation] = useState(false);
@@ -53,19 +56,21 @@ export default function Create() {
         <AlertDialogDescription>{errorUpload}</AlertDialogDescription>
       </AlertDialog>;
     } else {
-      const result = await ImagePicker.launchImageLibraryAsync({ base64: true });
+      const result = await ImagePicker.launchImageLibraryAsync({
+        base64: true,
+      });
 
       let uriStr = '';
-      let base64Str = ''
+      let base64Str = '';
 
       result.assets.map(({ uri, base64 }) => {
-        uriStr = uri
-        base64Str = base64
+        uriStr = uri;
+        base64Str = base64;
       });
 
       if (!result.canceled) {
         setFile(uriStr);
-        setBase64Image(base64Str)
+        setBase64Image(base64Str);
         setError(null);
       }
     }
@@ -100,7 +105,7 @@ export default function Create() {
     mutationFn: async (newData: any) => {
       // for byte
       const response = await axios.post(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${ !isEnabled ? 'posts' : 'recipes' }`,
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${!isEnabled ? 'posts' : 'recipes'}`,
         newData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -161,7 +166,7 @@ export default function Create() {
         postData.location = longitude + ',' + latitude;
       }
       postData.pictures = [base64Image];
-      postData.creation_date = getCurrentDateTime()
+      postData.creation_date = getCurrentDateTime();
       mutate(postData);
     } catch (err) {
       // error

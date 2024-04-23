@@ -4,19 +4,23 @@ import { UserType } from '@/types/firebaseTypes';
 import { Byte, Recipe } from '@/types/post';
 import { useQueries, useQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useContext } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { View } from 'tamagui';
 
 const UserSlug = () => {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const props = useLocalSearchParams();
+  console.log('props', props);
   const { user_id, token } = useContext(UserContext);
   const isCurrentUser = id === user_id;
 
+  console.log('userid', props);
+  const router = useRouter();
   const { data: id_user_data, isLoading } = useQuery({
     queryKey: [id],
     queryFn: async () => {
-      console.log('refetch slug');
       const data = (
         await axios.get<UserType>(
           `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${id}`,

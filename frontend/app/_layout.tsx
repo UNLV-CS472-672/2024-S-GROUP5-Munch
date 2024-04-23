@@ -146,7 +146,6 @@ function RootLayoutNav() {
   const { isLoading } = useQuery({
     queryKey: ['userData', user],
     queryFn: async () => {
-      console.log('refetch in layout');
       if (!user) return {} as UserType;
       const token = await getToken();
       const res = (

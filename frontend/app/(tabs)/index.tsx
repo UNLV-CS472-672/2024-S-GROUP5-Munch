@@ -16,7 +16,7 @@ import { useCallback, useContext } from 'react';
 import { FlatList, SafeAreaView } from 'react-native';
 
 export default function Index() {
-  const { token, user_id } = useContext(UserContext);
+  const { token } = useContext(UserContext);
 
   //current route is wrong should use yelp api
   const { isLoading, data } = useQuery({

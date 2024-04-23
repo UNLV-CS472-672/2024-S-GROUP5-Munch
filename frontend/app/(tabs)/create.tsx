@@ -115,7 +115,7 @@ export default function Create() {
         queryClient.invalidateQueries([post]);
       });
 
-      Toast.show({ text1: 'Post created!'  });
+      Toast.show({ text1: 'Post created!' });
     },
     // Show error message
     onError: (error) => {

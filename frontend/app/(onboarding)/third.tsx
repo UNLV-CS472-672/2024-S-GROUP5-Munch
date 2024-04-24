@@ -12,23 +12,21 @@ import { Button, Form, Separator, Text, XStack, YStack, Image } from 'tamagui';
 const Third = () => {
   const router = useRouter();
 
-
   return (
     <View>
-    <Image
+      <Image
         style={{ width: 450, height: 800 }}
         source={{
           uri: 'https://i.ibb.co/B4mbqSp/Munch-Onboarding-03.png',
         }}
       />
-      <YStack gap={'$2'} paddingTop={'$5'} marginHorizontal={15}>
-      </YStack>
+      <YStack gap={'$2'} paddingTop={'$5'} marginHorizontal={15}></YStack>
       <YStack gap={'$1'} rowGap={'$2'}>
         <Button
           mx={'$4'}
           onPress={() => {
-          router.push('/login');
-        }}
+            router.push('/login');
+          }}
         >
           Join Us
         </Button>

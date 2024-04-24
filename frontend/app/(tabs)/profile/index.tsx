@@ -32,17 +32,17 @@ export default function Profile() {
   let { isLoading, posts } = useQueries({
     queries: user_data?.posts
       ? user_data.posts.map((post) => ({
-          queryKey: [post],
-          queryFn: async () => {
-            const res = await axios.get<Byte | Recipe>(
-              `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
-              {
-                headers: { Authorization: `Bearer ${token}` },
-              },
-            );
-            return { ...res.data, key: post };
-          },
-        }))
+        queryKey: [post],
+        queryFn: async () => {
+          const res = await axios.get<Byte | Recipe>(
+            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+            },
+          );
+          return { ...res.data, key: post };
+        },
+      }))
       : [],
     combine: (data) => ({
       isLoading: data.some((d) => d.isLoading),
@@ -77,7 +77,7 @@ export default function Profile() {
         <View height={'100%'} display='flex' justifyContent='space-between'>
           <YStack>
             <Card elevate size={'$3'} bordered unstyled>
-            {/* Card header*/}
+              {/* Card header*/}
               <XStack
                 backgroundColor={'whitesmoke'}
                 justifyContent='space-between'
@@ -89,7 +89,7 @@ export default function Profile() {
                   justifyContent='space-between'
                   alignItems='center'
                 ></Card.Header>
-                 {/* Avatar*/}
+                {/* Avatar*/}
                 <XStack>
                   <TouchableOpacity onPress={handleUserProfileChange}>
                     <Avatar
@@ -107,9 +107,8 @@ export default function Profile() {
                     {/* User name*/}
                     <H4>{user?.username}</H4>
                     {/* Name*/}
-                    <Paragraph>{`${user?.firstName} ${
-                      user?.lastName ?? ''
-                    }`}</Paragraph>
+                    <Paragraph>{`${user?.firstName} ${user?.lastName ?? ''
+                      }`}</Paragraph>
                     {/* Bio */}
                     <Paragraph>{`${user_data.bio}`}</Paragraph>
                   </YStack>

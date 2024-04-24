@@ -25,7 +25,7 @@ const Explore = () => {
   }, []);
 
   return (
-    <View>
+    <View display={'flex'} alignItems='center'>
       {!isLoading &&
         (data.length > 0 ? (
           <FlatList
@@ -36,9 +36,7 @@ const Explore = () => {
             initialNumToRender={5}
           />
         ) : (
-          <Text justifyContent='center' display='flex' height={'100%'}>
-            No new posts to show...
-          </Text>
+          <Text mt={'$6'}> No new posts to show...</Text>
         ))}
     </View>
   );

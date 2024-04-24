@@ -28,9 +28,8 @@ export default function Profile() {
   const { user, token, user_data } = useContext(UserContext);
 
   const router = useRouter();
-
   //use query to get all posts from user_data
-  const { isLoading, posts } = useQueries({
+  let { isLoading, posts } = useQueries({
     queries: user_data?.posts
       ? user_data.posts.map((post) => ({
           queryKey: [post],
@@ -41,7 +40,7 @@ export default function Profile() {
                 headers: { Authorization: `Bearer ${token}` },
               },
             );
-            return res.data;
+            return { ...res.data, key: post };
           },
         }))
       : [],
@@ -78,6 +77,7 @@ export default function Profile() {
         <View height={'100%'} display='flex' justifyContent='space-between'>
           <YStack>
             <Card elevate size={'$3'} bordered unstyled>
+            {/* Card header*/}
               <XStack
                 backgroundColor={'whitesmoke'}
                 justifyContent='space-between'
@@ -89,6 +89,7 @@ export default function Profile() {
                   justifyContent='space-between'
                   alignItems='center'
                 ></Card.Header>
+                 {/* Avatar*/}
                 <XStack>
                   <TouchableOpacity onPress={handleUserProfileChange}>
                     <Avatar
@@ -101,24 +102,31 @@ export default function Profile() {
                       <Avatar.Image src={user.imageUrl ?? ' '} />
                     </Avatar>
                   </TouchableOpacity>
+                  {/* User Info */}
                   <YStack gap={'$2'}>
+                    {/* User name*/}
                     <H4>{user?.username}</H4>
+                    {/* Name*/}
                     <Paragraph>{`${user?.firstName} ${
                       user?.lastName ?? ''
                     }`}</Paragraph>
+                    {/* Bio */}
+                    <Paragraph>{`${user_data.bio}`}</Paragraph>
                   </YStack>
                 </XStack>
                 <XStack gap={'$3'}>
+                  {/* Follower count */}
                   <YStack display='flex' alignItems='center'>
                     <Label fontSize={'$2'}>Followers</Label>
                     <Text>{user_data.followers.length ?? 0}</Text>
                   </YStack>
-
+                  {/* Following count*/}
                   <YStack display='flex' alignItems='center'>
                     <Label fontSize={'$2'}>Following</Label>
                     <Text>{user_data.following.length ?? 0}</Text>
                   </YStack>
                 </XStack>
+                {/* Edit button */}
                 <Link href='/profile/profileEditModal' asChild>
                   <Button
                     iconAfter={<Feather name={'edit'} size={20} />}

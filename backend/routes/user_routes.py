@@ -51,12 +51,30 @@ def get_user(user_id):
     user_data["bookmarks"] = [
         ref.path for ref in user_data.get("bookmarks", [])
     ]
-    user_data["followers"] = [
-        ref.path for ref in user_data.get("followers", [])
-    ]
-    user_data["following"] = [
-        ref.path for ref in user_data.get("following", [])
-    ]
+
+    # if there is nothing in the array then just skip over it, otherwise get all the follow info
+    if len(user_data["followers"]) != 0:
+        user_data["followers"] = [
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in user_data["followers"]
+        ]
+    else:
+        user_data["followers"] = []
+
+    if len(user_data["following"]) != 0:
+        user_data["following"] = [
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in user_data["following"]
+        ]
+    else:
+        user_data["following"] = []
+
     user_data["likes"] = [ref.path for ref in user_data.get("likes", [])]
     user_data["posts"] = [ref.path for ref in user_data.get("posts", [])]
     user_data["clerk_user_id"] = str(user_data["clerk_user_id"])
@@ -135,11 +153,6 @@ def update_user(user_id):
     # Get data from the request
     data = request.json
 
-    # Check that data is valid
-    validation_error, status_code = user_validation(data)
-    if validation_error:
-        return validation_error, status_code
-
     # The request has been validated, connect to the database
     try_connect_to_db()
 
@@ -158,12 +171,20 @@ def update_user(user_id):
 
         # Convert the followers list to a list of document references
         new_user_data["followers"] = [
-            db.document(follower) for follower in data["followers"]
+            {
+                "user": db.document(follower["user"]),
+                "timestamp": follower["timestamp"],
+            }
+            for follower in data["followers"]
         ]
 
         # Convert the following list to a list of document references
         new_user_data["following"] = [
-            db.document(following) for following in data["following"]
+            {
+                "user": db.document(follow["user"]),
+                "timestamp": follow["timestamp"],
+            }
+            for follow in data["following"]
         ]
 
         # Convert the likes list to a list of document references

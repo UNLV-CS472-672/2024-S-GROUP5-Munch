@@ -36,7 +36,7 @@ export default function Profile() {
     }),
   });
 
-  //handle profile pic change
+  // handle profile pic change
   const handleUserProfileChange = async () => {
     let pfp = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,

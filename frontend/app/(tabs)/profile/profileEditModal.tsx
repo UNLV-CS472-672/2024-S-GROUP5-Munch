@@ -18,7 +18,7 @@ const ProfileEditModal = () => {
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty, dirtyFields },
+    formState: { isDirty, dirtyFields },
   } = useForm<UserState>({
     defaultValues: {
       username: user?.username,
@@ -45,7 +45,6 @@ const ProfileEditModal = () => {
       Toast.show({ text1: err.message, type: 'error' });
     },
   });
-  const { token, user_data, user_id: userId } = useContext(UserContext);
 
   const updateUserData: SubmitHandler<UserState> = async (data) => {
     try {
@@ -60,23 +59,7 @@ const ProfileEditModal = () => {
         });
       }
       if (isNotDirtyClerk) {
-        console.log({ ...user_data, bio: data.bio });
-        mutate({ ...user_data, bio: data.bio });
-        // create userData to pass to backend
-        const userData = {
-          ...user_data,
-          bio: data.bio,
-          username: data.username,
-        };
-
-        await axios
-          .patch(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`, // API route
-            userData, // userData to update
-            { headers: { Authorization: `Bearer: ${token}` } }, // auth header
-          )
-          .then(() => user?.update({ username: data.username })) // update user username
-          .catch((error) => console.log('error:', error.message)); // console log any errors
+        mutate({ ...user_data, bio: data.bio, username: data.username });
       }
       if (isDirty) {
         Toast.show({ text1: 'Profile Updated', type: 'success' });

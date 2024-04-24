@@ -2,15 +2,14 @@ import { Subtitle } from '@/tamagui.config';
 import { Byte, Recipe } from '@/types/post';
 import { getDateDifference } from '@/utils/getCurrentDateTime';
 import { isByte, isRecipe } from '@/utils/typeGuard';
-import { Link, useRouter } from 'expo-router';
-import React, { FC, useContext, useState } from 'react';
+import { useRouter } from 'expo-router';
+import React, { FC, useState } from 'react';
 import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
 import { EditPost } from '@/app/edit/editPost';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { UserContext } from '@/contexts/UserContext';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-expo';
 import axios from 'axios';
 
@@ -43,10 +42,9 @@ const Post: FC<PostProps> = ({ post }) => {
 
   // Used to query and mutate
   const queryClient = useQueryClient();
-  const { token } = useContext(UserContext);
+
   const { getToken, userId } = useAuth();
   const postId = key.split('/')[1];
-  //const postId = "eh07WeBEtSR2OIILJuj5"
   // Like button state
   const [liked, setLiked] = useState(true);
 
@@ -55,41 +53,12 @@ const Post: FC<PostProps> = ({ post }) => {
     user_id: userId,
     post_id: postId,
   };
-  // Get number of likes
-  const getLikes = async () => {
-    const response = await axios.get(
-      `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
-    return response.data.likes;
-  };
-
-  const {
-    data: likesCount,
-    error: likesError,
-    isLoading: likesLoading,
-  } = useQuery({
-    queryKey: ['likes'],
-    queryFn: getLikes,
-  });
 
   // Like/Unlike a post
-  const {
-    mutateAsync: changeLikes,
-    isPending,
-    data,
-    error,
-  } = useMutation({
+  const { mutateAsync: changeLikes, error } = useMutation({
     mutationFn: async () => {
       // Determine whether to like or unlike the post
       const likeAction = liked ? 'like' : 'unlike';
-
-      // Status message to show the API call
-      console.log(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
-      );
 
       // Do the API call
       const response = await axios.patch(
@@ -102,8 +71,8 @@ const Post: FC<PostProps> = ({ post }) => {
       return response.data;
     },
     // Update the like count
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['likes'] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [author] });
     },
     // Show error message in console
     onError: () => {
@@ -115,9 +84,6 @@ const Post: FC<PostProps> = ({ post }) => {
   const handleLike = async () => {
     // Invert the like state
     setLiked(!liked);
-
-    // Status message
-    liked ? console.log('Liking the post!') : console.log('Unliking the post!');
 
     // Like or unlike the post based on liked state
     await changeLikes();
@@ -154,13 +120,7 @@ const Post: FC<PostProps> = ({ post }) => {
             {/*Like*/}
             <ButtonIcon iconName={'heart'} onPress={handleLike} />
             {/*Display number of likes*/}
-            {likesLoading ? (
-              <Text>Loading</Text>
-            ) : likesError ? (
-              <Text>-1</Text>
-            ) : (
-              <Text>{likesCount}</Text>
-            )}
+            <Text>{likes}</Text>
           </XStack>
           {/*Comment*/}
           <ButtonIcon

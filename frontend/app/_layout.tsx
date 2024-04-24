@@ -18,7 +18,6 @@ import axios from 'axios';
 import { useFonts } from 'expo-font';
 import {
   enableNetworkProviderAsync,
-  getCurrentPositionAsync,
   requestForegroundPermissionsAsync,
 } from 'expo-location';
 import { Slot, Stack, useRouter, useSegments } from 'expo-router';
@@ -79,8 +78,8 @@ export default function RootLayout() {
 
   return (
     <ClerkProvider publishableKey={CLERK_KEY!} tokenCache={tokenCache}>
-      <TamaguiProvider config={config} defaultTheme={colorScheme as string}>
-        <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <TamaguiProvider config={config} defaultTheme={colorScheme as string}>
           <UserContext.Provider
             value={{
               token: userContext.token,
@@ -96,8 +95,8 @@ export default function RootLayout() {
             </GestureHandlerRootView>
             {/* <DevToolsBubble />  // uncomment for dev tools */}
           </UserContext.Provider>
-        </QueryClientProvider>
-      </TamaguiProvider>
+        </TamaguiProvider>
+      </QueryClientProvider>
     </ClerkProvider>
   );
 }
@@ -144,7 +143,7 @@ function RootLayoutNav() {
   };
 
   const { isLoading } = useQuery({
-    queryKey: ['userData', user],
+    queryKey: ['userData', user.id],
     queryFn: async () => {
       if (!user) return {} as UserType;
       const token = await getToken();

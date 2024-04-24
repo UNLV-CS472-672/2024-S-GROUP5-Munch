@@ -6,7 +6,7 @@ import { Feather } from '@expo/vector-icons';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import axios from 'axios';
 import { Link, useRouter } from 'expo-router';
-import { FC, useContext } from 'react';
+import { FC, useContext, useState } from 'react';
 import { FlatList, TouchableOpacity } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
 import {
@@ -36,8 +36,11 @@ const Author: FC<AuthorProps> = ({
   profilePicChange,
   user_data,
 }) => {
-  const { user_id, token } = useContext(UserContext);
-  const isFollowing = user_data.following.includes(user_id);
+  const { token, user_data: self_data, user_id } = useContext(UserContext);
+  const [isFollowing, setIsFollowing] = useState(
+    self_data.following.includes(`users/${user_data.clerk_user_id}`),
+  );
+
   const queryClient = useQueryClient();
   const router = useRouter();
 
@@ -51,10 +54,11 @@ const Author: FC<AuthorProps> = ({
           { headers: { Authorization: `Bearer ${token}` } },
         )
       ).data,
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ['userData', user_data.clerk_user_id],
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: ['userData', user_id, 'explore'],
       });
+      setIsFollowing(!isFollowing);
     },
     onError: () => {
       Toast.show({

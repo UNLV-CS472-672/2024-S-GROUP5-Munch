@@ -239,7 +239,7 @@ def get_non_following_posts(user_id):
     filtered_post_data = []
     for doc in post_doc:
         post_data[doc.id] = doc.to_dict()
-        post_data[doc.id]["key"] = doc.id
+        post_data[doc.id]["key"] = "posts/" + doc.id
         post_data[doc.id]["author"] = post_data[doc.id]["author"].path
         if (
             user_id != post_data[doc.id]["author"].split("/")[1]

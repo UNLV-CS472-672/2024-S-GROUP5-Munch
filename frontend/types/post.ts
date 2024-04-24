@@ -3,7 +3,7 @@ type PostBase = {
   comments: Comment[];
   creation_date: string;
   description: string;
-  likes: number;
+  likes: Likes[];
   pictures: string[];
   username: string;
   key: string;
@@ -18,6 +18,10 @@ export type Recipe = PostBase & {
   ingredients: string[];
 };
 
+export type Likes = {
+  timestamp: string;
+  user: string;
+};
 export type Comment = {
   author: string;
   comment: string;

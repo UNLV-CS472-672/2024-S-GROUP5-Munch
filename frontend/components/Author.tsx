@@ -38,7 +38,9 @@ const Author: FC<AuthorProps> = ({
 }) => {
   const { token, user_data: self_data, user_id } = useContext(UserContext);
   const [isFollowing, setIsFollowing] = useState(
-    self_data.following.includes(`users/${user_data.clerk_user_id}`),
+    Object.values(self_data.following).some(
+      (user) => user.user === `users/${user_data.clerk_user_id}`,
+    ),
   );
 
   const queryClient = useQueryClient();

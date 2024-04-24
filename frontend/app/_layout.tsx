@@ -143,7 +143,7 @@ function RootLayoutNav() {
   };
 
   const { isLoading } = useQuery({
-    queryKey: ['userData', user.id],
+    queryKey: ['userData', user],
     queryFn: async () => {
       if (!user) return {} as UserType;
       const token = await getToken();

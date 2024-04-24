@@ -3,7 +3,7 @@ import { Byte, Recipe } from '@/types/post';
 import { getDateDifference } from '@/utils/getCurrentDateTime';
 import { isByte, isRecipe } from '@/utils/typeGuard';
 import { useRouter } from 'expo-router';
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { Image, Text, XStack, YStack } from 'tamagui';
@@ -12,6 +12,7 @@ import { EditPost } from '@/app/edit/editPost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-expo';
 import axios from 'axios';
+import { UserContext } from '@/contexts/UserContext';
 
 interface PostProps {
   post: Byte | Recipe;
@@ -42,11 +43,14 @@ const Post: FC<PostProps> = ({ post }) => {
 
   // Used to query and mutate
   const queryClient = useQueryClient();
+  const { user_data } = useContext(UserContext);
 
   const { getToken, userId } = useAuth();
   const postId = key.split('/')[1];
   // Like button state
-  const [liked, setLiked] = useState(true);
+  const [liked, setLiked] = useState(
+    user_data.likes.some((item) => item.user === author),
+  );
 
   // Data that will be passed in order to change the post's likes
   const likeData = {
@@ -118,9 +122,13 @@ const Post: FC<PostProps> = ({ post }) => {
         <XStack display='flex' justifyContent='center'>
           <XStack alignItems='center'>
             {/*Like*/}
-            <ButtonIcon iconName={'heart'} onPress={handleLike} />
+            <ButtonIcon
+              iconName={'heart'}
+              onPress={handleLike}
+              sx={{ color: liked ? 'red' : 'white' }}
+            />
             {/*Display number of likes*/}
-            <Text>{likes}</Text>
+            <Text>{likes.length}</Text>
           </XStack>
           {/*Comment*/}
           <ButtonIcon

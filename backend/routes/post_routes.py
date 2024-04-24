@@ -235,7 +235,7 @@ def get_non_following_posts(user_id):
     user_doc = user_ref.get()
     user_data = user_doc.to_dict()
 
-    following = [user.path for user in user_data["following"]]
+    following = [user["user"].path for user in user_data["following"]]
 
     post_data = {}
     filtered_post_data = []

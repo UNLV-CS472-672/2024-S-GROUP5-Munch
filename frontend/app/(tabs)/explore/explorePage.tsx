@@ -27,7 +27,7 @@ const Explore = () => {
   return (
     <View display={'flex'} alignItems='center'>
       {!isLoading &&
-        (data.length > 0 ? (
+        (data?.length > 0 ? (
           <FlatList
             data={data}
             renderItem={renderItem}

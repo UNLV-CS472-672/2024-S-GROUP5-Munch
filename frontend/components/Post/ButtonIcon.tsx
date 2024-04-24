@@ -6,15 +6,16 @@ import { IconNames } from './icons';
 interface ButtonProps {
   iconName: IconNames;
   onPress: () => void;
+  sx?: Record<string, string>;
 }
-const ButtonIcon: FC<ButtonProps> = ({ iconName, onPress }) => {
+const ButtonIcon: FC<ButtonProps> = ({ iconName, onPress, sx }) => {
   return (
     <Tooltip placement='top-start'>
       <Tooltip.Trigger>
         <Button
           size={'$4'}
           circular
-          icon={<EvilIcons name={iconName} size={30} />}
+          icon={<EvilIcons name={iconName} size={30} {...sx} />}
           display='flex'
           justifyContent='center'
           alignItems='center'

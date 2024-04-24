@@ -11,12 +11,12 @@ const Friends = () => {
   const { token, user_data } = useContext(UserContext);
   const { isLoading, posts } = useQueries({
     queries: user_data.following.map((follower) => ({
-      queryKey: [follower],
+      queryKey: [follower.user],
       queryFn: async () => {
         //first get all the users info
         const follower_data = (
           await axios.get<UserType>(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${follower}`,
+            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${follower.user}`,
             { headers: { Authorization: `Bearer ${token}` } },
           )
         ).data;

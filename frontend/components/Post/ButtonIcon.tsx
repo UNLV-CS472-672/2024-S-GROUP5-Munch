@@ -1,4 +1,4 @@
-import { EvilIcons } from '@expo/vector-icons';
+import { FontAwesome } from '@expo/vector-icons';
 import { FC } from 'react';
 import { Button, Paragraph, Tooltip } from 'tamagui';
 import { IconNames } from './icons';
@@ -15,11 +15,13 @@ const ButtonIcon: FC<ButtonProps> = ({ iconName, onPress, sx }) => {
         <Button
           size={'$4'}
           circular
-          icon={<EvilIcons name={iconName} size={30} {...sx} />}
+          animation={'bouncy'}
+          icon={<FontAwesome name={iconName} size={25} {...sx} />}
           display='flex'
           justifyContent='center'
           alignItems='center'
           onPress={onPress}
+          pressStyle={{ scale: 0.4 }}
           unstyled
         />
       </Tooltip.Trigger>

@@ -6,13 +6,14 @@ import { useRouter } from 'expo-router';
 import React, { FC, useContext, useState } from 'react';
 import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
-import { Image, Text, XStack, YStack } from 'tamagui';
+import { Button, Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
 import { EditPost } from '@/app/edit/editPost';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@clerk/clerk-expo';
 import axios from 'axios';
 import { UserContext } from '@/contexts/UserContext';
+import { AntDesign } from '@expo/vector-icons';
 
 interface PostProps {
   post: Byte | Recipe;
@@ -84,11 +85,27 @@ const Post: FC<PostProps> = ({ post }) => {
     },
   });
 
+  // Helper to handle a like interaction
+  useEffect(
+    () => {
+      // Do not run on the first render
+      if (isFirstRender.current) {
+        isFirstRender.current = false;
+        return;
+      }
+      // Status message
+      liked
+        ? console.log('Liking the post!')
+        : console.log('Unliking the post!');
+      changeLikes();
+    },
+    [liked], // effect only activates when liked is updated
+  );
+
   // Handle user liking the post
   const handleLike = async () => {
     // Invert the like state
     setLiked(!liked);
-
     // Like or unlike the post based on liked state
     await changeLikes();
   };
@@ -120,35 +137,43 @@ const Post: FC<PostProps> = ({ post }) => {
       <YStack display='flex' rowGap={'$1'} marginBottom={'$10'}>
         <EditPost post={post} />
         <XStack display='flex' justifyContent='center'>
-          <XStack alignItems='center'>
+          <XStack alignItems='center' justifyContent='space-evenly'>
             {/*Like*/}
-            <ButtonIcon
-              iconName={'heart'}
+            <Button
+              size={'$4'}
+              circular
+              animation={'bouncy'}
+              animateOnly={['transform']}
+              icon={
+                <AntDesign
+                  size={22}
+                  name={liked ? 'heart' : 'hearto'}
+                  color={liked ? 'red' : 'black'}
+                />
+              }
+              justifyContent='center'
+              alignItems='center'
               onPress={handleLike}
-              sx={{ color: liked ? 'red' : 'white' }}
+              pressStyle={{ scale: 0.4 }}
+              padding={10}
+              unstyled
             />
             {/*Display number of likes*/}
-            <Text>{likes.length}</Text>
+            <Text>
+              {likes.length}
+            </Text>
           </XStack>
           {/*Comment*/}
           <ButtonIcon
-            iconName='comment'
+            iconName='comment-o'
             onPress={() => {
-              router.push({
-                pathname: '/(modals)/comments',
-                params: {
-                  comments: JSON.stringify(comments),
-                  post_id: JSON.stringify(key),
-                },
-              });
+              router.push('/(modals)/comments');
             }}
           />
           {/*Bookmark*/}
-          <ButtonIcon iconName='star' onPress={handleBookmark} />
+          <ButtonIcon iconName='bookmark-o' onPress={handleBookmark} />
           {/*Location*/}
-          {byte?.location && (
-            <ButtonIcon iconName='location' onPress={openMaps} />
-          )}
+          {byte?.location && <ButtonIcon iconName='map-o' onPress={openMaps} />}
         </XStack>
         {/*USER INFO*/}
         <YStack px={'$2.5'} gap={'$1'}>

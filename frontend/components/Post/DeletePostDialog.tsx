@@ -1,17 +1,13 @@
 import axios from 'axios';
 import { useContext } from 'react';
 import { LogBox } from 'react-native';
-import { useAuth } from '@clerk/clerk-react';
 import { router } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { Adapt, Button, Dialog, Sheet, XStack } from 'tamagui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-
-import UserInput from '@/components/UserInput';
 import { UserContext } from '@/contexts/UserContext';
 
-export default function DeletePostDialog(postId) {
+export default function DeletePostDialog({ postId }: { postId: string }) {
   LogBox.ignoreLogs(['??']);
   const {
     token,
@@ -20,9 +16,9 @@ export default function DeletePostDialog(postId) {
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationFn: () => {
-      const response = axios.delete(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId.postId}`,
+    mutationFn: async () => {
+      const response = await axios.delete(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -33,12 +29,12 @@ export default function DeletePostDialog(postId) {
     onSuccess: () => {
       // Invalidate cache for all post queries
       posts.forEach((post) => {
-        queryClient.invalidateQueries([post]);
+        queryClient.invalidateQueries({ queryKey: [post] });
       });
       Toast.show({ text1: 'Post Deleted' });
     },
     // Show error message in console
-    onError: () => {
+    onError: (error) => {
       Toast.show({
         text1: 'Error, post not deleted. Please submit a bug report.',
       });
@@ -49,7 +45,7 @@ export default function DeletePostDialog(postId) {
   // run when submitted
   const handleSubmit = async () => {
     try {
-      await mutate();
+      mutate();
       router.navigate('/(tabs)/profile'); //post is deleted, go to profile home page
     } catch (err) {
       throw new Error(err.message);

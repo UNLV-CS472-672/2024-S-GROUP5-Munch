@@ -18,7 +18,7 @@ interface PostProps {
   post: Byte | Recipe;
 }
 
-export function EditPostDialog({ post }: FC<PostProps>) {
+export function EditPostDialog({ post }: PostProps) {
   LogBox.ignoreLogs(['??']);
 
   const { token } = useContext(UserContext);
@@ -81,7 +81,7 @@ export function EditPostDialog({ post }: FC<PostProps>) {
     <>
       <Dialog modal>
         <Dialog.Trigger asChild>
-          <Button bordered minWidth='$14'>
+          <Button minWidth='$14' backgroundColor={'$blue8'}>
             Edit
           </Button>
         </Dialog.Trigger>

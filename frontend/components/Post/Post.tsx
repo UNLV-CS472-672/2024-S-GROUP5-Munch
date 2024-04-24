@@ -16,11 +16,10 @@ import { Button, Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
 import DeletePostDialog from './DeletePostDialog';
 import { EditPostDialog } from './EditPostDialog';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '@/contexts/UserContext';
 import { useAuth } from '@clerk/clerk-expo';
 import axios from 'axios';
-import { UserContext } from '@/contexts/UserContext';
 import { AntDesign } from '@expo/vector-icons';
 
 interface PostProps {

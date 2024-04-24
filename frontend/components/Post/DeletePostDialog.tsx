@@ -5,13 +5,7 @@ import { useAuth } from '@clerk/clerk-react';
 import { router } from 'expo-router';
 import { Feather } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
-import {
-  Adapt,
-  Button,
-  Dialog,
-  Sheet,
-  XStack,
-} from 'tamagui';
+import { Adapt, Button, Dialog, Sheet, XStack } from 'tamagui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import UserInput from '@/components/UserInput';
@@ -19,7 +13,10 @@ import { UserContext } from '@/contexts/UserContext';
 
 export default function DeletePostDialog(postId) {
   LogBox.ignoreLogs(['??']);
-  const { token, user_data: { posts }, } = useContext(UserContext);
+  const {
+    token,
+    user_data: { posts },
+  } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -50,15 +47,14 @@ export default function DeletePostDialog(postId) {
   });
 
   // run when submitted
-    const handleSubmit = async () => {
-      try {
-        await mutate();
-        router.navigate('/(tabs)/profile'); //post is deleted, go to profile home page
-      } catch (err) {
-        throw new Error(err.message);
-      }
-    };
-
+  const handleSubmit = async () => {
+    try {
+      await mutate();
+      router.navigate('/(tabs)/profile'); //post is deleted, go to profile home page
+    } catch (err) {
+      throw new Error(err.message);
+    }
+  };
 
   return (
     <>
@@ -98,30 +94,27 @@ export default function DeletePostDialog(postId) {
             exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
             gap='$4'
           >
-              <Dialog.Title>Delete Post</Dialog.Title>
-              <Dialog.Description>
-                Are you sure you want to delete this post? This action is irreversible!
-              </Dialog.Description>
+            <Dialog.Title>Delete Post</Dialog.Title>
+            <Dialog.Description>
+              Are you sure you want to delete this post? This action is
+              irreversible!
+            </Dialog.Description>
 
-              <XStack alignSelf='center' gap='$20' margin='$4'>
-                <Dialog.Close displayWhenAdapted asChild>
-                  <Button
-                    aria-label='Cancel'
-                  >
-                    Cancel
-                  </Button>
-                </Dialog.Close>
+            <XStack alignSelf='center' gap='$20' margin='$4'>
+              <Dialog.Close displayWhenAdapted asChild>
+                <Button aria-label='Cancel'>Cancel</Button>
+              </Dialog.Close>
 
-                <Dialog.Close displayWhenAdapted asChild>
-                  <Button
-                    backgroundColor={'$red9'}
-                    aria-label='Delete'
-                    onPress={handleSubmit}
-                  >
-                    Delete
-                  </Button>
-                </Dialog.Close>
-              </XStack>
+              <Dialog.Close displayWhenAdapted asChild>
+                <Button
+                  backgroundColor={'$red9'}
+                  aria-label='Delete'
+                  onPress={handleSubmit}
+                >
+                  Delete
+                </Button>
+              </Dialog.Close>
+            </XStack>
           </Dialog.Content>
         </Dialog.Portal>
       </Dialog>

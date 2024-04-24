@@ -149,7 +149,7 @@ const Post: FC<PostProps> = ({ post }) => {
       />
       <YStack display='flex' rowGap={'$1'} marginBottom={'$10'}>
         <EditPost post={post} />
-        <DeletePostDialog postId={postId}/>
+        <DeletePostDialog postId={postId} />
         <XStack display='flex' justifyContent='center'>
           <XStack alignItems='center'>
             {/*Like*/}

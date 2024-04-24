@@ -89,7 +89,7 @@ export default function Profile() {
                   justifyContent='space-between'
                   alignItems='center'
                 ></Card.Header>
-                {/* Avatar*/}
+                {/* Avatar */}
                 <XStack>
                   <TouchableOpacity onPress={handleUserProfileChange}>
                     <Avatar

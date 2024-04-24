@@ -14,8 +14,10 @@ import {
 import Carousel from 'react-native-reanimated-carousel';
 import { Button, Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
-import { EditPost } from '@/app/edit/editPost';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import DeletePostDialog from './DeletePostDialog';
+import { EditPostDialog } from './EditPostDialog';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { UserContext } from '@/contexts/UserContext';
 import { useAuth } from '@clerk/clerk-expo';
 import axios from 'axios';
 import { UserContext } from '@/contexts/UserContext';
@@ -125,7 +127,12 @@ const Post: FC<PostProps> = ({ post }) => {
         )}
       />
       <YStack display='flex' rowGap={'$1'} marginBottom={'$10'}>
-        <EditPost post={post} />
+        {userId === author.split('/')[1] && (
+          <XStack display='flex' justifyContent='space-around'>
+            <EditPostDialog post={post} />
+            <DeletePostDialog postId={postId} />
+          </XStack>
+        )}
         <XStack display='flex' justifyContent='center'>
           <XStack alignItems='center' justifyContent='space-evenly'>
             {/*Like*/}

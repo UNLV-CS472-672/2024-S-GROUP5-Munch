@@ -50,7 +50,7 @@ export default function Profile() {
     }),
   });
 
-  //handle profile pic change
+  // handle profile pic change
   const handleUserProfileChange = async () => {
     let pfp = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
@@ -77,38 +77,56 @@ export default function Profile() {
         <View height={'100%'} display='flex' justifyContent='space-between'>
           <YStack>
             <Card elevate size={'$3'} bordered unstyled>
-              <XStack justifyContent='space-between'>
+              {/* Card header*/}
+              <XStack
+                backgroundColor={'whitesmoke'}
+                justifyContent='space-between'
+              >
                 <Card.Header
                   display='flex'
                   flexDirection='row'
                   gap={'$3'}
                   justifyContent='space-between'
                   alignItems='center'
-                >
+                ></Card.Header>
+                {/* Avatar */}
+                <XStack>
                   <TouchableOpacity onPress={handleUserProfileChange}>
-                    <Avatar circular size={'$5'}>
+                    <Avatar
+                      circular
+                      size={'$5'}
+                      marginRight={17}
+                      marginLeft={-50}
+                      marginTop={7}
+                    >
                       <Avatar.Image src={user.imageUrl ?? ' '} />
                     </Avatar>
                   </TouchableOpacity>
+                  {/* User Info */}
                   <YStack gap={'$2'}>
+                    {/* User name*/}
                     <H4>{user?.username}</H4>
+                    {/* Name*/}
                     <Paragraph>{`${user?.firstName} ${
                       user?.lastName ?? ''
                     }`}</Paragraph>
+                    {/* Bio */}
                     <Paragraph>{`${user_data.bio}`}</Paragraph>
                   </YStack>
-                </Card.Header>
+                </XStack>
                 <XStack gap={'$3'}>
+                  {/* Follower count */}
                   <YStack display='flex' alignItems='center'>
                     <Label fontSize={'$2'}>Followers</Label>
                     <Text>{user_data.followers.length ?? 0}</Text>
                   </YStack>
-
+                  {/* Following count*/}
                   <YStack display='flex' alignItems='center'>
                     <Label fontSize={'$2'}>Following</Label>
                     <Text>{user_data.following.length ?? 0}</Text>
                   </YStack>
                 </XStack>
+                {/* Edit button */}
                 <Link href='/profile/profileEditModal' asChild>
                   <Button
                     iconAfter={<Feather name={'edit'} size={20} />}

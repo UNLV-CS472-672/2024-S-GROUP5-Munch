@@ -4,7 +4,13 @@ import { getDateDifference } from '@/utils/getCurrentDateTime';
 import { isByte, isRecipe } from '@/utils/typeGuard';
 import { useRouter } from 'expo-router';
 import React, { FC, useContext, useState } from 'react';
-import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
+import {
+  Dimensions,
+  Linking,
+  Platform,
+  SafeAreaView,
+  useColorScheme,
+} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { Button, Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
@@ -35,6 +41,7 @@ const Post: FC<PostProps> = ({ post }) => {
   const recipe = isRecipe(post) ? post : null;
   const router = useRouter();
   const { height, width } = Dimensions.get('screen');
+  const theme = useColorScheme();
 
   const openMaps = async () => {
     const iosLink = `maps://0,0?q=${byte?.location}`;
@@ -50,7 +57,7 @@ const Post: FC<PostProps> = ({ post }) => {
   const postId = key.split('/')[1];
   // Like button state
   const [liked, setLiked] = useState(
-    user_data.likes.some((item) => item.user === author),
+    user_data.likes.includes(`posts/${postId}`),
   );
 
   // Data that will be passed in order to change the post's likes
@@ -84,23 +91,6 @@ const Post: FC<PostProps> = ({ post }) => {
       console.log('error:', error.message);
     },
   });
-
-  // Helper to handle a like interaction
-  useEffect(
-    () => {
-      // Do not run on the first render
-      if (isFirstRender.current) {
-        isFirstRender.current = false;
-        return;
-      }
-      // Status message
-      liked
-        ? console.log('Liking the post!')
-        : console.log('Unliking the post!');
-      changeLikes();
-    },
-    [liked], // effect only activates when liked is updated
-  );
 
   // Handle user liking the post
   const handleLike = async () => {
@@ -148,7 +138,7 @@ const Post: FC<PostProps> = ({ post }) => {
                 <AntDesign
                   size={22}
                   name={liked ? 'heart' : 'hearto'}
-                  color={liked ? 'red' : 'black'}
+                  color={liked ? 'red' : theme === 'dark' ? 'white' : 'black'}
                 />
               }
               justifyContent='center'
@@ -165,7 +155,13 @@ const Post: FC<PostProps> = ({ post }) => {
           <ButtonIcon
             iconName='comment-o'
             onPress={() => {
-              router.push('/(modals)/comments');
+              router.push({
+                pathname: '/(modals)/comments',
+                params: {
+                  comments: JSON.stringify(comments),
+                  post_id: key.split('/')[1],
+                },
+              });
             }}
           />
           {/*Bookmark*/}

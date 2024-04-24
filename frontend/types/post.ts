@@ -26,4 +26,6 @@ export type Comment = {
   author: string;
   comment: string;
   creation_date: string;
+  comment_id: string;
+  username: string;
 };

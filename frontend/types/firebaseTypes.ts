@@ -3,7 +3,7 @@ export type UserType = {
   bookmarks: string[];
   followers: string[];
   following: { timestamp: string; user: string }[];
-  likes: { timestamp: string; user: string }[];
+  likes: string[];
   posts: string[];
   username: string;
   clerk_user_id: string;

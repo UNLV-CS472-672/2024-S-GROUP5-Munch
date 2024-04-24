@@ -91,6 +91,20 @@ const Login = () => {
   return (
     <View>
       <YStack gap={'$2'} paddingTop={'$5'} marginHorizontal={15}>
+         <Image
+            style={{ width: 400, height: 300 }}
+            resizeMode='contain'
+            source={{
+              uri: 'https://drive.google.com/thumbnail?id=1iKHSAfc3ll-ACyneu2fVnKeZAxb8hBNy',
+            }}
+          />
+        <Image
+            style={{ width: 400, height: 150 }}
+            resizeMode='contain'
+            source={{
+              uri: 'https://drive.google.com/thumbnail?id=15h-LZk8-ng-VGI6ex5pkgFJaByvrEr8J',
+            }}
+          />
         <Form onSubmit={handleSubmit(manualSignIn)} gap={'$3'}>
           <Controller
             name='username'

@@ -8,6 +8,7 @@ import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
+import DeletePostDialog from './DeletePostDialog';
 import { EditPost } from '@/app/edit/editPost';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '@/contexts/UserContext';
@@ -149,6 +150,7 @@ const Post: FC<PostProps> = ({ post }) => {
       />
       <YStack display='flex' rowGap={'$1'} marginBottom={'$10'}>
         <EditPost post={post} />
+        <DeletePostDialog postId={postId}/>
         <XStack display='flex' justifyContent='center'>
           <XStack alignItems='center'>
             {/*Like*/}

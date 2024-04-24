@@ -77,7 +77,7 @@ export default function Profile() {
         <View height={'100%'} display='flex' justifyContent='space-between'>
           <YStack>
             <Card elevate size={'$3'} bordered unstyled>
-            {/* Card header*/}
+              {/* Card header*/}
               <XStack
                 backgroundColor={'whitesmoke'}
                 justifyContent='space-between'
@@ -89,7 +89,7 @@ export default function Profile() {
                   justifyContent='space-between'
                   alignItems='center'
                 ></Card.Header>
-                 {/* Avatar*/}
+                {/* Avatar*/}
                 <XStack>
                   <TouchableOpacity onPress={handleUserProfileChange}>
                     <Avatar

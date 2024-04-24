@@ -11,14 +11,32 @@ const SplitView = () => {
     <SafeAreaView>
       <XStack
         display={'flex'}
-        justifyContent='space-around'
-        width={'50%'}
+        justifyContent='center'
+        width={'100%'}
         alignItems='center'
+        gap={'$8'}
+        py={'$2'}
       >
-        <Button unstyled onPress={() => setView('explore')}>
+        <Button
+          variant={curView === 'explore' ? 'outlined' : undefined}
+          size={'$3'}
+          display={'flex'}
+          justifyContent='center'
+          alignItems='center'
+          unstyled
+          onPress={() => setView('explore')}
+        >
           Explore
         </Button>
-        <Button unstyled onPress={() => setView('friends')}>
+        <Button
+          variant={curView === 'friends' ? 'outlined' : undefined}
+          display={'flex'}
+          justifyContent='center'
+          alignItems='center'
+          size={'$3'}
+          unstyled
+          onPress={() => setView('friends')}
+        >
           Friends
         </Button>
       </XStack>

@@ -159,9 +159,7 @@ const Post: FC<PostProps> = ({ post }) => {
               unstyled
             />
             {/*Display number of likes*/}
-            <Text>
-              {likes.length}
-            </Text>
+            <Text>{likes.length}</Text>
           </XStack>
           {/*Comment*/}
           <ButtonIcon

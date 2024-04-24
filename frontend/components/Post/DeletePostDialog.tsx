@@ -22,7 +22,7 @@ export default function DeletePostDialog(postId) {
   const { token, user_data: { posts }, } = useContext(UserContext);
   const queryClient = useQueryClient();
 
-  const { mutate, isPending } = useMutation({
+  const { mutate } = useMutation({
     mutationFn: () => {
       const response = axios.delete(
         `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId.postId}`,
@@ -53,7 +53,7 @@ export default function DeletePostDialog(postId) {
     const handleSubmit = async () => {
       try {
         await mutate();
-        router.navigate('/(tabs)/profile'); //reload page for newest updates on frontend
+        router.navigate('/(tabs)/profile'); //post is deleted, go to profile home page
       } catch (err) {
         throw new Error(err.message);
       }
@@ -118,7 +118,7 @@ export default function DeletePostDialog(postId) {
                     aria-label='Delete'
                     onPress={handleSubmit}
                   >
-                    {isPending ? 'Deleting...' : 'Delete'}
+                    Delete
                   </Button>
                 </Dialog.Close>
               </XStack>

@@ -47,7 +47,6 @@ const Post: FC<PostProps> = ({ post }) => {
   const { token } = useContext(UserContext);
   const { getToken, userId } = useAuth();
   const postId = key.split('/')[1];
-  //const postId = "eh07WeBEtSR2OIILJuj5"
   // Like button state
   const [liked, setLiked] = useState(true);
 

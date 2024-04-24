@@ -102,7 +102,9 @@ export function EditPostDialog({ post }: FC<PostProps>) {
     <>
       <Dialog modal>
         <Dialog.Trigger asChild>
-          <Button bordered minWidth='$14' >Edit</Button>
+          <Button bordered minWidth='$14'>
+            Edit
+          </Button>
         </Dialog.Trigger>
 
         <Adapt when='sm' platform='touch'>

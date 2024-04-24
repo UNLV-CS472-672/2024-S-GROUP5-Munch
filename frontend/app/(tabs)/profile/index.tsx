@@ -78,7 +78,10 @@ export default function Profile() {
         <View height={'100%'} display='flex' justifyContent='space-between'>
           <YStack>
             <Card elevate size={'$3'} bordered unstyled>
-              <XStack backgroundColor={'whitesmoke'} justifyContent='space-between'>
+              <XStack
+                backgroundColor={'whitesmoke'}
+                justifyContent='space-between'
+              >
                 <Card.Header
                   display='flex'
                   flexDirection='row'

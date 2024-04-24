@@ -22,7 +22,6 @@ export function EditPostDialog({ post }: PostProps) {
   LogBox.ignoreLogs(['??']);
 
   const { token } = useContext(UserContext);
-  const { getToken, userId } = useAuth();
   const queryClient = useQueryClient();
   let updatedPostData = { ...post };
   delete updatedPostData.key;

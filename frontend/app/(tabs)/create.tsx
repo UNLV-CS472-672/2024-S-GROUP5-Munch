@@ -37,7 +37,7 @@ export default function Create() {
 
   const {
     token,
-    user_data: { username, posts },
+    user_data: { username },
     user,
   } = useContext(UserContext);
 

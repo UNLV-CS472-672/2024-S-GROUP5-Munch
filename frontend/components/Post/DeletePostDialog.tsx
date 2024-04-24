@@ -9,10 +9,7 @@ import { UserContext } from '@/contexts/UserContext';
 
 export default function DeletePostDialog({ postId }: { postId: string }) {
   LogBox.ignoreLogs(['??']);
-  const {
-    token,
-    user_data: { posts },
-  } = useContext(UserContext);
+  const { token, user_data, user } = useContext(UserContext);
   const queryClient = useQueryClient();
 
   const { mutate } = useMutation({
@@ -26,10 +23,10 @@ export default function DeletePostDialog({ postId }: { postId: string }) {
       return response.data;
     },
     // delete the post
-    onSuccess: () => {
+    onSuccess: async () => {
       // Invalidate cache for all post queries
-      posts.forEach((post) => {
-        queryClient.invalidateQueries({ queryKey: [post] });
+      await queryClient.invalidateQueries({
+        queryKey: ['userData', user],
       });
       Toast.show({ text1: 'Post Deleted' });
     },

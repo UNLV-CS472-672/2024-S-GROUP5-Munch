@@ -46,7 +46,7 @@ class CommentTest(TestCase):
             "comments": [],
             "creation_date": "2024-03-20 21:41:30.786000+00:00",
             "description": "Comment Unit Test Post",
-            "likes": 0,
+            "likes": [],
             "location": "36.1048299,-115.1454664",
             "pictures": [],
             "username": "test_comment_user",
@@ -102,3 +102,5 @@ class CommentTest(TestCase):
             f"api/posts/comment/ThisDoesntWork/{post_id}/{comment_id}"
         )
         self.assertEqual(error_post.status_code, status.HTTP_404_NOT_FOUND)
+
+        delete = self.client.delete(f"/api/users/{testing_user_id}")

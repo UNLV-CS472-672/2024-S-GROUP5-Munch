@@ -50,7 +50,7 @@ export default function Profile() {
     }),
   });
 
-  //handle profile pic change
+  // handle profile pic change
   const handleUserProfileChange = async () => {
     let pfp = await launchImageLibraryAsync({
       mediaTypes: MediaTypeOptions.Images,
@@ -77,18 +77,28 @@ export default function Profile() {
         <View height={'100%'} display='flex' justifyContent='space-between'>
           <YStack>
             <Card elevate size={'$3'} bordered unstyled>
-              <XStack justifyContent='space-between'>
-                {/* Card header*/}
+              {/* Card header*/}
+              <XStack
+                backgroundColor={'whitesmoke'}
+                justifyContent='space-between'
+              >
                 <Card.Header
                   display='flex'
                   flexDirection='row'
                   gap={'$3'}
                   justifyContent='space-between'
                   alignItems='center'
-                >
-                  {/* Avatar*/}
+                ></Card.Header>
+                {/* Avatar */}
+                <XStack>
                   <TouchableOpacity onPress={handleUserProfileChange}>
-                    <Avatar circular size={'$5'}>
+                    <Avatar
+                      circular
+                      size={'$5'}
+                      marginRight={17}
+                      marginLeft={-50}
+                      marginTop={7}
+                    >
                       <Avatar.Image src={user.imageUrl ?? ' '} />
                     </Avatar>
                   </TouchableOpacity>
@@ -103,7 +113,7 @@ export default function Profile() {
                     {/* Bio */}
                     <Paragraph>{`${user_data.bio}`}</Paragraph>
                   </YStack>
-                </Card.Header>
+                </XStack>
                 <XStack gap={'$3'}>
                   {/* Follower count */}
                   <YStack display='flex' alignItems='center'>

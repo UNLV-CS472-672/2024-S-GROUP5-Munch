@@ -48,6 +48,18 @@ def get_post(post_id):
     for comment in post_data["comments"]:
         comment["author"] = comment["author"].path
 
+    # if there is nothing in the array then just skip over it, otherwise get all the like info
+    if len(post_data["likes"]) != 0:
+        post_data["likes"] = [
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in post_data["likes"]
+        ]
+    else:
+        post_data["likes"] = []
+
     return jsonify(post_data), status.HTTP_200_OK
 
 
@@ -63,11 +75,6 @@ def create_post():
     # Get data, check if it is empty
     res = request.json
 
-    # Check that data is valid
-    validation_error, status_code = post_validation(res)
-    if validation_error:
-        return validation_error, status_code
-
     # Make a deep copy of the data
     data = copy.deepcopy(res)
 
@@ -80,21 +87,20 @@ def create_post():
 
         # Add the new post to the 'posts' collection
         new_post_ref = db.collection("posts").document()
-
         data["author"] = db.document(data["author"])
-
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
-
+        data["likes"] = [
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
+        ]
         new_post_ref.set(data)
 
-        # # Update user posts list
         # Get the user reference
         user_ref = db.collection("users").document(data["author"].id)
 
         # Get the user data
         user_data = user_ref.get().to_dict()
-
         post_ref = db.document("posts/" + new_post_ref.id)
 
         # Add the new post to the user's posts list
@@ -129,11 +135,6 @@ def update_post(post_id):
     # Get the JSON data from the request
     res = request.json
 
-    # Validate the JSON res
-    validation_error, status_code = post_validation(res)
-    if validation_error:
-        return jsonify(validation_error), status_code
-
     # Make a deep copy of the data
     data = copy.deepcopy(res)
 
@@ -146,12 +147,13 @@ def update_post(post_id):
 
         # Update the post in the 'posts' collection
         post_ref = db.collection("posts").document(post_id)
-
         data["author"] = db.document(data["author"])
-
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
-
+        data["likes"] = [
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
+        ]
         post_ref.update(data)
 
         # Return the updated post

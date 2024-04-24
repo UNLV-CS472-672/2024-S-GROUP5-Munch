@@ -48,6 +48,18 @@ def get_recipe(recipe_id):
     for comment in recipe_data["comments"]:
         comment["author"] = comment["author"].path
 
+    # if there is nothing in the array then just skip over it, otherwise get all the like info
+    if len(recipe_data["likes"]) != 0:
+        recipe_data["likes"] = [
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in recipe_data["likes"]
+        ]
+    else:
+        recipe_data["likes"] = []
+
     return jsonify(recipe_data), status.HTTP_200_OK
 
 
@@ -60,11 +72,6 @@ def create_recipe():
 
     # Extracting JSON data from the request
     res = request.json
-
-    # Validating the received recipe data
-    validation_error, status_code = recipe_validation(res)
-    if validation_error:
-        return validation_error, status_code
 
     # Creating a deep copy of the received data
     data = copy.deepcopy(res)
@@ -85,6 +92,10 @@ def create_recipe():
         # Converting comment authors' IDs to Firestore document references
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
+        data["likes"] = [
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
+        ]
 
         # Setting the recipe data in the Firestore document
         new_recipe_ref.set(data)
@@ -127,11 +138,6 @@ def update_recipe(recipe_id):
     # Get the JSON data from the request
     res = request.json
 
-    # Validate the JSON res
-    validation_error, status_code = recipe_validation(res)
-    if validation_error:
-        return jsonify(validation_error), status_code
-
     # Make a deep copy of the data
     data = copy.deepcopy(res)
 
@@ -146,10 +152,12 @@ def update_recipe(recipe_id):
         recipe_ref = db.collection("recipes").document(recipe_id)
 
         data["author"] = db.document(data["author"])
-
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
-
+        data["likes"] = [
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
+        ]
         recipe_ref.update(data)
 
         # Return the updated recipe

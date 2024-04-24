@@ -18,18 +18,21 @@ const Feed = () => {
         queryKey: ['userPosts'],
         queryFn: async () => {
           try {
-            const data = await Promise.all(
+            const user_post = await Promise.all(
               user_data.posts.map((post) =>
-                (async () =>
-                  (
+                (async () => {
+                  const res = (
                     await axios.get<Byte | Recipe>(
                       `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
                       { headers: { Authorization: `Bearer ${token}` } },
                     )
-                  ).data)(),
+                  ).data;
+                  return { ...res, key: post };
+                })(),
               ),
             );
-            return data;
+
+            return user_post;
           } catch (error) {
             console.error('Error fetching posts:', error);
             return [];
@@ -68,3 +71,5 @@ const Feed = () => {
     </SafeAreaView>
   );
 };
+
+export default Feed;

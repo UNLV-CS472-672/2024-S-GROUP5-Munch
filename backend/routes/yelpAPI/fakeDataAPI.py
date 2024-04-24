@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, Blueprint
 import requests
-import yelpAPI.states
+from . import states
 import random
 import os
 import json
@@ -22,7 +22,7 @@ headers = {"Authorization": f"Bearer {API_KEY}"}
 @yelp_bp.route("/api/business", methods=["GET"])
 def get_business():
     # Grab a random state from states.py
-    random_state = random.choice(yelpAPI.states.us_states)
+    random_state = random.choice(states.us_states)
     response = requests.get(
         f"{URL}businesses/search?location={random_state}", headers=headers
     )

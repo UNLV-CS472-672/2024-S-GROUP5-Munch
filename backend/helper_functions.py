@@ -68,7 +68,9 @@ def connect_to_db():
         try:
             # Initialize Firebase Admin SDK with the credentials
             cred = credentials.Certificate(os.getenv("DB_PRIV_KEY_PATH"))
-            firebase_admin.initialize_app(cred)
+            firebase_admin.initialize_app(cred, {
+                'storageBucket': 'munch-37564.appspot.com'
+            })
             print("Firebase Admin SDK initialized")
             return
         except FileNotFoundError as e:

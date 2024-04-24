@@ -20,7 +20,6 @@ app = Flask(__name__)
 for bp in blueprints:
     app.register_blueprint(bp)
 
-
 # Load environment variables from .env file
 load_dotenv()
 
@@ -104,16 +103,16 @@ def middleware():
                 "has been given access to get, update, or delete, their own account.",
             )
             return None
-        elif api_name == "posts" and request.method == "POST":
-            # Allow access to create new posts
+        elif (api_name == "posts" or api_name == "recipes") and request.method == "POST":
+            # Allow access to create new posts or recipes
             print(
                 "User",
                 user_id,
-                "has been given access to create a new post.",
+                "has been given access to create a new post or recipe.",
             )
             return None
         elif (
-            api_name == "posts"
+            api_name == "posts" or api_name == "recipes"
             and request.method == "DELETE"
             or request.method == "PATCH"
         ):
@@ -121,6 +120,11 @@ def middleware():
             posts = result.get("posts", [])
             for post in posts:
                 if request.path.split("/api/")[1] == post:
+                    return None
+
+            recipes = result.get("recipes", [])
+            for recipe in recipes:
+                if request.path.split("/api/")[1] == recipe:
                     return None
 
         # Deny access if none of the above conditions are met

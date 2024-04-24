@@ -1,8 +1,11 @@
 import status
 from flask import jsonify, request, Blueprint
-from firebase_admin import firestore
+from firebase_admin import firestore, storage
 import copy
-from helper_functions import try_connect_to_db, post_validation
+import base64
+import datetime
+import pytz
+from helper_functions import try_connect_to_db, post_validation, generate_unique_id
 
 
 post_bp = Blueprint("post", __name__)
@@ -82,22 +85,51 @@ def create_post():
     try_connect_to_db()
 
     try:
-        # Connect to the database
         db = firestore.client()
+        # Get data
+        res = request.json
+
+        # Make a deep copy of the data
+        data = copy.deepcopy(res)
+
+        base64Image = data["pictures"][0]
+
+        # Decode base64 data into binary
+        try:
+            image_binary = base64.b64decode(base64Image)
+        except Exception as e:
+            return jsonify({"error": "Invalid base64 data"}), 400
+
+        # Set the file path and name in Firebase Storage
+        file_path = f'images/{generate_unique_id()}.jpg'
+
+        # Get Firebase Storage bucket
+        bucket = storage.bucket()
+
+        # Upload the image data to Firebase Storage
+        blob = bucket.blob(file_path)
+
+        blob.upload_from_string(image_binary, content_type='image/jpeg')
+
+        # Set expiration time to a distant future (e.g., 10 years from now)
+        expiration_time = datetime.datetime.now(pytz.utc) + datetime.timedelta(days=36500)  # 100 years
+
+        image_url = blob.generate_signed_url(expiration=expiration_time, method='GET')
+
+        # Assign proper values to and pictures array to res object
+        res["pictures"] = [image_url]
+
+        # Assign proper values to pictures array and author ref to data object
+        data["pictures"] = [image_url]
+        data["author"] = db.document(data["author"])
 
         # Add the new post to the 'posts' collection
         new_post_ref = db.collection("posts").document()
-        data["author"] = db.document(data["author"])
-        for comment in data["comments"]:
-            comment["author"] = db.document(comment["author"])
-        data["likes"] = [
-            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
-            for like in data["likes"]
-        ]
+
         new_post_ref.set(data)
 
         # Get the user reference
-        user_ref = db.collection("users").document(data["author"].id)
+        user_ref = db.document("users/" + data["author"].id)
 
         # Get the user data
         user_data = user_ref.get().to_dict()

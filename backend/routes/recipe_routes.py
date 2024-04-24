@@ -1,8 +1,11 @@
 import status
 from flask import jsonify, request, Blueprint
-from firebase_admin import firestore
+from firebase_admin import firestore, storage
 import copy
-from helper_functions import try_connect_to_db, recipe_validation
+import base64
+import datetime
+import pytz
+from helper_functions import try_connect_to_db, post_validation, generate_unique_id
 
 # Creating a Blueprint for handling recipe related endpoints
 recipe_bp = Blueprint("recipe", __name__)
@@ -69,49 +72,67 @@ def create_recipe():
     """
     Endpoint to create a new recipe
     """
-
-    # Extracting JSON data from the request
-    res = request.json
-
-    # Creating a deep copy of the received data
-    data = copy.deepcopy(res)
-
-    # Attempting to connect to the Firestore database
+    # The request has been validated, connect to the database
     try_connect_to_db()
 
     try:
-        # Getting a reference to the Firestore client
         db = firestore.client()
+        # Get data
+        res = request.json
 
-        # Creating a new document reference in the "recipes" collection
-        new_recipe_ref = db.collection("recipes").document()
+        # Make a deep copy of the data
+        data = copy.deepcopy(res)
 
-        # Converting author ID to Firestore document reference
+        base64Image = data["pictures"][0]
+
+        # Decode base64 data into binary
+        try:
+            image_binary = base64.b64decode(base64Image)
+        except Exception as e:
+            return jsonify({"error": "Invalid base64 data"}), 400
+
+        # Set the file path and name in Firebase Storage
+        file_path = f'images/{generate_unique_id()}.jpg'
+
+        # Get Firebase Storage bucket
+        bucket = storage.bucket()
+
+        # Upload the image data to Firebase Storage
+        blob = bucket.blob(file_path)
+
+        blob.upload_from_string(image_binary, content_type='image/jpeg')
+
+        # Set expiration time to a distant future (e.g., 10 years from now)
+        expiration_time = datetime.datetime.now(pytz.utc) + datetime.timedelta(days=36500)  # 100 years
+
+        image_url = blob.generate_signed_url(expiration=expiration_time, method='GET')
+
+        # Assign proper values to and pictures array to res object
+        res["pictures"] = [image_url]
+
+        # Assign proper values to pictures array and author ref to data object
+        data["pictures"] = [image_url]
         data["author"] = db.document(data["author"])
 
-        # Converting comment authors' IDs to Firestore document references
-        for comment in data["comments"]:
-            comment["author"] = db.document(comment["author"])
-        data["likes"] = [
-            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
-            for like in data["likes"]
-        ]
+        # Add the new post to the 'recipes' collection
+        new_recipe_ref = db.collection("recipes").document()
 
-        # Setting the recipe data in the Firestore document
         new_recipe_ref.set(data)
 
-        # Retrieving user data to update their posts list
-        user_ref = db.collection("users").document(data["author"].id)
-        user_data = user_ref.get().to_dict()
+        # Get the user reference
+        user_ref = db.document("users/" + data["author"].id)
 
-        # Creating a reference to the newly created recipe
+        # Get the user data
+        user_data = user_ref.get().to_dict()
         recipe_ref = db.document("recipes/" + new_recipe_ref.id)
 
-        # Adding the reference of the new recipe to the user's posts list
+        # Add the new post to the user's posts list
         user_data["posts"].append(recipe_ref)
+
+        # Update the user data
         user_ref.update(user_data)
 
-        # Returning success response with created recipe data
+        # Return the newly created post
         return jsonify(res), status.HTTP_201_CREATED
 
     except Exception as e:
@@ -152,8 +173,10 @@ def update_recipe(recipe_id):
         recipe_ref = db.collection("recipes").document(recipe_id)
 
         data["author"] = db.document(data["author"])
+
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
+
         data["likes"] = [
             {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
             for like in data["likes"]

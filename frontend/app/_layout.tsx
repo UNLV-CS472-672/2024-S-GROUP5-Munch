@@ -172,7 +172,6 @@ function RootLayoutNav() {
   useEffect(() => {
     (async () => {
       if (!isLoaded) return;
-      const inTabGroup = segments[0] === '(auth)';
       //token is only retrieved when signed in
       if (isSignedIn && !isLoading) {
         const { status } = await requestForegroundPermissionsAsync();

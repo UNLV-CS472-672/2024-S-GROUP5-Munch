@@ -185,9 +185,19 @@ const Post: FC<PostProps> = ({ post }) => {
         {/*USER INFO*/}
         <YStack px={'$2.5'} gap={'$1'}>
           <XStack gap={'$2'} rowGap={'$5'}>
-            <Link href={'/'}>
-              <Text fontWeight={'800'}>{username}</Text>
-            </Link>
+            {/* <Link href={`/user/${author.split('/')[1]}`} asChild> */}
+            <Text
+              fontWeight={'800'}
+              onPress={() =>
+                router.navigate({
+                  pathname: `/user/${author.split('/')[1]}`,
+                  params: { prev: 'Friends' },
+                })
+              }
+            >
+              {username}
+            </Text>
+            {/* </Link> */}
             <Text>{description}</Text>
           </XStack>
           <Subtitle unstyled size={'$1'}>

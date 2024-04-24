@@ -60,7 +60,7 @@ export default function DeletePostDialog(postId) {
     <>
       <Dialog modal>
         <Dialog.Trigger asChild>
-          <Button backgroundColor={'$red9'}>Delete</Button>
+          <Button backgroundColor={'$red9'} minWidth='$14'>Delete</Button>
         </Dialog.Trigger>
 
         <Adapt when='sm' platform='touch'>

@@ -1,39 +1,18 @@
 import axios from 'axios';
-import { useContext } from 'react';
+import { FC, useContext } from 'react';
 import { LogBox } from 'react-native';
 import { useAuth } from '@clerk/clerk-react';
 import { router, usePathname } from 'expo-router';
-import { Feather } from '@expo/vector-icons';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Controller, SubmitHandler, set, useForm } from 'react-hook-form';
 import Toast from 'react-native-toast-message';
-import {
-  Adapt,
-  Button,
-  Dialog,
-  Fieldset,
-  Input,
-  Label,
-  Paragraph,
-  Sheet,
-  TooltipSimple,
-  Unspaced,
-  XStack,
-  Form,
-  Separator,
-} from 'tamagui';
+import { Adapt, Button, Dialog, Sheet, XStack, Form } from 'tamagui';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import UserInput from '@/components/UserInput';
 import { UserContext } from '@/contexts/UserContext';
 import { Byte, Recipe } from '@/types/post';
-import {
-  ByteSchema,
-  ByteSchemaInputs,
-  RecipeSchema,
-  RecipeSchemaInputs,
-} from '@/types/postInput';
-import { isByte } from '@/utils/typeGuard';
+import { ByteSchema, ByteSchemaInputs } from '@/types/postInput';
 
 interface PostProps {
   post: Byte | Recipe;
@@ -51,8 +30,8 @@ export function EditPostDialog({ post }: FC<PostProps>) {
   const postId = postLocation.split('/').pop();
 
   const { mutate, error } = useMutation({
-    mutationFn: (postData) => {
-      const response = axios.patch(
+    mutationFn: async (postData) => {
+      const response = await axios.patch(
         `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
         postData,
         {
@@ -62,9 +41,9 @@ export function EditPostDialog({ post }: FC<PostProps>) {
       return response.data;
     },
     // Update the post with the edit
-    onSuccess: () => {
+    onSuccess: async () => {
       Toast.show({ text1: 'Post edited!' });
-      queryClient.invalidateQueries({ queryKey: [postId] });
+      await queryClient.invalidateQueries({ queryKey: [postId] });
     },
     // Show error message in console
     onError: () => {

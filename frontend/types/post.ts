@@ -3,9 +3,10 @@ type PostBase = {
   comments: Comment[];
   creation_date: string;
   description: string;
-  likes: number;
+  likes: Likes[];
   pictures: string[];
   username: string;
+  key: string;
 };
 
 export type Byte = PostBase & {
@@ -17,8 +18,14 @@ export type Recipe = PostBase & {
   ingredients: string[];
 };
 
+export type Likes = {
+  timestamp: string;
+  user: string;
+};
 export type Comment = {
   author: string;
   comment: string;
   creation_date: string;
+  comment_id: string;
+  username: string;
 };

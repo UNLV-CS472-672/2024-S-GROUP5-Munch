@@ -10,7 +10,7 @@ export default function CommentComponent({
   text, // comment text,
   creation_date, // comment creation
   post_id,
-  children,
+  children = null,
 }) {
   const width = Dimensions.get('window').width - 75;
   return (

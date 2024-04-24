@@ -2,9 +2,15 @@ import { Subtitle } from '@/tamagui.config';
 import { Byte, Recipe } from '@/types/post';
 import { getDateDifference } from '@/utils/getCurrentDateTime';
 import { isByte, isRecipe } from '@/utils/typeGuard';
-import { Link, useRouter } from 'expo-router';
-import React, { FC, useContext, useEffect, useRef, useState } from 'react';
-import { Dimensions, Linking, Platform, SafeAreaView } from 'react-native';
+import { useRouter } from 'expo-router';
+import React, { FC, useContext, useState } from 'react';
+import {
+  Dimensions,
+  Linking,
+  Platform,
+  SafeAreaView,
+  useColorScheme,
+} from 'react-native';
 import Carousel from 'react-native-reanimated-carousel';
 import { Button, Image, Text, XStack, YStack } from 'tamagui';
 import ButtonIcon from './ButtonIcon';
@@ -14,6 +20,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '@/contexts/UserContext';
 import { useAuth } from '@clerk/clerk-expo';
 import axios from 'axios';
+import { UserContext } from '@/contexts/UserContext';
 import { AntDesign } from '@expo/vector-icons';
 
 interface PostProps {
@@ -36,6 +43,7 @@ const Post: FC<PostProps> = ({ post }) => {
   const recipe = isRecipe(post) ? post : null;
   const router = useRouter();
   const { height, width } = Dimensions.get('screen');
+  const theme = useColorScheme();
 
   const openMaps = async () => {
     const iosLink = `maps://0,0?q=${byte?.location}`;
@@ -45,60 +53,26 @@ const Post: FC<PostProps> = ({ post }) => {
 
   // Used to query and mutate
   const queryClient = useQueryClient();
-  const { token, user_data } = useContext(UserContext);
+  const { user_data } = useContext(UserContext);
+
   const { getToken, userId } = useAuth();
   const postId = key.split('/')[1];
-
-  // Used to skip events on the first render
-  const isFirstRender = useRef(false);
-  useEffect(() => {
-    isFirstRender.current = true;
-  }, []);
-
   // Like button state
-  const [liked, setLiked] = useState(user_data.likes.includes(key));
-  // Only update the like count locally to reduce API calls
-  const [localLikes, setLocalLikes] = useState(likes);
+  const [liked, setLiked] = useState(
+    user_data.likes.includes(`posts/${postId}`),
+  );
 
   // Data that will be passed in order to change the post's likes
   const likeData = {
     user_id: userId,
     post_id: postId,
   };
-  // Get number of likes
-  const getLikes = async () => {
-    const response = await axios.get(
-      `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
-      {
-        headers: { Authorization: `Bearer ${token}` },
-      },
-    );
-    return response.data.likes;
-  };
-  const {
-    data: likesCount,
-    error: likesError,
-    isLoading: likesLoading,
-  } = useQuery({
-    queryKey: ['likes'],
-    queryFn: getLikes,
-  });
 
   // Like/Unlike a post
-  const {
-    mutateAsync: changeLikes,
-    isPending,
-    data,
-    error,
-  } = useMutation({
+  const { mutateAsync: changeLikes, error } = useMutation({
     mutationFn: async () => {
       // Determine whether to like or unlike the post
       const likeAction = liked ? 'like' : 'unlike';
-
-      // Status message to show the API call
-      console.log(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}/${likeAction}/${postId}`,
-      );
 
       // Do the API call
       const response = await axios.patch(
@@ -110,11 +84,9 @@ const Post: FC<PostProps> = ({ post }) => {
       );
       return response.data;
     },
-    onSuccess: () => {
-      // Update the local like count
-      setLocalLikes(liked ? localLikes + 1 : localLikes - 1);
-      // Update the like count
-      //queryClient.invalidateQueries({ queryKey: ['likes'] });
+    // Update the like count
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: [author] });
     },
     // Show error message in console
     onError: () => {
@@ -122,28 +94,12 @@ const Post: FC<PostProps> = ({ post }) => {
     },
   });
 
-  // Helper to handle a like interaction
-  useEffect(
-    () => {
-      // Do not run on the first render
-      if (isFirstRender.current) {
-        isFirstRender.current = false;
-        return;
-      }
-      // Status message
-      liked
-        ? console.log('Liking the post!')
-        : console.log('Unliking the post!');
-      changeLikes();
-    },
-    [liked], // effect only activates when liked is updated
-  );
-
   // Handle user liking the post
   const handleLike = async () => {
     // Invert the like state
     setLiked(!liked);
-    // Rest of handling done in useEffect
+    // Like or unlike the post based on liked state
+    await changeLikes();
   };
   const handleBookmark = async () => {};
   const carouselConfig = {
@@ -189,7 +145,7 @@ const Post: FC<PostProps> = ({ post }) => {
                 <AntDesign
                   size={22}
                   name={liked ? 'heart' : 'hearto'}
-                  color={liked ? 'red' : 'black'}
+                  color={liked ? 'red' : theme === 'dark' ? 'white' : 'black'}
                 />
               }
               justifyContent='center'
@@ -200,15 +156,19 @@ const Post: FC<PostProps> = ({ post }) => {
               unstyled
             />
             {/*Display number of likes*/}
-            <Text>
-              {likesLoading ? 'Loading' : likesError ? '-1' : localLikes}
-            </Text>
+            <Text>{likes.length}</Text>
           </XStack>
           {/*Comment*/}
           <ButtonIcon
             iconName='comment-o'
             onPress={() => {
-              router.push('/(modals)/comments');
+              router.push({
+                pathname: '/(modals)/comments',
+                params: {
+                  comments: JSON.stringify(comments),
+                  post_id: key.split('/')[1],
+                },
+              });
             }}
           />
           {/*Bookmark*/}
@@ -219,9 +179,19 @@ const Post: FC<PostProps> = ({ post }) => {
         {/*USER INFO*/}
         <YStack px={'$2.5'} gap={'$1'}>
           <XStack gap={'$2'} rowGap={'$5'}>
-            <Link href={'/'}>
-              <Text fontWeight={'800'}>{username}</Text>
-            </Link>
+            {/* <Link href={`/user/${author.split('/')[1]}`} asChild> */}
+            <Text
+              fontWeight={'800'}
+              onPress={() =>
+                router.navigate({
+                  pathname: `/user/${author.split('/')[1]}`,
+                  params: { prev: 'Friends' },
+                })
+              }
+            >
+              {username}
+            </Text>
+            {/* </Link> */}
             <Text>{description}</Text>
           </XStack>
           <Subtitle unstyled size={'$1'}>

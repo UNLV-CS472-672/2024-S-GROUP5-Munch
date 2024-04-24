@@ -6,8 +6,9 @@ import { IconNames } from './icons';
 interface ButtonProps {
   iconName: IconNames;
   onPress: () => void;
+  sx?: Record<string, string>;
 }
-const ButtonIcon: FC<ButtonProps> = ({ iconName, onPress }) => {
+const ButtonIcon: FC<ButtonProps> = ({ iconName, onPress, sx }) => {
   return (
     <Tooltip placement='top-start'>
       <Tooltip.Trigger>
@@ -15,7 +16,7 @@ const ButtonIcon: FC<ButtonProps> = ({ iconName, onPress }) => {
           size={'$4'}
           circular
           animation={'bouncy'}
-          icon={<FontAwesome name={iconName} size={25} />}
+          icon={<FontAwesome name={iconName} size={25} {...sx} />}
           display='flex'
           justifyContent='center'
           alignItems='center'

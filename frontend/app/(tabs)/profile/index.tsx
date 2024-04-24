@@ -28,7 +28,6 @@ export default function Profile() {
   const { user, token, user_data } = useContext(UserContext);
 
   const router = useRouter();
-
   //use query to get all posts from user_data
   let { isLoading, posts } = useQueries({
     queries: user_data?.posts
@@ -41,7 +40,7 @@ export default function Profile() {
                 headers: { Authorization: `Bearer ${token}` },
               },
             );
-            return res.data;
+            return { ...res.data, key: post };
           },
         }))
       : [],

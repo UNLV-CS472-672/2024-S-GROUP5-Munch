@@ -21,7 +21,7 @@ const UserInput = <T extends any>({
   return (
     <>
       {useLabel && (
-        <Label htmlFor={labelID} width={'$7'}>
+        <Label htmlFor={labelID} width={'$10'}>
           {labelID}
         </Label>
       )}

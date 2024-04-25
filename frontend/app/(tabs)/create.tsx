@@ -197,10 +197,10 @@ export default function Create() {
 
   return (
     <SafeAreaView>
-      <YStack>
+      <YStack paddingTop={'$3'}>
         <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
-        <XStack>
-          <Text fontSize='$5' paddingStart='$5'>
+        <XStack paddingTop={'$5'} paddingBottom={'$2'}>
+          <Text fontSize='$5' paddingStart='$5' >
             Is this a recipe?
           </Text>
           <Switch
@@ -211,24 +211,8 @@ export default function Create() {
             <Switch.Thumb animation='bouncy' />
           </Switch>
         </XStack>
-        <Button
-          onPress={pickImg}
-          mx={'$19'}
-          icon={<Feather name='image' size={30} />}
-        ></Button>
-        <XStack>
-          {file ? (
-            <Image
-              source={{
-                uri: file,
-              }}
-              width={412}
-              aspectRatio={1}
-              height={150}
-            />
-          ) : null}
-        </XStack>
-        <XStack>
+
+        <XStack paddingTop={'$2'} paddingBottom={'$2'}>
           <Text fontSize='$5' paddingStart='$5'>
             Include Location?
           </Text>
@@ -266,7 +250,7 @@ export default function Create() {
                 <Text color={'$red10'}>{errorsByte.description.message}</Text>
               )}
               <Form.Trigger asChild>
-                <Button backgroundColor={'$red9'}>Post</Button>
+                <Button backgroundColor={'$red9'} paddingTop={'$2'}>Post</Button>
               </Form.Trigger>
             </YStack>
           ) : null}
@@ -277,6 +261,7 @@ export default function Create() {
           gap={'$2'}
           marginHorizontal={15}
           px={'$2'}
+          paddingBottom={'$2'}
         >
           {isEnabled ? (
             <YStack>
@@ -335,6 +320,23 @@ export default function Create() {
             </YStack>
           ) : null}
         </Form>
+        <Button
+          onPress={pickImg}
+          mx={'$19'}
+          icon={<Feather name='image' size={30} />}
+        ></Button>
+        <XStack paddingTop={'$2'} paddingBottom={'$2'}>
+          {file ? (
+            <Image
+              source={{
+                uri: file,
+              }}
+              width={412}
+              aspectRatio={1}
+              height={150}
+            />
+          ) : null}
+        </XStack>
       </YStack>
     </SafeAreaView>
   );

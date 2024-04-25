@@ -13,10 +13,6 @@ LOCAL_URL = "http://127.0.0.1:5000/"
 URL = "https://api.yelp.com/v3/"
 
 
-
-
-
-
 # route gets the default amount from yelp API (20 businesses in one request)
 @yelp_bp.route("/api/business", methods=["GET"])
 def get_business():

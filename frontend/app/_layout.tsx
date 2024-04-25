@@ -142,7 +142,7 @@ function RootLayoutNav() {
       />
     ),
   };
-  
+
   const { isLoading } = useQuery({
     queryKey: ['userData', user],
     queryFn: async () => {
@@ -168,7 +168,7 @@ function RootLayoutNav() {
       return res;
     },
   });
-/*
+  /*
   const { signOut } = useAuth();
   const { isLoading } = useQuery({
     queryKey: ['userData', user],

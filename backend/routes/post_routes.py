@@ -48,6 +48,18 @@ def get_post(post_id):
     for comment in post_data["comments"]:
         comment["author"] = comment["author"].path
 
+    # if there is nothing in the array then just skip over it, otherwise get all the like info
+    if len(post_data["likes"]) != 0:
+        post_data["likes"] = [
+            {
+                "user": ref.get("user", {}).path,
+                "timestamp": ref.get("timestamp", ""),
+            }
+            for ref in post_data["likes"]
+        ]
+    else:
+        post_data["likes"] = []
+
     return jsonify(post_data), status.HTTP_200_OK
 
 
@@ -63,11 +75,6 @@ def create_post():
     # Get data, check if it is empty
     res = request.json
 
-    # Check that data is valid
-    validation_error, status_code = post_validation(res)
-    if validation_error:
-        return validation_error, status_code
-
     # Make a deep copy of the data
     data = copy.deepcopy(res)
 
@@ -80,21 +87,20 @@ def create_post():
 
         # Add the new post to the 'posts' collection
         new_post_ref = db.collection("posts").document()
-
         data["author"] = db.document(data["author"])
-
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
-
+        data["likes"] = [
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
+        ]
         new_post_ref.set(data)
 
-        # # Update user posts list
         # Get the user reference
         user_ref = db.collection("users").document(data["author"].id)
 
         # Get the user data
         user_data = user_ref.get().to_dict()
-
         post_ref = db.document("posts/" + new_post_ref.id)
 
         # Add the new post to the user's posts list
@@ -129,11 +135,6 @@ def update_post(post_id):
     # Get the JSON data from the request
     res = request.json
 
-    # Validate the JSON res
-    validation_error, status_code = post_validation(res)
-    if validation_error:
-        return jsonify(validation_error), status_code
-
     # Make a deep copy of the data
     data = copy.deepcopy(res)
 
@@ -146,12 +147,13 @@ def update_post(post_id):
 
         # Update the post in the 'posts' collection
         post_ref = db.collection("posts").document(post_id)
-
         data["author"] = db.document(data["author"])
-
         for comment in data["comments"]:
             comment["author"] = db.document(comment["author"])
-
+        data["likes"] = [
+            {"user": db.document(like["user"]), "timestamp": like["timestamp"]}
+            for like in data["likes"]
+        ]
         post_ref.update(data)
 
         # Return the updated post
@@ -216,3 +218,37 @@ def delete_post(post_id):
             jsonify({"error": "Error deleting post"}),
             status.HTTP_500_INTERNAL_SERVER_ERROR,
         )
+
+
+@post_bp.route("/api/posts/<user_id>/nonfollowing", methods=["GET"])
+def get_non_following_posts(user_id):
+    try_connect_to_db()
+
+    # Get the database
+    db = firestore.client()
+
+    # Get the post by ID
+    post_ref = db.collection("posts")
+    post_doc = post_ref.get()
+
+    user_ref = db.collection("users").document(user_id)
+    user_doc = user_ref.get()
+    user_data = user_doc.to_dict()
+
+    following = [user["user"].path for user in user_data["following"]]
+
+    post_data = {}
+    filtered_post_data = []
+    for doc in post_doc:
+        post_data[doc.id] = doc.to_dict()
+        post_data[doc.id]["key"] = "posts/" + doc.id
+        post_data[doc.id]["author"] = post_data[doc.id]["author"].path
+        if (
+            user_id != post_data[doc.id]["author"].split("/")[1]
+            and post_data[doc.id]["author"] not in following
+        ):
+            filtered_post_data.append(post_data[doc.id])
+        for comment in post_data[doc.id]["comments"]:
+            comment["author"] = comment["author"].path
+
+    return jsonify(filtered_post_data), status.HTTP_200_OK

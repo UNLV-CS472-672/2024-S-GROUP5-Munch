@@ -81,7 +81,7 @@ export default function Create() {
     comments: [],
     creation_date: '',
     description: '',
-    likes: 0,
+    likes: [],
     location: '',
     pictures: [],
     username: username,
@@ -92,7 +92,7 @@ export default function Create() {
     comments: [],
     creation_date: '',
     description: '',
-    likes: 0,
+    likes: [],
     location: '',
     ingredients: '',
     steps: '',
@@ -101,7 +101,7 @@ export default function Create() {
   };
 
   const { mutate, error } = useMutation({
-    // mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
+    mutationKey: ['createPost'], // Optional: Descriptive key to identify this specific mutation
     mutationFn: async (newData: any) => {
       // for byte
       const response = await axios.post(
@@ -117,7 +117,7 @@ export default function Create() {
     onSuccess: () => {
       // Invalidate cache for all post queries
       posts.forEach((post) => {
-        queryClient.invalidateQueries([post]);
+        queryClient.invalidateQueries({ queryKey: [post] });
       });
 
       Toast.show({ text1: 'Post created!' });
@@ -170,7 +170,7 @@ export default function Create() {
       mutate(postData);
     } catch (err) {
       // error
-      throw new Error(error.message);
+      throw new Error(err.message);
     }
   };
 

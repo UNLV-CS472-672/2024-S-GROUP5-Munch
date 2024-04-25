@@ -98,14 +98,14 @@ const Register = () => {
     <View>
       <YStack pt={'$6'} gap={'$2'} paddingTop={'$5'} marginHorizontal={15}>
         <Image
-          style={{ width: 400, height: 300 }}
+          style={{ width: 400, height: 200 }}
           resizeMode='contain'
           source={{
             uri: 'https://drive.google.com/thumbnail?id=1iKHSAfc3ll-ACyneu2fVnKeZAxb8hBNy',
           }}
         />
         <Image
-          style={{ width: 400, height: 150 }}
+          style={{ width: 400, height: 100 }}
           resizeMode='contain'
           source={{
             uri: 'https://drive.google.com/thumbnail?id=15h-LZk8-ng-VGI6ex5pkgFJaByvrEr8J',

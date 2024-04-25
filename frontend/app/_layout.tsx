@@ -142,7 +142,7 @@ function RootLayoutNav() {
       />
     ),
   };
-/*
+  /*
   const { isLoading } = useQuery({
     queryKey: ['userData', user],
     queryFn: async () => {
@@ -169,13 +169,13 @@ function RootLayoutNav() {
     },
   });
 */
-  const {signOut} = useAuth();
-    const { isLoading } = useQuery({
-      queryKey: ['userData', user],
-      queryFn: async () => {
-        signOut()
-      },
-     });
+  const { signOut } = useAuth();
+  const { isLoading } = useQuery({
+    queryKey: ['userData', user],
+    queryFn: async () => {
+      signOut();
+    },
+  });
 
   useEffect(() => {
     (async () => {
@@ -217,14 +217,14 @@ function RootLayoutNav() {
       {!isLoading && (
         <Stack>
           <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
-            {/* munch onboarding card, initial opening page*/}
+          {/* munch onboarding card, initial opening page*/}
           <Stack.Screen
-              name='(onboarding)/first'
-              options={{
-                presentation: 'card',
-                title: 'Munch  ',
-              }}
-            />
+            name='(onboarding)/first'
+            options={{
+              presentation: 'card',
+              title: 'Munch  ',
+            }}
+          />
           <Stack.Screen
             name='(auth)/login'
             options={{
@@ -249,16 +249,14 @@ function RootLayoutNav() {
           />
           {/* munch third onboarding card*/}
           <Stack.Screen
-          name='(onboarding)/third'
-          options={{
-            presentation: 'card',
-            title: 'Munch   ',
-          }}
-        />
-
+            name='(onboarding)/third'
+            options={{
+              presentation: 'card',
+              title: 'Munch   ',
+            }}
+          />
 
           {/* stack.screen for modal, transparent to allow for modal that doesn't take up entire screen */}
-
 
           <Stack.Screen
             name='(modals)/comments'

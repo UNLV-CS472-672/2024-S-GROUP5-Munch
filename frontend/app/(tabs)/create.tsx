@@ -199,7 +199,7 @@ export default function Create() {
       <YStack paddingTop={'$3'}>
         <H4 style={{ alignSelf: 'center' }}>NEW POST</H4>
         <XStack paddingTop={'$5'} paddingBottom={'$2'}>
-          <Text fontSize='$5' paddingStart='$5' >
+          <Text fontSize='$5' paddingStart='$5'>
             Is this a recipe?
           </Text>
           <Switch
@@ -249,7 +249,9 @@ export default function Create() {
                 <Text color={'$red10'}>{errorsByte.description.message}</Text>
               )}
               <Form.Trigger asChild>
-                <Button backgroundColor={'$red9'} paddingTop={'$2'}>Post</Button>
+                <Button backgroundColor={'$red9'} paddingTop={'$2'}>
+                  Post
+                </Button>
               </Form.Trigger>
             </YStack>
           ) : null}

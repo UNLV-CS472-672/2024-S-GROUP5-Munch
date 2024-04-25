@@ -37,7 +37,8 @@ export default function Create() {
 
   const {
     token,
-    user_data: { username, posts },
+    user_data: { username },
+    user,
   } = useContext(UserContext);
 
   const [isEnabled, setEnabledElements] = useState(false);
@@ -114,11 +115,9 @@ export default function Create() {
 
       return response.data;
     }, // Function that defines how to fetch data for this mutation
-    onSuccess: () => {
+    onSuccess: async () => {
       // Invalidate cache for all post queries
-      posts.forEach((post) => {
-        queryClient.invalidateQueries({ queryKey: [post] });
-      });
+      await queryClient.invalidateQueries({ queryKey: ['userData', user] });
 
       Toast.show({ text1: 'Post created!' });
     },

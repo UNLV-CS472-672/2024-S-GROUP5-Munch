@@ -136,6 +136,12 @@ class TestAPI(unittest.TestCase):
         self.assertEqual(delete_response.json, {"message": "Post deleted"})
         self.assertEqual(delete_response.status_code, status.HTTP_200_OK)
 
+        # Test getting non follower post
+        nonfollowing_response = self.client.get(
+            f"api/posts/{testing_user_id}/nonfollowing"
+        )
+        self.assertEqual(nonfollowing_response.status_code, status.HTTP_200_OK)
+
         # Delete test user after route check is done
         delete_user_response = self.client.delete(
             f"/api/users/{testing_user_id}"

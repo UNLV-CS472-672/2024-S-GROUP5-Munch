@@ -20,7 +20,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { UserContext } from '@/contexts/UserContext';
 import { useAuth } from '@clerk/clerk-expo';
 import axios from 'axios';
-import { UserContext } from '@/contexts/UserContext';
 import { AntDesign } from '@expo/vector-icons';
 
 interface PostProps {

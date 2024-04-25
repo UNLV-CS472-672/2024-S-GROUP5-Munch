@@ -1,6 +1,6 @@
 from flask import Flask, jsonify, Blueprint
 import requests
-import yelpAPI.states
+from . import states
 import random
 import os
 import json
@@ -13,6 +13,10 @@ LOCAL_URL = "http://127.0.0.1:5000/"
 URL = "https://api.yelp.com/v3/"
 
 
+
+
+
+
 # route gets the default amount from yelp API (20 businesses in one request)
 @yelp_bp.route("/api/business", methods=["GET"])
 def get_business():
@@ -20,7 +24,7 @@ def get_business():
     API_KEY = os.getenv("YELP_API_KEY")
     headers = {"Authorization": f"Bearer {API_KEY}"}
     # Grab a random state from states.py
-    random_state = random.choice(yelpAPI.states.us_states)
+    random_state = random.choice(states.us_states)
     response = requests.get(
         f"{URL}businesses/search?location={random_state}", headers=headers
     )

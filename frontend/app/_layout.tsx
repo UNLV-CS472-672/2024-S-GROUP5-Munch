@@ -167,7 +167,15 @@ function RootLayoutNav() {
       return res;
     },
   });
-
+  /*
+  const { signOut } = useAuth();
+  const { isLoading } = useQuery({
+    queryKey: ['userData', user],
+    queryFn: async () => {
+      signOut();
+    },
+  });
+*/
   useEffect(() => {
     (async () => {
       if (!isLoaded) return;
@@ -192,7 +200,7 @@ function RootLayoutNav() {
           user_data: {} as UserType,
           user_loading: false,
         });
-        router.replace('/login');
+        router.replace('/first');
       }
     })();
   }, [isLoaded, isSignedIn, isLoading]);
@@ -207,6 +215,14 @@ function RootLayoutNav() {
       {!isLoading && (
         <Stack>
           <Stack.Screen name='(tabs)' options={{ headerShown: false }} />
+          {/* munch onboarding card, initial opening page*/}
+          <Stack.Screen
+            name='(onboarding)/first'
+            options={{
+              presentation: 'card',
+              title: 'Munch  ',
+            }}
+          />
           <Stack.Screen
             name='(auth)/login'
             options={{
@@ -221,7 +237,25 @@ function RootLayoutNav() {
               title: 'Register ',
             }}
           />
+          {/* munch second onboarding card*/}
+          <Stack.Screen
+            name='(onboarding)/second'
+            options={{
+              presentation: 'card',
+              title: 'Munch  ',
+            }}
+          />
+          {/* munch third onboarding card*/}
+          <Stack.Screen
+            name='(onboarding)/third'
+            options={{
+              presentation: 'card',
+              title: 'Munch   ',
+            }}
+          />
+
           {/* stack.screen for modal, transparent to allow for modal that doesn't take up entire screen */}
+
           <Stack.Screen
             name='(modals)/comments'
             options={{

@@ -116,7 +116,7 @@ export default function Create() {
     }, // Function that defines how to fetch data for this mutation
     onSuccess: () => {
       // Invalidate cache for all post queries
-      posts.forEach((post) => {
+      posts?.forEach((post) => {
         queryClient.invalidateQueries({ queryKey: [post] });
       });
 

@@ -31,6 +31,7 @@ class TestAPI(unittest.TestCase):
             "following": [],
             "likes": [],
             "posts": [],
+            "clerk_user_id": testing_user_id,
         }
 
         # Create user
@@ -47,6 +48,7 @@ class TestAPI(unittest.TestCase):
             "following": [],
             "likes": [],
             "posts": [],
+            "clerk_user_id": testing_user_id,
         }
 
         # Update user

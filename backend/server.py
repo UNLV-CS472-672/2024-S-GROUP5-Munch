@@ -103,7 +103,9 @@ def middleware():
                 "has been given access to get, update, or delete, their own account.",
             )
             return None
-        elif (api_name == "posts" or api_name == "recipes") and request.method == "POST":
+        elif (
+            api_name == "posts" or api_name == "recipes"
+        ) and request.method == "POST":
             # Allow access to create new posts or recipes
             print(
                 "User",
@@ -112,7 +114,8 @@ def middleware():
             )
             return None
         elif (
-            api_name == "posts" or api_name == "recipes"
+            api_name == "posts"
+            or api_name == "recipes"
             and request.method == "DELETE"
             or request.method == "PATCH"
         ):

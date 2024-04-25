@@ -5,7 +5,11 @@ import copy
 import base64
 import datetime
 import pytz
-from helper_functions import try_connect_to_db, post_validation, generate_unique_id
+from helper_functions import (
+    try_connect_to_db,
+    post_validation,
+    generate_unique_id,
+)
 
 # Creating a Blueprint for handling recipe related endpoints
 recipe_bp = Blueprint("recipe", __name__)
@@ -92,7 +96,7 @@ def create_recipe():
             return jsonify({"error": "Invalid base64 data"}), 400
 
         # Set the file path and name in Firebase Storage
-        file_path = f'images/{generate_unique_id()}.jpg'
+        file_path = f"images/{generate_unique_id()}.jpg"
 
         # Get Firebase Storage bucket
         bucket = storage.bucket()
@@ -100,12 +104,16 @@ def create_recipe():
         # Upload the image data to Firebase Storage
         blob = bucket.blob(file_path)
 
-        blob.upload_from_string(image_binary, content_type='image/jpeg')
+        blob.upload_from_string(image_binary, content_type="image/jpeg")
 
         # Set expiration time to a distant future (e.g., 10 years from now)
-        expiration_time = datetime.datetime.now(pytz.utc) + datetime.timedelta(days=36500)  # 100 years
+        expiration_time = datetime.datetime.now(pytz.utc) + datetime.timedelta(
+            days=36500
+        )  # 100 years
 
-        image_url = blob.generate_signed_url(expiration=expiration_time, method='GET')
+        image_url = blob.generate_signed_url(
+            expiration=expiration_time, method="GET"
+        )
 
         # Assign proper values to and pictures array to res object
         res["pictures"] = [image_url]

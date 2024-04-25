@@ -12,15 +12,13 @@ app = Flask(__name__)
 LOCAL_URL = "http://127.0.0.1:5000/"
 URL = "https://api.yelp.com/v3/"
 
-# API_KEY is blank, make sure to grab correct API Key from Team Yelp account and paste here to get authorization to Yelp API
-API_KEY = os.getenv("YELP_API_KEY")
-
-headers = {"Authorization": f"Bearer {API_KEY}"}
-
 
 # route gets the default amount from yelp API (20 businesses in one request)
 @yelp_bp.route("/api/business", methods=["GET"])
 def get_business():
+    # API_KEY is blank, make sure to grab correct API Key from Team Yelp account and paste here to get authorization to Yelp API
+    API_KEY = os.getenv("YELP_API_KEY")
+    headers = {"Authorization": f"Bearer {API_KEY}"}
     # Grab a random state from states.py
     random_state = random.choice(states.us_states)
     response = requests.get(
@@ -41,13 +39,16 @@ def get_business():
 # route gets 50 businessses from yelp API
 @yelp_bp.route("/api/<latitude>/<longitude>", methods=["GET"])
 def get_our_own_businesses(latitude, longitude):
+    # API_KEY is blank, make sure to grab correct API Key from Team Yelp account and paste here to get authorization to Yelp API
+    API_KEY = os.getenv("YELP_API_KEY")
+    headers = {"Authorization": f"Bearer {API_KEY}"}
     # Get a random integer for the offset
     random_int = str(random.randint(0, 500))
     limit = 50
     # Use query filter to get 50 businesses from provided latitude and longitude, can change limit query to X amount
     # offset is from integer above, to get more random options
     response = requests.get(
-        f"{URL}businesses/search?latitude={latitude}&longitude={longitude}&term=restaurants&limit={limit}&offset={random_int}",
+        f"{URL}businesses/search?latitude={latitude}&longitude={longitude}&limit={limit}&offset={random_int}",
         headers=headers,
     )
 

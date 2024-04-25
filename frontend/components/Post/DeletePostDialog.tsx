@@ -15,8 +15,8 @@ export default function DeletePostDialog({ postId }: { postId: string }) {
   const queryClient = useQueryClient();
   const { mutate } = useMutation({
     mutationFn: async () => {
-          const response = await axios.delete(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
+      const response = await axios.delete(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/${postId}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
@@ -27,7 +27,7 @@ export default function DeletePostDialog({ postId }: { postId: string }) {
     onSuccess: async () => {
       // Invalidate cache for all post queries
       await queryClient.invalidateQueries({
-              queryKey: ['userData', user],
+        queryKey: ['userData', user],
       });
       Toast.show({ text1: 'Post Deleted' });
     },

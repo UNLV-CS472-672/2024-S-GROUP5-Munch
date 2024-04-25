@@ -2,10 +2,11 @@ export type UserType = {
   bio: string;
   bookmarks: string[];
   followers: string[];
-  following: string[];
+  following: { timestamp: string; user: string }[];
   likes: string[];
   posts: string[];
   username: string;
+  clerk_user_id: string;
 };
 
 export type YelpRecommendation = {

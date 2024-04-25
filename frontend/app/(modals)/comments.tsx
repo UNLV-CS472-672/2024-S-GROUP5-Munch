@@ -1,6 +1,7 @@
 import CommentComponent from '@/components/Comment';
 import { UserContext } from '@/contexts/UserContext';
 import { CommentSchema, CommentSchemaInputs } from '@/types/commentInput';
+import { Comment } from '@/types/post';
 import {
   AntDesign,
   Feather,
@@ -26,56 +27,22 @@ export default function CommentPage() {
   const { token, user_id } = useContext(UserContext);
 
   //get parameters from the post
-  const item = useLocalSearchParams();
-  const stringedItem = JSON.stringify(item);
-  const params = JSON.parse(stringedItem.toString());
+  const { comments: comments_stringify, post_id } = useLocalSearchParams<{
+    comments: string;
+    post_id: string;
+  }>();
+  const comments_items: Comment[] = JSON.parse(comments_stringify);
 
   //router to move between modal and friends page
   const router = useRouter();
 
-  //states
-  const [comments, setComments] = useState([]);
-  const [goFetch, setGoFetch] = useState(true);
+  const [comments, setComments] = useState(comments_items);
   const [input, setInput] = useState('');
   const [showDelete, setShowDelete] = useState(false);
   const [enableShowDelete, setEnableShowDelete] = useState(false);
 
-  //refetch data
-  const refetch = async () => {
-    //try and make get call for the post of the comments
-    try {
-      const postCheck = await axios.get(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${params['post_id'].slice(1, -1)}`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      //return the comments of the post
-      return postCheck.data['comments'];
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  //if goFetch is true, refetch data
-  useEffect(() => {
-    if (goFetch) {
-      const fetchData = async () => {
-        //set comments from refetch response, set go fetch to false because you've already fetched
-        try {
-          const response = await refetch();
-          setComments(response);
-          setGoFetch(false);
-        } catch (err) {
-          console.log(err);
-        }
-      };
-
-      fetchData();
-    }
-  }, [goFetch]);
-
   //set goFetch to true wheenver there is a change to comments
   useEffect(() => {
-    setGoFetch(true);
     //also check if user owns any comments on this comment page
     setEnableShowDelete(checkForOwnComments());
   }, [comments]);
@@ -84,24 +51,27 @@ export default function CommentPage() {
   const colorScheme = useColorScheme();
   const iconColor = colorScheme === 'dark' ? 'white' : 'black';
 
-  const slashIndex = params['post_id'].indexOf('/');
-
   //display all comments
   const allComments = () => {
     return comments.map((comment) => {
+      const {
+        username,
+        creation_date,
+        comment: curComment,
+        comment_id,
+        author,
+      } = comment;
       return (
         <CommentComponent
-          key={comment['comment_id']}
-          id={comment['comment_id']}
+          key={comment_id}
+          id={comment_id}
           parent_id={0}
-          name={comment['username']}
+          name={username}
           image=''
-          text={comment['comment']}
-          creation_date={comment['creation_date']}
-          post_id={params['post_id'].substring(slashIndex + 1).slice(0, -1)}
-        >
-          <></>
-        </CommentComponent>
+          text={curComment}
+          creation_date={creation_date}
+          post_id={post_id}
+        />
       );
     });
   };
@@ -133,7 +103,7 @@ export default function CommentPage() {
     //make api call to create comment
     try {
       const response = await axios.patch(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/comment/${user_id}/${params['post_id'].substring(slashIndex + 1).slice(0, -1)}`,
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/comment/${user_id}/${post_id}`,
         data,
         { headers: { Authorization: `Bearer ${token}` } },
       );
@@ -147,16 +117,18 @@ export default function CommentPage() {
   };
 
   //delete comment
-  const deleteComment = async (data) => {
+  const deleteComment = async (data: Comment) => {
     //make api call to delete comment
     try {
-      const response = await axios.delete(
-        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/comment/${user_id}/${params['post_id'].substring(slashIndex + 1).slice(0, -1)}/${data}`,
+      await axios.delete(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/posts/comment/${user_id}/${post_id}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
       //remove deleted comment from comments variable
       setComments((prevComments) =>
-        prevComments.filter((comment) => comment['comment_id'] !== data),
+        prevComments.filter(
+          (comment) => comment['comment_id'] !== data.comment_id,
+        ),
       );
     } catch (err) {
       console.log(err);
@@ -166,21 +138,27 @@ export default function CommentPage() {
   //function to show deletable comments (i.e. comments the current user owns)
   const showDeletableComments = () => {
     return comments.map((comment) => {
+      const {
+        comment_id,
+        username,
+        comment: curComment,
+        creation_date,
+      } = comment;
       //if comment author is the same as current user, show delete button
-      if (comment['author'] === `users/${user_id}`) {
+      if (comment.author === `users/${user_id}`) {
         return (
           <CommentComponent
-            key={comment['comment_id']}
-            id={comment['comment_id']}
+            key={comment_id}
+            id={comment_id}
             parent_id={0}
-            name={comment['username']}
+            name={username}
             image=''
-            text={comment['comment']}
-            creation_date={comment['creation_date']}
-            post_id={params['post_id'].substring(slashIndex + 1).slice(0, -1)}
+            text={curComment}
+            creation_date={creation_date}
+            post_id={post_id}
           >
             <Button
-              onPress={() => deleteComment(comment['comment_id'])}
+              onPress={() => deleteComment(comment)}
               width={30}
               height={30}
               borderRadius={50}
@@ -192,7 +170,7 @@ export default function CommentPage() {
               marginRight={'$-6'}
               marginTop={'$2.5'}
               icon={<AntDesign name='minus' size={24} color='white' />}
-            ></Button>
+            />
           </CommentComponent>
         );
         //other wise, don't show delete button
@@ -206,10 +184,8 @@ export default function CommentPage() {
             image=''
             text={comment['comment']}
             creation_date={comment['creation_date']}
-            post_id={params['post_id'].substring(slashIndex + 1).slice(0, -1)}
-          >
-            <></>
-          </CommentComponent>
+            post_id={post_id}
+          />
         );
       }
     });

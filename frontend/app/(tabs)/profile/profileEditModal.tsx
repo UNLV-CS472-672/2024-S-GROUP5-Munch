@@ -1,7 +1,9 @@
 import UserInput from '@/components/UserInput';
 import { UserContext } from '@/contexts/UserContext';
+import { UserType } from '@/types/firebaseTypes';
 import { UserState } from '@/types/user';
-import { isClerkAPIResponseError, useUser } from '@clerk/clerk-expo';
+import { isClerkAPIResponseError } from '@clerk/clerk-expo';
+import { useMutation } from '@tanstack/react-query';
 import axios from 'axios';
 import { MediaTypeOptions, launchImageLibraryAsync } from 'expo-image-picker';
 import { Stack } from 'expo-router';
@@ -12,20 +14,37 @@ import Toast from 'react-native-toast-message';
 import { Avatar, Button, Form, Separator, View, XStack, YStack } from 'tamagui';
 
 const ProfileEditModal = () => {
-  const { user } = useUser();
+  const { user_id, user, user_data, token } = useContext(UserContext);
   const {
     handleSubmit,
     control,
-    formState: { errors, isDirty, dirtyFields },
+    formState: { isDirty, dirtyFields },
   } = useForm<UserState>({
     defaultValues: {
       username: user?.username,
       firstName: user?.firstName,
       lastName: user?.lastName,
       password: user?.passwordEnabled ? 'password' : '',
+      bio: user_data?.bio ?? '',
     },
   });
-  const { token, user_data, user_id: userId } = useContext(UserContext);
+  const { mutate } = useMutation({
+    mutationKey: ['updateUserBio'],
+    mutationFn: async (data: UserType) => {
+      return await axios.patch(
+        `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${user_id}`,
+        { ...data },
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+    },
+    onSuccess: () => {
+      Toast.show({ text1: 'Bio Updated', type: 'success' });
+    },
+    onError: (err) => {
+      console.log(err.name);
+      Toast.show({ text1: err.message, type: 'error' });
+    },
+  });
 
   const updateUserData: SubmitHandler<UserState> = async (data) => {
     try {
@@ -40,21 +59,7 @@ const ProfileEditModal = () => {
         });
       }
       if (isNotDirtyClerk) {
-        // create userData to pass to backend
-        const userData = {
-          ...user_data,
-          bio: data.bio,
-          username: data.username,
-        };
-
-        await axios
-          .patch(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/users/${userId}`, // API route
-            userData, // userData to update
-            { headers: { Authorization: `Bearer: ${token}` } }, // auth header
-          )
-          .then(() => user?.update({ username: data.username })) // update user username
-          .catch((error) => console.log('error:', error.message)); // console log any errors
+        mutate({ ...user_data, bio: data.bio, username: data.username });
       }
       if (isDirty) {
         Toast.show({ text1: 'Profile Updated', type: 'success' });

@@ -1,5 +1,6 @@
 import Post from '@/components/Post/Post';
 import { UserContext } from '@/contexts/UserContext';
+import { Byte, Recipe } from '@/types/post';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useLocalSearchParams } from 'expo-router';
@@ -8,7 +9,7 @@ import { SafeAreaView } from 'react-native';
 import { Spinner } from 'tamagui';
 
 const PostSlug = () => {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, prev } = useLocalSearchParams<{ id: string; prev: string }>();
   const { token } = useContext(UserContext);
 
   const { isLoading, data } = useQuery({

@@ -25,9 +25,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='friends'
+        name='explore'
         options={{
-          tabBarLabel: 'Friends',
+          tabBarLabel: 'Explore',
           tabBarIcon: ({ color, size }) => (
             <FontAwesome5 name='user-friends' color={color} size={size} />
           ),
@@ -84,7 +84,17 @@ export default function TabLayout() {
       />
       <Tabs.Screen
         name='post/[id]'
-        options={{ href: null, headerShown: false, tabBarLabel: 'None' }}
+        options={{
+          href: null,
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name='user/[id]'
+        options={{
+          href: null,
+          headerShown: false,
+        }}
       />
     </Tabs>
   );

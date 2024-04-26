@@ -1,11 +1,36 @@
 import React, { useCallback, useContext, useState, useEffect } from 'react';
-import { FlatList, SafeAreaView } from 'react-native';
+import { SafeAreaView, FlatList } from 'react-native';
 import axios from 'axios';
-import { Text } from 'tamagui'; // assuming this is your custom UI library
+import { Input, View } from 'tamagui';
 import { useQueries } from '@tanstack/react-query';
 import { UserContext } from '@/contexts/UserContext';
 import { getDateDifference } from '@/utils/getCurrentDateTime';
 import { Byte, Recipe } from '@/types/post';
+
+type Comment = {
+  type: 'comment';
+  author: string;
+  comment: string;
+  creation_date: string;
+  comment_id: string;
+  username: string;
+};
+
+type Like = {
+  type: 'like';
+  timestamp: string;
+  user: string;
+  username: string;
+};
+
+type Follower = {
+  type: 'follower';
+  timestamp: string;
+  user: string;
+  username: string;
+};
+
+type Post = Comment | Like | Follower;
 
 const Feed = () => {
   const { token, user_data } = useContext(UserContext);
@@ -34,13 +59,9 @@ const Feed = () => {
       },
     ],
     combine: (data) => {
-      //this is one post
-      // console.log('data', data[0].data);
       return {
         isLoading: data.some((query) => query.isLoading),
         posts: data.flatMap((query) => {
-          // const commentLikes = query.data?.user?.reduce
-          // console.log(query.data)
           const commentsLikes = query.data?.user?.flatMap((user) => {
             const comments = user.comments.map((comment) => ({
               ...comment,
@@ -55,46 +76,64 @@ const Feed = () => {
           const follower_data = query.data?.followers
             ?.flatMap((follower) => ({ ...follower, type: 'follower' }))
             .flat();
-          return [...commentsLikes, ...follower_data].flat();
+          return [...(commentsLikes ?? []), ...(follower_data ?? [])].flat();
         }),
       };
     },
   });
 
-  // console.log('posts', posts);
-  const renderActivity = (activity) => {
+  const sortedPosts = posts.sort((a: Post, b: Post) => {
+    let dateA;
+    let dateB;
+
+    if (a.type === 'comment') {
+      dateA = new Date(a.creation_date).getTime();
+    } else {
+      dateA = new Date(a.timestamp).getTime();
+    }
+    if (b.type === 'comment') {
+      dateB = new Date(b.creation_date).getTime();
+    } else {
+      dateB = new Date(b.timestamp).getTime();
+    }
+
+    return dateB - dateA;
+  });
+
+  const renderActivity = (activity: Post) => {
     switch (activity.type) {
       case 'comment':
         return (
-          <Text>
-            {activity.username} commented on your post{' '}
+          <Input readOnly>
+            {activity.username ?? 'A Muncher'} commented on your post{' '}
             {getDateDifference(activity.creation_date)}!
-          </Text>
+          </Input>
         );
       case 'like':
         return (
-          <Text>
-            {activity.user} liked your post{' '}
+          <Input readOnly>
+            {activity.username ?? 'A Muncher'} liked your post{' '}
             {getDateDifference(activity.timestamp)}!
-          </Text>
+          </Input>
         );
       case 'follower':
         return (
-          <Text>
-            {activity.user} started following you{' '}
-            {getDateDifference(activity.creation_date)}!
-          </Text>
+          <Input readOnly>
+            {activity.username ?? 'A Muncher'} started following you{' '}
+            {getDateDifference(activity.timestamp)}!
+          </Input>
         );
-      default:
-        return null;
     }
   };
 
+  const renderItem = useCallback(({ item }: { item: Post }) => {
+    return renderActivity(item);
+  }, []);
+
   return (
-    <SafeAreaView>
-      {posts.map((activity, index) => (
-        <React.Fragment key={index}>{renderActivity(activity)}</React.Fragment>
-      ))}
+    <SafeAreaView style={{ paddingTop: 40 }}>
+      {/*@ts-ignore */}
+      {!isLoading && <FlatList data={posts} renderItem={renderItem} />}
     </SafeAreaView>
   );
 };

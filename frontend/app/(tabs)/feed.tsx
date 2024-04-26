@@ -1,125 +1,68 @@
 import React, { useCallback, useContext, useState, useEffect } from 'react';
 import { FlatList, SafeAreaView } from 'react-native';
 import axios from 'axios';
-import { Text, View, Button } from 'tamagui';
+import { Text } from 'tamagui'; // assuming this is your custom UI library
 import { useQueries } from '@tanstack/react-query';
 import { UserContext } from '@/contexts/UserContext';
+import { getDateDifference } from '@/utils/getCurrentDateTime';
 import { Byte, Recipe } from '@/types/post';
 
 const Feed = () => {
   const { token, user_data } = useContext(UserContext);
 
+  // Fetch user posts and combine loading state
   const { isLoading, posts } = useQueries({
     queries: [
       {
         queryKey: ['userPosts'],
         queryFn: async () => {
-          try {
-            const user_post = await Promise.all(
-              user_data.posts.map((post) =>
-                (async () => {
-                  const res = await axios.get(
+          const user_post = await Promise.all(
+            user_data.posts.map((post) =>
+              (async () => {
+                const res = (
+                  await axios.get<Byte | Recipe>(
                     `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${post}`,
                     { headers: { Authorization: `Bearer ${token}` } },
-                  );
-                  const postData = res.data;
-                  return { ...postData, key: post };
-                })(),
-              ),
-            );
-
-            return user_post;
-          } catch (error) {
-            console.error('Error fetching posts:', error);
-            return [];
-          }
+                  )
+                ).data;
+                return { likes: res.likes, comments: res.comments, key: post };
+              })(),
+            ),
+          );
+          return { followers: user_data.following, user: user_post };
         },
       },
     ],
     combine: (data) => {
+      //this is one post
+      // console.log('data', data[0].data);
       return {
         isLoading: data.some((query) => query.isLoading),
-        posts: data.flatMap((query) => query.data || []),
+        posts: data.flatMap((query) => {
+          // const commentLikes = query.data?.user?.reduce
+          // console.log(query.data)
+          const commentsLikes = query.data?.user?.flatMap((user) => {
+            const comments = user.comments.map((comment) => ({
+              ...comment,
+              type: 'comment',
+            }));
+            const likes = user.likes.map((like) => ({
+              ...like,
+              type: 'like',
+            }));
+            return [...comments, ...likes].flat();
+          });
+          const follower_data = query.data?.followers
+            ?.flatMap((follower) => ({ ...follower, type: 'follower' }))
+            .flat();
+          return [...commentsLikes, ...follower_data].flat();
+        }),
       };
     },
   });
 
-  const renderItem = useCallback(
-    ({ item, index }) => {
-      return (
-        <PostWithActivity
-          post={item}
-          key={index}
-          user_data={user_data}
-          token={token}
-        />
-      );
-    },
-    [user_data, token],
-  );
+  console.log('posts', posts);
 
-  return (
-    <SafeAreaView>
-      {!isLoading && (
-        <FlatList
-          data={posts}
-          renderItem={renderItem}
-          showsVerticalScrollIndicator={false}
-          decelerationRate={'fast'}
-          initialNumToRender={5}
-        />
-      )}
-    </SafeAreaView>
-  );
-};
-
-const PostWithActivity = ({ post, user_data, token }) => {
-  const { likes, comments, username } = post;
-  const { following } = user_data;
-  const [followingUsers, setFollowingUsers] = useState([]);
-
-  useEffect(() => {
-    const fetchFollowingUsers = async () => {
-      const followingData = await Promise.all(
-        following.map(async (followee) => {
-          const res = await axios.get(
-            `${process.env.EXPO_PUBLIC_IP_ADDR}/api/${followee.user}`,
-            { headers: { Authorization: `Bearer ${token}` } },
-          );
-          return { ...followee, username: res.data.username };
-        }),
-      );
-      setFollowingUsers(followingData);
-    };
-
-    fetchFollowingUsers();
-  }, [following, token]);
-
-  return (
-    <View>
-      {likes &&
-        likes.length > 0 &&
-        likes.map((like, index) => (
-          <Text key={`like-${index}`}>
-            {like.user} liked your post! - {like.timestamp}
-          </Text>
-        ))}
-      {comments &&
-        comments.length > 0 &&
-        comments.map((comment, index) => (
-          <Text key={`comment-${index}`}>
-            {comment.username} commented on your post! - {comment.creation_date}
-          </Text>
-        ))}
-      {followingUsers &&
-        followingUsers.length > 0 &&
-        followingUsers.map((followee, index) => (
-          <Text key={`following-${index}`}>
-            {username} started following you! - {followee.timestamp}
-          </Text>
-        ))}
-    </View>
-  );
 };
 
 export default Feed;

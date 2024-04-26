@@ -61,7 +61,39 @@ const Feed = () => {
     },
   });
 
-  console.log('posts', posts);
+  // console.log('posts', posts);
+  const renderActivity = (activity) => {
+    switch (activity.type) {
+      case 'comment':
+        return (
+          <Text>
+            {activity.username} commented on your post {getDateDifference(activity.creation_date)}!
+          </Text>
+        );
+      case 'like':
+        return (
+          <Text>
+            {activity.user} liked your post {getDateDifference(activity.timestamp)}!
+          </Text>
+        );
+      case 'follower':
+        return (
+          <Text>
+            {activity.user} started following you {getDateDifference(activity.creation_date)}!
+          </Text>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <SafeAreaView>
+      {posts.map((activity, index) => (
+        <React.Fragment key={index}>{renderActivity(activity)}</React.Fragment>
+      ))}
+    </SafeAreaView>
+  );
 };
 
 export default Feed;

@@ -67,19 +67,22 @@ const Feed = () => {
       case 'comment':
         return (
           <Text>
-            {activity.username} commented on your post {getDateDifference(activity.creation_date)}!
+            {activity.username} commented on your post{' '}
+            {getDateDifference(activity.creation_date)}!
           </Text>
         );
       case 'like':
         return (
           <Text>
-            {activity.user} liked your post {getDateDifference(activity.timestamp)}!
+            {activity.user} liked your post{' '}
+            {getDateDifference(activity.timestamp)}!
           </Text>
         );
       case 'follower':
         return (
           <Text>
-            {activity.user} started following you {getDateDifference(activity.creation_date)}!
+            {activity.user} started following you{' '}
+            {getDateDifference(activity.creation_date)}!
           </Text>
         );
       default:

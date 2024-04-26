@@ -62,7 +62,6 @@ const Feed = () => {
   });
 
   console.log('posts', posts);
-
 };
 
 export default Feed;

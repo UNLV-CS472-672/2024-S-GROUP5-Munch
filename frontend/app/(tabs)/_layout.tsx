@@ -54,9 +54,9 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name='feed'
+        name='activity'
         options={{
-          tabBarLabel: 'Feed',
+          tabBarLabel: 'Activity',
           tabBarIcon: ({ color, size }) => (
             <Feather
               name='activity'
